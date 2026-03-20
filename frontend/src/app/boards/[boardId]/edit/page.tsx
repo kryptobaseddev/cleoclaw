@@ -99,11 +99,20 @@ function WebhookCard({
   onViewPayloads,
   onUpdate,
 }: WebhookCardProps) {
+  const selectableAgents = useMemo(
+    () => agents.filter((agent) => Boolean(agent.id)),
+    [agents],
+  );
   const [isEditing, setIsEditing] = useState(false);
   const [draftDescription, setDraftDescription] = useState(webhook.description);
   const [draftAgentValue, setDraftAgentValue] = useState(
     webhook.agent_id ?? LEAD_AGENT_VALUE,
   );
+  const selectedDraftAgentValue =
+    draftAgentValue === LEAD_AGENT_VALUE ||
+    selectableAgents.some((agent) => agent.id === draftAgentValue)
+      ? draftAgentValue
+      : LEAD_AGENT_VALUE;
 
   const isBusy =
     isLoading || isWebhookCreating || isDeletingWebhook || isUpdatingWebhook;
@@ -219,7 +228,7 @@ function WebhookCard({
           <div className="space-y-2">
             <label className="text-sm font-medium text-slate-900">Agent</label>
             <Select
-              value={draftAgentValue}
+              value={selectedDraftAgentValue}
               onValueChange={setDraftAgentValue}
               disabled={isBusy}
             >
@@ -230,7 +239,7 @@ function WebhookCard({
                 <SelectItem value={LEAD_AGENT_VALUE}>
                   Lead agent (default fallback)
                 </SelectItem>
-                {agents.map((agent) => (
+                {selectableAgents.map((agent) => (
                   <SelectItem key={agent.id} value={agent.id}>
                     {agent.name}
                     {agent.is_board_lead ? " (lead)" : ""}
@@ -556,14 +565,20 @@ export default function EditBoardPage() {
     agentsQuery.error?.message ??
     null;
 
-  const isFormReady = Boolean(
-    resolvedName.trim() && resolvedDescription.trim() && displayGatewayId,
-  );
-
   const gatewayOptions = useMemo(
     () =>
-      gateways.map((gateway) => ({ value: gateway.id, label: gateway.name })),
+      gateways.flatMap((gateway) => {
+        if (!gateway.id) return [];
+        return [{ value: gateway.id, label: gateway.name }];
+      }),
     [gateways],
+  );
+
+  const selectedGatewayId =
+    gatewayOptions.find((gateway) => gateway.value === displayGatewayId)?.value;
+
+  const isFormReady = Boolean(
+    resolvedName.trim() && resolvedDescription.trim() && selectedGatewayId,
   );
 
   const groups = useMemo<BoardGroupRead[]>(() => {
@@ -573,10 +588,16 @@ export default function EditBoardPage() {
   const groupOptions = useMemo(
     () => [
       { value: "none", label: "No group" },
-      ...groups.map((group) => ({ value: group.id, label: group.name })),
+      ...groups.flatMap((group) => {
+        if (!group.id) return [];
+        return [{ value: group.id, label: group.name }];
+      }),
     ],
     [groups],
   );
+  const selectedBoardGroupId =
+    groupOptions.find((group) => group.value === resolvedBoardGroupId)?.value ??
+    "none";
   const webhookAgents = useMemo<AgentRead[]>(() => {
     if (agentsQuery.data?.status !== 200) return [];
     return agentsQuery.data.data.items ?? [];
@@ -585,6 +606,15 @@ export default function EditBoardPage() {
     if (webhooksQuery.data?.status !== 200) return [];
     return webhooksQuery.data.data.items ?? [];
   }, [webhooksQuery.data]);
+  const selectableWebhookAgents = useMemo(
+    () => webhookAgents.filter((agent) => Boolean(agent.id)),
+    [webhookAgents],
+  );
+  const selectedWebhookAgentValue =
+    webhookAgentValue === LEAD_AGENT_VALUE ||
+    selectableWebhookAgents.some((agent) => agent.id === webhookAgentValue)
+      ? webhookAgentValue
+      : LEAD_AGENT_VALUE;
 
   const handleOnboardingConfirmed = (updated: BoardRead) => {
     setBoard(updated);
@@ -617,7 +647,7 @@ export default function EditBoardPage() {
       setError("Board name is required.");
       return;
     }
-    const resolvedGatewayId = displayGatewayId;
+    const resolvedGatewayId = selectedGatewayId ?? gatewayOptions[0]?.value ?? "";
     if (!resolvedGatewayId) {
       setError("Select a gateway before saving.");
       return;
@@ -654,7 +684,7 @@ export default function EditBoardPage() {
       description: trimmedDescription,
       gateway_id: resolvedGatewayId || null,
       board_group_id:
-        resolvedBoardGroupId === "none" ? null : resolvedBoardGroupId,
+        selectedBoardGroupId === "none" ? null : selectedBoardGroupId,
       board_type: resolvedBoardType,
       objective:
         resolvedBoardType === "general"
@@ -686,7 +716,9 @@ export default function EditBoardPage() {
     }
     setWebhookError(null);
     const mappedAgentId =
-      webhookAgentValue === LEAD_AGENT_VALUE ? null : webhookAgentValue;
+      selectedWebhookAgentValue === LEAD_AGENT_VALUE
+        ? null
+        : selectedWebhookAgentValue;
     createWebhookMutation.mutate({
       boardId,
       data: {
@@ -809,7 +841,11 @@ export default function EditBoardPage() {
                 <label className="text-sm font-medium text-slate-900">
                   Gateway <span className="text-red-500">*</span>
                 </label>
-                <Select value={displayGatewayId} onValueChange={setGatewayId}>
+                <Select
+                  value={selectedGatewayId}
+                  onValueChange={setGatewayId}
+                  disabled={isLoading || gatewayOptions.length === 0}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select gateway" />
                   </SelectTrigger>
@@ -864,7 +900,7 @@ export default function EditBoardPage() {
                   Board group
                 </label>
                 <Select
-                  value={resolvedBoardGroupId}
+                  value={selectedBoardGroupId}
                   onValueChange={setBoardGroupId}
                   disabled={isLoading}
                 >
@@ -1196,7 +1232,7 @@ export default function EditBoardPage() {
                     Agent
                   </label>
                   <Select
-                    value={webhookAgentValue}
+                    value={selectedWebhookAgentValue}
                     onValueChange={setWebhookAgentValue}
                     disabled={isLoading || isWebhookBusy}
                   >
@@ -1207,7 +1243,7 @@ export default function EditBoardPage() {
                       <SelectItem value={LEAD_AGENT_VALUE}>
                         Lead agent (default fallback)
                       </SelectItem>
-                      {webhookAgents.map((agent) => (
+                      {selectableWebhookAgents.map((agent) => (
                         <SelectItem key={agent.id} value={agent.id}>
                           {agent.name}
                           {agent.is_board_lead ? " (lead)" : ""}
@@ -1256,7 +1292,7 @@ export default function EditBoardPage() {
                     <WebhookCard
                       key={webhook.id}
                       webhook={webhook}
-                      agents={webhookAgents}
+                      agents={selectableWebhookAgents}
                       isLoading={isLoading}
                       isWebhookCreating={isWebhookCreating}
                       isDeletingWebhook={isDeletingWebhook}

@@ -103,29 +103,41 @@ export default function NewBoardPage() {
   const errorMessage =
     error ?? gatewaysQuery.error?.message ?? groupsQuery.error?.message ?? null;
 
-  const isFormReady = Boolean(
-    name.trim() && description.trim() && displayGatewayId,
-  );
-
   const gatewayOptions = useMemo(
     () =>
-      gateways.map((gateway) => ({ value: gateway.id, label: gateway.name })),
+      gateways.flatMap((gateway) => {
+        if (!gateway.id) return [];
+        return [{ value: gateway.id, label: gateway.name }];
+      }),
     [gateways],
+  );
+
+  const selectedGatewayId =
+    gatewayOptions.find((gateway) => gateway.value === displayGatewayId)?.value;
+
+  const isFormReady = Boolean(
+    name.trim() && description.trim() && selectedGatewayId,
   );
 
   const groupOptions = useMemo(
     () => [
       { value: "none", label: "No group" },
-      ...groups.map((group) => ({ value: group.id, label: group.name })),
+      ...groups.flatMap((group) => {
+        if (!group.id) return [];
+        return [{ value: group.id, label: group.name }];
+      }),
     ],
     [groups],
   );
+
+  const selectedBoardGroupId =
+    groupOptions.find((group) => group.value === boardGroupId)?.value ?? "none";
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!isSignedIn) return;
     const trimmedName = name.trim();
-    const resolvedGatewayId = displayGatewayId;
+    const resolvedGatewayId = selectedGatewayId ?? gatewayOptions[0]?.value ?? "";
     if (!trimmedName) {
       setError("Board name is required.");
       return;
@@ -148,7 +160,8 @@ export default function NewBoardPage() {
         slug: slugify(trimmedName),
         description: trimmedDescription,
         gateway_id: resolvedGatewayId,
-        board_group_id: boardGroupId === "none" ? null : boardGroupId,
+        board_group_id:
+          selectedBoardGroupId === "none" ? null : selectedBoardGroupId,
       },
     });
   };
@@ -186,7 +199,11 @@ export default function NewBoardPage() {
               <label className="text-sm font-medium text-slate-900">
                 Gateway <span className="text-red-500">*</span>
               </label>
-              <Select value={displayGatewayId} onValueChange={setGatewayId}>
+              <Select
+                value={selectedGatewayId}
+                onValueChange={setGatewayId}
+                disabled={isLoading || gatewayOptions.length === 0}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select gateway" />
                 </SelectTrigger>
@@ -207,7 +224,7 @@ export default function NewBoardPage() {
                 Board group
               </label>
               <Select
-                value={boardGroupId}
+                value={selectedBoardGroupId}
                 onValueChange={setBoardGroupId}
                 disabled={isLoading}
               >
