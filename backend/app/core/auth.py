@@ -25,7 +25,11 @@ import httpx
 from clerk_backend_api import Clerk
 from clerk_backend_api.models.clerkerrors import ClerkErrors
 from clerk_backend_api.models.sdkerror import SDKError
-from clerk_backend_api.security.types import AuthenticateRequestOptions, AuthStatus, RequestState
+from clerk_backend_api.security.types import (
+    AuthenticateRequestOptions,
+    AuthStatus,
+    RequestState,
+)
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, ValidationError
@@ -146,8 +150,12 @@ def _extract_claim_name(claims: dict[str, object]) -> str | None:
         if text:
             return text
 
-    first = _non_empty_str(claims.get("given_name")) or _non_empty_str(claims.get("first_name"))
-    last = _non_empty_str(claims.get("family_name")) or _non_empty_str(claims.get("last_name"))
+    first = _non_empty_str(claims.get("given_name")) or _non_empty_str(
+        claims.get("first_name")
+    )
+    last = _non_empty_str(claims.get("family_name")) or _non_empty_str(
+        claims.get("last_name")
+    )
     parts = [part for part in (first, last) if part]
     if not parts:
         return None
@@ -170,7 +178,9 @@ def _extract_clerk_profile(profile: ClerkUser | None) -> tuple[str | None, str |
         return None, None
 
     profile_email = _normalize_email(getattr(profile, "email_address", None))
-    primary_email_id = _non_empty_str(getattr(profile, "primary_email_address_id", None))
+    primary_email_id = _non_empty_str(
+        getattr(profile, "primary_email_address_id", None)
+    )
     emails = getattr(profile, "email_addresses", None)
     if not profile_email and isinstance(emails, list):
         fallback_email: str | None = None
@@ -251,7 +261,8 @@ async def _fetch_clerk_profile(clerk_user_id: str) -> tuple[str | None, str | No
         return email, name
     except ClerkErrors as exc:
         logger.warning(
-            "auth.clerk.profile.fetch_failed clerk_user_id=%s reason=clerk_errors " "error_type=%s",
+            "auth.clerk.profile.fetch_failed clerk_user_id=%s reason=clerk_errors "
+            "error_type=%s",
             clerk_user_id_log,
             exc.__class__.__name__,
         )
@@ -301,7 +312,8 @@ async def delete_clerk_user(clerk_user_id: str) -> None:
         logger.info("auth.clerk.user.delete clerk_user_id=%s", clerk_user_id_log)
     except ClerkErrors as exc:
         logger.warning(
-            "auth.clerk.user.delete_failed clerk_user_id=%s reason=clerk_errors " "error_type=%s",
+            "auth.clerk.user.delete_failed clerk_user_id=%s reason=clerk_errors "
+            "error_type=%s",
             clerk_user_id_log,
             exc.__class__.__name__,
         )
@@ -311,7 +323,9 @@ async def delete_clerk_user(clerk_user_id: str) -> None:
         ) from exc
     except SDKError as exc:
         if exc.status_code == 404:
-            logger.info("auth.clerk.user.delete_missing clerk_user_id=%s", clerk_user_id_log)
+            logger.info(
+                "auth.clerk.user.delete_missing clerk_user_id=%s", clerk_user_id_log
+            )
             return
         logger.warning(
             "auth.clerk.user.delete_failed clerk_user_id=%s status=%s reason=sdk_error "
@@ -352,7 +366,7 @@ async def _get_or_sync_user(
     user, created = await crud.get_or_create(
         session,
         User,
-        clerk_user_id=clerk_user_id,
+        external_auth_user_id=clerk_user_id,
         defaults=defaults,
     )
 
@@ -406,7 +420,7 @@ async def _get_or_create_local_user(session: AsyncSession) -> User:
     user, _created = await crud.get_or_create(
         session,
         User,
-        clerk_user_id=LOCAL_AUTH_USER_ID,
+        external_auth_user_id=LOCAL_AUTH_USER_ID,
         defaults=defaults,
     )
     changed = False
@@ -469,7 +483,9 @@ async def get_auth_context(
         return local_auth
 
     request_state = await _authenticate_clerk_request(request)
-    if request_state.status != AuthStatus.SIGNED_IN or not isinstance(request_state.payload, dict):
+    if request_state.status != AuthStatus.SIGNED_IN or not isinstance(
+        request_state.payload, dict
+    ):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     claims: dict[str, object] = {str(k): v for k, v in request_state.payload.items()}
     try:
@@ -510,7 +526,9 @@ async def get_auth_context_optional(
         )
 
     request_state = await _authenticate_clerk_request(request)
-    if request_state.status != AuthStatus.SIGNED_IN or not isinstance(request_state.payload, dict):
+    if request_state.status != AuthStatus.SIGNED_IN or not isinstance(
+        request_state.payload, dict
+    ):
         return None
     claims: dict[str, object] = {str(k): v for k, v in request_state.payload.items()}
 

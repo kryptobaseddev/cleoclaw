@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useCallback, useMemo } from "react";
 
-import { SignedIn, SignedOut, SignInButton, useAuth } from "@/auth/clerk";
+import { SignedIn, SignedOut, SignInButton, useAuth } from "@/auth/session";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import type { ApiError } from "@/api/mutator";
@@ -166,7 +166,7 @@ function GlobalApprovalsInner() {
   }, [errorText, warnings]);
 
   return (
-    <main className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 to-slate-100">
+    <main className="flex-1 overflow-y-auto bg-app">
       <div className="p-4 md:p-6">
         <div className="h-[calc(100vh-160px)] min-h-[300px] sm:min-h-[520px]">
           <BoardApprovalsPanel

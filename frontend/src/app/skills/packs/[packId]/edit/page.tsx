@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useParams, useRouter } from "next/navigation";
 
-import { useAuth } from "@/auth/clerk";
+import { useAuth } from "@/auth/session";
 
 import { ApiError } from "@/api/mutator";
 import {

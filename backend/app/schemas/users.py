@@ -13,8 +13,8 @@ RUNTIME_ANNOTATION_TYPES = (UUID,)
 class UserBase(SQLModel):
     """Common user profile fields shared across user payload schemas."""
 
-    clerk_user_id: str = Field(
-        description="External auth provider user identifier (Clerk).",
+    external_auth_user_id: str = Field(
+        description="External auth provider user identifier.",
         examples=["user_2abcXYZ"],
     )
     email: str | None = Field(

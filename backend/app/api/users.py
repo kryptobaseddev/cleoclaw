@@ -234,8 +234,10 @@ async def delete_me(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     user: User = auth.user
-    await delete_clerk_user(user.clerk_user_id)
-    memberships = await OrganizationMember.objects.filter_by(user_id=user.id).all(session)
+    await delete_clerk_user(user.external_auth_user_id)
+    memberships = await OrganizationMember.objects.filter_by(user_id=user.id).all(
+        session
+    )
 
     await crud.update_where(
         session,

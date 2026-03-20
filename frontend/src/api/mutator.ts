@@ -1,13 +1,6 @@
 import { getLocalAuthToken, isLocalAuthMode } from "@/auth/localAuth";
 import { getApiBaseUrl } from "@/lib/api-base";
-
-type ClerkSession = {
-  getToken: () => Promise<string>;
-};
-
-type ClerkGlobal = {
-  session?: ClerkSession | null;
-};
+import { AuthMode } from "@/auth/mode";
 
 export class ApiError<TData = unknown> extends Error {
   status: number;
@@ -21,21 +14,6 @@ export class ApiError<TData = unknown> extends Error {
   }
 }
 
-const resolveClerkToken = async (): Promise<string | null> => {
-  if (typeof window === "undefined") {
-    return null;
-  }
-  const clerk = (window as unknown as { Clerk?: ClerkGlobal }).Clerk;
-  if (!clerk?.session) {
-    return null;
-  }
-  try {
-    return await clerk.session.getToken();
-  } catch {
-    return null;
-  }
-};
-
 export const customFetch = async <T>(
   url: string,
   options: RequestInit,
@@ -47,14 +25,11 @@ export const customFetch = async <T>(
   if (hasBody && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
-  if (isLocalAuthMode() && !headers.has("Authorization")) {
+  const bearerMode =
+    isLocalAuthMode() || process.env.NEXT_PUBLIC_AUTH_MODE === AuthMode.BetterAuth;
+
+  if (bearerMode && !headers.has("Authorization")) {
     const token = getLocalAuthToken();
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
-    }
-  }
-  if (!headers.has("Authorization")) {
-    const token = await resolveClerkToken();
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }

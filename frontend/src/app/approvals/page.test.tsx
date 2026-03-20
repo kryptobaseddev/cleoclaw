@@ -33,19 +33,10 @@ vi.mock("next/link", () => {
   };
 });
 
-vi.mock("@clerk/nextjs", () => {
+vi.mock("@/auth/session", () => {
   return {
-    ClerkProvider: ({ children }: { children: React.ReactNode }) => (
-      <>{children}</>
-    ),
-    SignedIn: () => {
-      throw new Error(
-        "@clerk/nextjs SignedIn rendered (unexpected in secretless mode)",
-      );
-    },
-    SignedOut: () => {
-      throw new Error("@clerk/nextjs SignedOut rendered without ClerkProvider");
-    },
+    SignedIn: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    SignedOut: ({ children }: { children: React.ReactNode }) => <>{children}</>,
     SignInButton: ({ children }: { children: React.ReactNode }) => (
       <>{children}</>
     ),
@@ -58,13 +49,12 @@ vi.mock("@clerk/nextjs", () => {
 });
 
 describe("/approvals auth boundary", () => {
-  it("renders without ClerkProvider runtime errors when publishable key is a placeholder", () => {
+  it("renders local auth boundary without legacy provider wiring", () => {
     const previousAuthMode = process.env.NEXT_PUBLIC_AUTH_MODE;
-    const previousPublishableKey =
-      process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+    const previousBetterAuthUrl = process.env.NEXT_PUBLIC_BETTER_AUTH_URL;
 
     process.env.NEXT_PUBLIC_AUTH_MODE = "local";
-    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = "placeholder";
+    process.env.NEXT_PUBLIC_BETTER_AUTH_URL = "http://localhost:3010";
     window.sessionStorage.clear();
 
     try {
@@ -82,7 +72,7 @@ describe("/approvals auth boundary", () => {
       expect(screen.getByLabelText(/access token/i)).toBeInTheDocument();
     } finally {
       process.env.NEXT_PUBLIC_AUTH_MODE = previousAuthMode;
-      process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = previousPublishableKey;
+      process.env.NEXT_PUBLIC_BETTER_AUTH_URL = previousBetterAuthUrl;
       window.sessionStorage.clear();
     }
   });

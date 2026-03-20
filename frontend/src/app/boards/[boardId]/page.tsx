@@ -10,7 +10,7 @@ import {
   useSearchParams,
 } from "next/navigation";
 
-import { SignInButton, SignedIn, SignedOut, useAuth } from "@/auth/clerk";
+import { SignInButton, SignedIn, SignedOut, useAuth } from "@/auth/session";
 import {
   Activity,
   ArrowUpRight,

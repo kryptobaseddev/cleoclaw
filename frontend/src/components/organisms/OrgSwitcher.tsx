@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Building2, Plus } from "lucide-react";
 
-import { useAuth } from "@/auth/clerk";
+import { useAuth } from "@/auth/session";
 import { ApiError } from "@/api/mutator";
 import {
   type listMyOrganizationsApiV1OrganizationsMeListGetResponse,

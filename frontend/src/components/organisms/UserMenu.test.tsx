@@ -37,7 +37,7 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-vi.mock("@/auth/clerk", () => ({
+vi.mock("@/auth/session", () => ({
   useUser: useUserMock,
   SignOutButton: ({ children }: { children: ReactNode }) => children,
 }));

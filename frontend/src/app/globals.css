@@ -3,19 +3,19 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
-  --bg: #f8fafc;
-  --surface: #ffffff;
-  --surface-muted: #f1f5f9;
-  --surface-strong: #e2e8f0;
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
-  --text: #0f172a;
-  --text-muted: #64748b;
-  --text-quiet: #94a3b8;
-  --accent: #2563eb;
-  --accent-strong: #1d4ed8;
-  --accent-soft: rgba(37, 99, 235, 0.12);
+  color-scheme: dark;
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface-muted: #1c2128;
+  --surface-strong: #222a33;
+  --border: #30363d;
+  --border-strong: #3b434c;
+  --text: #c9d1d9;
+  --text-muted: #8b949e;
+  --text-quiet: #6e7681;
+  --accent: #58a6ff;
+  --accent-strong: #4c9aed;
+  --accent-soft: rgba(88, 166, 255, 0.14);
   --success: #16a34a;
   --warning: #d97706;
   --danger: #dc2626;
@@ -125,6 +125,44 @@ body {
       linear-gradient(to bottom, rgba(12, 17, 29, 0.08) 1px, transparent 1px);
     background-size: 120px 120px;
   }
+
+  /* Force legacy hardcoded Tailwind slate/white classes into the dark palette. */
+  .bg-white,
+  .bg-white\/95,
+  .bg-slate-50,
+  .bg-slate-900,
+  .bg-slate-950 {
+    background-color: var(--surface) !important;
+  }
+
+  .from-slate-50,
+  .to-slate-100 {
+    --tw-gradient-from: var(--surface) var(--tw-gradient-from-position) !important;
+    --tw-gradient-to: rgb(22 27 34 / 0) var(--tw-gradient-to-position) !important;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+  }
+
+  .to-slate-100 {
+    --tw-gradient-to: var(--surface-muted) var(--tw-gradient-to-position) !important;
+  }
+
+  .text-slate-900,
+  .text-slate-800,
+  .text-slate-700,
+  .text-slate-600,
+  .text-slate-500 {
+    color: var(--text-muted) !important;
+  }
+
+  .text-slate-900,
+  .text-slate-800 {
+    color: var(--text) !important;
+  }
+
+  .border-slate-200,
+  .border-slate-300 {
+    border-color: var(--border) !important;
+  }
 }
 
 .landing-page {
@@ -133,15 +171,15 @@ body {
 
 /* Landing (Enterprise) */
 .landing-enterprise {
-  --primary-navy: #0a1628;
-  --secondary-navy: #1a2942;
+  --primary-navy: #0d1117;
+  --secondary-navy: #161b22;
   --accent-gold: #d4af37;
-  --accent-teal: #2dd4bf;
-  --neutral-100: #f8fafb;
-  --neutral-200: #e5e9ed;
-  --neutral-300: #cbd2d9;
-  --neutral-700: #3e4c59;
-  --neutral-800: #1e293b;
+  --accent-teal: #58a6ff;
+  --neutral-100: #0d1117;
+  --neutral-200: #30363d;
+  --neutral-300: #3b434c;
+  --neutral-700: #8b949e;
+  --neutral-800: #c9d1d9;
   --success: #10b981;
   --warning: #f59e0b;
 
@@ -150,7 +188,7 @@ body {
     var(--font-body),
     -apple-system,
     sans-serif;
-  background: var(--neutral-100);
+  background: radial-gradient(circle at top right, #10151d 0%, var(--neutral-100) 55%);
   color: var(--neutral-800);
   line-height: 1.6;
   overflow-x: hidden;
@@ -194,7 +232,7 @@ body {
   position: fixed;
   top: 0;
   width: 100%;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(13, 17, 23, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--neutral-200);
   z-index: 40;
@@ -246,7 +284,7 @@ body {
   font-weight: 600;
   font-size: 20px;
   letter-spacing: -0.02em;
-  color: var(--primary-navy);
+  color: var(--neutral-800);
 }
 
 .landing-enterprise .logo-tagline {
@@ -273,7 +311,7 @@ body {
 }
 
 .landing-enterprise .nav-links a:hover {
-  color: var(--primary-navy);
+  color: var(--neutral-800);
 }
 
 .landing-enterprise .nav-cta {
@@ -285,7 +323,7 @@ body {
 .landing-enterprise .btn-secondary {
   padding: 0.625rem 1.25rem;
   border: 1.5px solid var(--neutral-300);
-  background: white;
+  background: var(--surface);
   color: var(--neutral-800);
   border-radius: 8px;
   font-weight: 500;
@@ -295,7 +333,7 @@ body {
 }
 
 .landing-enterprise .btn-secondary:hover {
-  border-color: var(--primary-navy);
+  border-color: var(--accent);
   background: var(--neutral-100);
 }
 
@@ -356,7 +394,7 @@ body {
   font-family: var(--font-display), serif;
   font-size: 56px;
   line-height: 1.15;
-  color: var(--primary-navy);
+  color: var(--neutral-800);
   margin-bottom: 1.5rem;
   font-weight: 400;
   letter-spacing: -0.02em;
@@ -411,13 +449,13 @@ body {
 }
 
 .landing-enterprise .btn-large.secondary {
-  background: white;
+  background: var(--surface);
   color: var(--neutral-800);
   border: 1.5px solid var(--neutral-300);
 }
 
 .landing-enterprise .btn-large.secondary:hover {
-  border-color: var(--primary-navy);
+  border-color: var(--accent);
   background: var(--neutral-100);
 }
 
@@ -454,7 +492,7 @@ body {
 }
 
 .landing-enterprise .command-surface {
-  background: white;
+  background: var(--surface);
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(10, 22, 40, 0.08);
   overflow: hidden;
@@ -508,7 +546,7 @@ body {
 .landing-enterprise .surface-subtitle h3 {
   font-size: 16px;
   font-weight: 600;
-  color: var(--primary-navy);
+  color: var(--neutral-800);
   margin-bottom: 0.25rem;
 }
 
@@ -537,7 +575,7 @@ body {
 .landing-enterprise .metric-value {
   font-size: 36px;
   font-weight: 300;
-  color: var(--primary-navy);
+  color: var(--neutral-800);
   letter-spacing: -0.02em;
   margin-bottom: 0.25rem;
 }
@@ -597,7 +635,7 @@ body {
 .landing-enterprise .status-item-title {
   font-size: 14px;
   font-weight: 500;
-  color: var(--primary-navy);
+  color: var(--neutral-800);
 }
 
 .landing-enterprise .approval-item {
@@ -682,7 +720,7 @@ body {
 }
 
 .landing-enterprise .feature-card {
-  background: white;
+  background: var(--surface);
   padding: 2rem;
   border-radius: 12px;
   border: 1px solid var(--neutral-200);
@@ -727,14 +765,14 @@ body {
   justify-content: center;
   font-size: 20px;
   margin-bottom: 1.5rem;
-  color: var(--primary-navy);
+  color: var(--neutral-800);
   font-weight: 300;
 }
 
 .landing-enterprise .feature-card h3 {
   font-size: 18px;
   font-weight: 600;
-  color: var(--primary-navy);
+  color: var(--neutral-800);
   margin-bottom: 0.75rem;
   letter-spacing: -0.01em;
 }
@@ -783,8 +821,8 @@ body {
 }
 
 .landing-enterprise .btn-large.white {
-  background: white;
-  color: var(--primary-navy);
+  background: var(--surface);
+  color: var(--neutral-800);
   border: none;
 }
 
@@ -822,7 +860,7 @@ body {
 .landing-enterprise .footer-brand h3 {
   font-size: 18px;
   font-weight: 600;
-  color: var(--primary-navy);
+  color: var(--neutral-800);
   margin-bottom: 0.75rem;
 }
 
@@ -872,7 +910,7 @@ body {
 
 .landing-enterprise .footer-links a:hover,
 .landing-enterprise .footer-links button:hover {
-  color: var(--primary-navy);
+  color: var(--neutral-800);
 }
 
 .landing-enterprise .footer-bottom {
@@ -906,7 +944,7 @@ body {
 }
 
 .landing-enterprise .footer-bottom-links a:hover {
-  color: var(--primary-navy);
+  color: var(--neutral-800);
 }
 
 @media (max-width: 1024px) {

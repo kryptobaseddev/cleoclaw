@@ -7,27 +7,24 @@ import {
   SignInButton,
   SignedIn,
   SignedOut,
-  isClerkEnabled,
-} from "@/auth/clerk";
+} from "@/auth/session";
 
 import { UserMenu } from "@/components/organisms/UserMenu";
 
 export function LandingShell({ children }: { children: ReactNode }) {
-  const clerkEnabled = isClerkEnabled();
-
   return (
     <div className="landing-enterprise">
       <nav className="landing-nav" aria-label="Primary navigation">
         <div className="nav-container">
-          <Link href="/" className="logo-section" aria-label="OpenClaw home">
-            <div className="logo-icon" aria-hidden="true">
-              OC
-            </div>
-            <div className="logo-text">
-              <div className="logo-name">OpenClaw</div>
-              <div className="logo-tagline">Mission Control</div>
-            </div>
-          </Link>
+          <Link href="/" className="logo-section" aria-label="CleoClaw home">
+              <div className="logo-icon" aria-hidden="true">
+                CC
+              </div>
+              <div className="logo-text">
+                <div className="logo-name">CleoClaw</div>
+                <div className="logo-tagline">Mission Control</div>
+              </div>
+            </Link>
 
           <div className="nav-links">
             <Link href="#capabilities">Capabilities</Link>
@@ -38,37 +35,26 @@ export function LandingShell({ children }: { children: ReactNode }) {
 
           <div className="nav-cta">
             <SignedOut>
-              {clerkEnabled ? (
                 <>
                   <SignInButton
-                    mode="modal"
-                    forceRedirectUrl="/onboarding"
-                    signUpForceRedirectUrl="/onboarding"
+                    mode="redirect"
+                    forceRedirectUrl="/boards"
+                    signUpForceRedirectUrl="/boards"
                   >
                     <button type="button" className="btn-secondary">
                       Sign In
                     </button>
                   </SignInButton>
                   <SignInButton
-                    mode="modal"
+                    mode="redirect"
                     forceRedirectUrl="/onboarding"
                     signUpForceRedirectUrl="/onboarding"
                   >
                     <button type="button" className="btn-primary">
-                      Start Free Trial
+                      Get Started
                     </button>
                   </SignInButton>
                 </>
-              ) : (
-                <>
-                  <Link href="/boards" className="btn-secondary">
-                    Boards
-                  </Link>
-                  <Link href="/onboarding" className="btn-primary">
-                    Get started
-                  </Link>
-                </>
-              )}
             </SignedOut>
 
             <SignedIn>
@@ -89,7 +75,7 @@ export function LandingShell({ children }: { children: ReactNode }) {
       <footer className="landing-footer">
         <div className="footer-content">
           <div className="footer-brand">
-            <h3>OpenClaw</h3>
+            <h3>CleoClaw</h3>
             <p>A calm command center for boards, agents, and approvals.</p>
             <div className="footer-tagline">Realtime Execution Visibility</div>
           </div>
@@ -117,26 +103,20 @@ export function LandingShell({ children }: { children: ReactNode }) {
             <h4>Access</h4>
             <div className="footer-links">
               <SignedOut>
-                {clerkEnabled ? (
-                  <>
-                    <SignInButton
-                      mode="modal"
-                      forceRedirectUrl="/onboarding"
-                      signUpForceRedirectUrl="/onboarding"
-                    >
-                      <button type="button">Sign In</button>
-                    </SignInButton>
-                    <SignInButton
-                      mode="modal"
-                      forceRedirectUrl="/onboarding"
-                      signUpForceRedirectUrl="/onboarding"
-                    >
-                      <button type="button">Create Account</button>
-                    </SignInButton>
-                  </>
-                ) : (
-                  <Link href="/boards">Boards</Link>
-                )}
+                <SignInButton
+                  mode="redirect"
+                  forceRedirectUrl="/boards"
+                  signUpForceRedirectUrl="/boards"
+                >
+                  <button type="button">Sign In</button>
+                </SignInButton>
+                <SignInButton
+                  mode="redirect"
+                  forceRedirectUrl="/onboarding"
+                  signUpForceRedirectUrl="/onboarding"
+                >
+                  <button type="button">Create Account</button>
+                </SignInButton>
                 <Link href="/onboarding">Onboarding</Link>
               </SignedOut>
               <SignedIn>
@@ -150,7 +130,7 @@ export function LandingShell({ children }: { children: ReactNode }) {
 
         <div className="footer-bottom">
           <div className="footer-copyright">
-            © {new Date().getFullYear()} OpenClaw. All rights reserved.
+            © {new Date().getFullYear()} CleoClaw. All rights reserved.
           </div>
           <div className="footer-bottom-links">
             <Link href="#capabilities">Capabilities</Link>

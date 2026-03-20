@@ -6,7 +6,7 @@ This package is the **Next.js** web UI for OpenClaw Mission Control.
 - Uses **React Query** for data fetching.
 - Supports two auth modes:
   - **local** shared bearer token mode (self-host default)
-  - **clerk** mode
+  - **better-auth** mode (email/password)
 
 ## Prerequisites
 
@@ -60,18 +60,20 @@ NEXT_PUBLIC_API_URL=auto
 Set `NEXT_PUBLIC_AUTH_MODE` to one of:
 
 - `local` (default for self-host)
-- `clerk`
+- `better-auth`
 
 For `local` mode:
 
 - users enter the token in the local login screen
 - requests use that token as `Authorization: Bearer ...`
 
-For `clerk` mode, configure:
+For `better-auth` mode, configure:
 
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
-- optional `NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL`
-- optional `NEXT_PUBLIC_CLERK_AFTER_SIGN_OUT_URL`
+- `NEXT_PUBLIC_BETTER_AUTH_URL`
+- `BETTER_AUTH_URL`
+- `BETTER_AUTH_SECRET`
+- `BETTER_AUTH_SQLITE_PATH`
+- `NEXT_PUBLIC_LOCAL_AUTH_TOKEN`
 
 ## How the frontend talks to the backend
 
@@ -99,13 +101,13 @@ Example:
 ORVAL_INPUT=http://localhost:8000/openapi.json npm run api:gen
 ```
 
-### Auth header / Clerk token injection
+### Auth header injection
 
 All Orval-generated requests go through the custom mutator (`src/api/mutator.ts`).
 It will:
 
 - set `Content-Type: application/json` when there is a body and you didn’t specify a content type
-- add `Authorization: Bearer <token>` automatically from local mode token or Clerk session
+- add `Authorization: Bearer <token>` automatically from local mode token
 - parse errors into an `ApiError` with status + parsed response body
 
 ## Mobile / responsive UI validation
@@ -163,7 +165,7 @@ cp .env.example .env.local
 
 - Ensure `NEXT_PUBLIC_AUTH_MODE` matches backend `AUTH_MODE`.
 - For local mode, set `NEXT_PUBLIC_AUTH_MODE=local`.
-- For Clerk mode, set `NEXT_PUBLIC_AUTH_MODE=clerk` and a real Clerk publishable key.
+- For Better Auth mode, set `NEXT_PUBLIC_AUTH_MODE=better-auth` and configure Better Auth env vars.
 
 ### Dev server blocked by origin restrictions
 

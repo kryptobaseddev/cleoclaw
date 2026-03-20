@@ -10,8 +10,8 @@ import { QueryProvider } from "@/components/providers/QueryProvider";
 import { GlobalLoader } from "@/components/ui/global-loader";
 
 export const metadata: Metadata = {
-  title: "OpenClaw Mission Control",
-  description: "A calm command center for every task.",
+  title: "CleoClaw Mission Control",
+  description: "Orchestrate agents, tasks, and approvals in one control room.",
 };
 
 const bodyFont = IBM_Plex_Sans({

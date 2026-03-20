@@ -11,7 +11,7 @@ import {
   SignedOut,
   useAuth,
   useUser,
-} from "@/auth/clerk";
+} from "@/auth/session";
 import { Globe, Info, RotateCcw, Save, User } from "lucide-react";
 
 import { ApiError } from "@/api/mutator";
@@ -63,11 +63,11 @@ export default function OnboardingPage() {
   const errorMessage = error ?? loadError;
   const profile = meQuery.data?.status === 200 ? meQuery.data.data : null;
 
-  const clerkFallbackName =
+  const sessionFallbackName =
     user?.fullName ?? user?.firstName ?? user?.username ?? "";
   const resolvedName = name.trim()
     ? name
-    : (profile?.preferred_name ?? profile?.name ?? clerkFallbackName ?? "");
+    : (profile?.preferred_name ?? profile?.name ?? sessionFallbackName ?? "");
   const resolvedTimezone = timezone.trim()
     ? timezone
     : (profile?.timezone ?? "");

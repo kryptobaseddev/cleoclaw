@@ -27,7 +27,7 @@ AUTH_CONTEXT_DEP = Depends(get_auth_context)
                 "application/json": {
                     "example": {
                         "id": "11111111-1111-1111-1111-111111111111",
-                        "clerk_user_id": "user_2abcXYZ",
+                        "external_auth_user_id": "user_2abcXYZ",
                         "email": "alex@example.com",
                         "name": "Alex Chen",
                         "preferred_name": "Alex",
@@ -46,7 +46,10 @@ AUTH_CONTEXT_DEP = Depends(get_auth_context)
             "content": {
                 "application/json": {
                     "example": {
-                        "detail": {"code": "unauthorized", "message": "Not authenticated"},
+                        "detail": {
+                            "code": "unauthorized",
+                            "message": "Not authenticated",
+                        },
                         "code": "unauthorized",
                         "retryable": False,
                     }

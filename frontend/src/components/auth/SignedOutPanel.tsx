@@ -1,4 +1,4 @@
-import { SignInButton } from "@/auth/clerk";
+import { SignInButton } from "@/auth/session";
 
 import { Button } from "@/components/ui/button";
 
@@ -20,9 +20,9 @@ export function SignedOutPanel({
   buttonTestId,
 }: SignedOutPanelProps) {
   return (
-    <div className="col-span-1 md:col-span-2 flex min-h-[calc(100vh-64px)] items-center justify-center bg-slate-50 p-10 text-center">
-      <div className="rounded-xl border border-slate-200 bg-white px-4 py-4 md:px-8 md:py-6 shadow-sm">
-        <p className="text-sm text-slate-600">{message}</p>
+    <div className="col-span-1 md:col-span-2 flex min-h-[calc(100vh-64px)] items-center justify-center bg-app p-10 text-center">
+      <div className="rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-4 md:px-8 md:py-6 shadow-sm">
+        <p className="text-sm text-[color:var(--text-muted)]">{message}</p>
         <SignInButton
           mode={mode}
           forceRedirectUrl={forceRedirectUrl}

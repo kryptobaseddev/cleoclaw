@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ApprovalRead } from "@/api/generated/model";
 import { BoardApprovalsPanel } from "./BoardApprovalsPanel";
 
-vi.mock("@/auth/clerk", () => ({
+vi.mock("@/auth/session", () => ({
   useAuth: () => ({ isSignedIn: true }),
 }));
 

@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { SignedIn, SignedOut, useAuth } from "@/auth/clerk";
+import { SignedIn, SignedOut, useAuth } from "@/auth/session";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Building2, UserPlus, Users } from "lucide-react";
 

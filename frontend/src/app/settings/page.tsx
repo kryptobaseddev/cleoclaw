@@ -5,9 +5,10 @@ export const dynamic = "force-dynamic";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { useAuth, useUser } from "@/auth/clerk";
+import { useAuth, useUser } from "@/auth/session";
 import { useQueryClient } from "@tanstack/react-query";
 import { Globe, Mail, RotateCcw, Save, Trash2, User } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 import {
   useDeleteMeApiV1UsersMeDelete,
@@ -23,10 +24,6 @@ import { ConfirmActionDialog } from "@/components/ui/confirm-action-dialog";
 import { Input } from "@/components/ui/input";
 import SearchableSelect from "@/components/ui/searchable-select";
 import { getSupportedTimezones } from "@/lib/timezones";
-
-type ClerkGlobal = {
-  signOut?: (options?: { redirectUrl?: string }) => Promise<void> | void;
-};
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -56,13 +53,13 @@ export default function SettingsPage() {
   const meQueryKey = getGetMeApiV1UsersMeGetQueryKey();
 
   const profile = meQuery.data?.status === 200 ? meQuery.data.data : null;
-  const clerkFallbackName =
+  const profileFallbackName =
     user?.fullName ?? user?.firstName ?? user?.username ?? "";
   const displayEmail =
     profile?.email ?? user?.primaryEmailAddress?.emailAddress ?? "";
   const resolvedName = nameEdited
     ? name
-    : (profile?.name ?? profile?.preferred_name ?? clerkFallbackName);
+    : (profile?.name ?? profile?.preferred_name ?? profileFallbackName);
   const resolvedTimezone = timezoneEdited
     ? (timezone ?? "")
     : (profile?.timezone ?? "");
@@ -91,16 +88,10 @@ export default function SettingsPage() {
     mutation: {
       onSuccess: async () => {
         setDeleteError(null);
-        if (typeof window !== "undefined") {
-          const clerk = (window as Window & { Clerk?: ClerkGlobal }).Clerk;
-          if (clerk?.signOut) {
-            try {
-              await clerk.signOut({ redirectUrl: "/sign-in" });
-              return;
-            } catch {
-              // Fall through to local redirect.
-            }
-          }
+        try {
+          await authClient.signOut();
+        } catch {
+          // ignore sign-out errors, continue with redirect
         }
         router.replace("/sign-in");
       },
