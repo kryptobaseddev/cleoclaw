@@ -55,7 +55,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import SearchableSelect from "@/components/ui/searchable-select";
 import { Textarea } from "@/components/ui/textarea";
 import { localDateInputToUtcIso, toLocalDateInput } from "@/lib/datetime";
 import { Markdown } from "@/components/atoms/Markdown";
@@ -810,18 +809,18 @@ export default function EditBoardPage() {
                 <label className="text-sm font-medium text-slate-900">
                   Gateway <span className="text-red-500">*</span>
                 </label>
-                <SearchableSelect
-                  ariaLabel="Select gateway"
-                  value={displayGatewayId}
-                  onValueChange={setGatewayId}
-                  options={gatewayOptions}
-                  placeholder="Select gateway"
-                  searchPlaceholder="Search gateways..."
-                  emptyMessage="No gateways found."
-                  triggerClassName="w-full h-11 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                  contentClassName="rounded-xl border border-slate-200 shadow-lg"
-                  itemClassName="px-4 py-3 text-sm text-slate-700 data-[selected=true]:bg-slate-50 data-[selected=true]:text-slate-900"
-                />
+                <Select value={displayGatewayId} onValueChange={setGatewayId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select gateway" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {gatewayOptions.map((gateway) => (
+                      <SelectItem key={gateway.value} value={gateway.value}>
+                        {gateway.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
@@ -864,19 +863,22 @@ export default function EditBoardPage() {
                 <label className="text-sm font-medium text-slate-900">
                   Board group
                 </label>
-                <SearchableSelect
-                  ariaLabel="Select board group"
+                <Select
                   value={resolvedBoardGroupId}
                   onValueChange={setBoardGroupId}
-                  options={groupOptions}
-                  placeholder="No group"
-                  searchPlaceholder="Search groups..."
-                  emptyMessage="No groups found."
-                  triggerClassName="w-full h-11 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                  contentClassName="rounded-xl border border-slate-200 shadow-lg"
-                  itemClassName="px-4 py-3 text-sm text-slate-700 data-[selected=true]:bg-slate-50 data-[selected=true]:text-slate-900"
                   disabled={isLoading}
-                />
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="No group" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {groupOptions.map((group) => (
+                      <SelectItem key={group.value} value={group.value}>
+                        {group.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <p className="text-xs text-slate-500">
                   Boards in the same group can share cross-board context for
                   agents.
