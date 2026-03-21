@@ -163,6 +163,9 @@ async def create_gateway(
         pass
 
     # 2. Create agent DB record in Mission Control.
+    from app.core.time import utcnow
+
+    now = utcnow()
     agent = Agent(
         name=agent_name,
         status="active",
@@ -176,6 +179,7 @@ async def create_gateway(
             "communication_style": "direct, concise, practical",
             "emoji": ":compass:",
         },
+        last_seen_at=now,
     )
     session.add(agent)
     await session.flush()
