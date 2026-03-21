@@ -181,12 +181,18 @@ def _build_gateway_url(config: GatewayConfig) -> str:
     if not base_url:
         message = "Gateway URL is not configured."
         raise OpenClawGatewayError(message)
+    parsed = urlparse(base_url)
+    # Convert http(s) to ws(s) for WebSocket connections.
+    scheme = (parsed.scheme or "").lower()
+    if scheme == "http":
+        parsed = parsed._replace(scheme="ws")
+    elif scheme == "https":
+        parsed = parsed._replace(scheme="wss")
     token = config.token
     if not token:
-        return base_url
-    parsed = urlparse(base_url)
+        return str(urlunparse(parsed._replace(query="", fragment="")))
     query = urlencode({"token": token})
-    return str(urlunparse(parsed._replace(query=query)))
+    return str(urlunparse(parsed._replace(query=query, fragment="")))
 
 
 def _redacted_url_for_log(raw_url: str) -> str:
