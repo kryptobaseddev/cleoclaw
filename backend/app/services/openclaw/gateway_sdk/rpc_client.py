@@ -383,9 +383,28 @@ class GatewayRPCClient:
         raw = await self._call("agents.list")
         return AgentListResponse.model_validate(raw)
 
-    async def agents_create(self, agent_id: str, config: dict[str, Any]) -> AgentCreateResponse:
-        """Create a new agent."""
-        raw = await self._call("agents.create", {"agentId": agent_id, "config": config})
+    async def agents_create(
+        self,
+        name: str,
+        workspace: str,
+        *,
+        emoji: str | None = None,
+        avatar: str | None = None,
+    ) -> AgentCreateResponse:
+        """Create a new agent on the gateway.
+
+        Args:
+            name: Agent display name (agent ID is derived from this).
+            workspace: Workspace path on the gateway (e.g. ~/.openclaw).
+            emoji: Optional emoji for the agent.
+            avatar: Optional avatar URL.
+        """
+        params: dict[str, Any] = {"name": name, "workspace": workspace}
+        if emoji is not None:
+            params["emoji"] = emoji
+        if avatar is not None:
+            params["avatar"] = avatar
+        raw = await self._call("agents.create", params)
         return AgentCreateResponse.model_validate(raw)
 
     async def agents_update(self, agent_id: str, config: dict[str, Any]) -> AgentUpdateResponse:

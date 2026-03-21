@@ -153,19 +153,24 @@ async def create_gateway(
     agent_name = f"{gateway.name} Gateway Agent"
 
     # 1. Create agent on the OpenClaw gateway via SDK RPC.
+    workspace = payload.workspace_root or "~/.openclaw"
     try:
-        await client.rpc.agents_create(
-            agent_id=openclaw_agent_id,
-            config={"name": agent_name},
+        create_result = await client.rpc.agents_create(
+            name=agent_name,
+            workspace=workspace,
         )
+        openclaw_agent_id = create_result.agent_id
     except GatewayError:
         # Agent may already exist on the gateway — that's fine.
         pass
 
     # 2. Create agent DB record in Mission Control.
+    #    last_seen_at is set to now because we just confirmed the agent exists
+    #    on the gateway (agents.create succeeded or agent already existed).
+    #    Future updates to last_seen_at should come from gateway health checks
+    #    via the SDK, not from agent curl callbacks.
     from app.core.time import utcnow
 
-    now = utcnow()
     agent = Agent(
         name=agent_name,
         status="active",
@@ -179,7 +184,7 @@ async def create_gateway(
             "communication_style": "direct, concise, practical",
             "emoji": ":compass:",
         },
-        last_seen_at=now,
+        last_seen_at=utcnow(),
     )
     session.add(agent)
     await session.flush()
