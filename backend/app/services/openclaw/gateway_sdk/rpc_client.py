@@ -170,8 +170,15 @@ def _build_connect_params(
             auth_token=config.token,
             connect_nonce=connect_nonce,
         )
+    auth: dict[str, Any] = {}
     if config.token:
-        params["auth"] = {"token": config.token}
+        auth["token"] = config.token
+    if not use_control_ui:
+        identity = load_or_create_device_identity()
+        if identity.device_token:
+            auth["deviceToken"] = identity.device_token
+    if auth:
+        params["auth"] = auth
     return params
 
 
@@ -269,7 +276,17 @@ async def _ensure_connected(
         "params": _build_connect_params(config, connect_nonce=connect_nonce),
     }
     await ws.send(json.dumps(response))
-    return await _await_response(ws, connect_id)
+    result = await _await_response(ws, connect_id)
+    # Save device token returned by gateway after pairing approval.
+    if isinstance(result, dict):
+        auth_data = result.get("auth")
+        if isinstance(auth_data, dict):
+            device_token = auth_data.get("deviceToken")
+            if isinstance(device_token, str) and device_token.strip():
+                from app.services.openclaw.device_identity import save_device_token
+
+                save_device_token(device_token.strip())
+    return result
 
 
 async def _call_once(
