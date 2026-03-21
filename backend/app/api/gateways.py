@@ -141,6 +141,37 @@ async def create_gateway(
     data["organization_id"] = ctx.organization.id
     gateway = await crud.create(session, Gateway, **data)
     gateway_manager.register(gateway)
+
+    # Create a main gateway agent record in the DB and register it on the
+    # gateway via SDK RPC — no curl templates, no exec approvals.
+    from app.core.time import utcnow
+    from app.services.openclaw.constants import DEFAULT_HEARTBEAT_CONFIG
+    from app.services.openclaw.db_agent_state import mint_agent_token
+    from app.services.openclaw.shared import GatewayAgentIdentity
+
+    session_key = GatewayAgentIdentity.session_key(gateway)
+    agent_name = f"{gateway.name} Gateway Agent"
+    agent = Agent(
+        name=agent_name,
+        status="active",
+        board_id=None,
+        gateway_id=gateway.id,
+        is_board_lead=False,
+        openclaw_session_id=session_key,
+        heartbeat_config=DEFAULT_HEARTBEAT_CONFIG.copy(),
+        identity_profile={
+            "role": "Gateway Agent",
+            "communication_style": "direct, concise, practical",
+            "emoji": ":compass:",
+        },
+    )
+    session.add(agent)
+    await session.flush()
+    mint_agent_token(agent)
+    session.add(agent)
+    await session.commit()
+    await session.refresh(gateway)
+
     return gateway
 
 
