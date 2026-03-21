@@ -152,7 +152,11 @@ async def create_gateway(
     from app.services.openclaw.db_agent_state import mint_agent_token
     from app.services.openclaw.shared import GatewayAgentIdentity
 
-    workspace = payload.workspace_root or "~/.openclaw"
+    # IMPORTANT: workspace must be a subdirectory under the gateway root,
+    # NOT the root itself. Using ~/.openclaw directly causes agents.create
+    # to recycle the entire gateway data directory (wiping paired.json, config, etc).
+    gateway_root = payload.workspace_root or "~/.openclaw"
+    workspace = f"{gateway_root}/workspace-mc"
     agent_name = f"{payload.name} Gateway Agent"
     agent_confirmed_on_gateway = False
     openclaw_agent_id: str | None = None
