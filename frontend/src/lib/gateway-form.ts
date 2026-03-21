@@ -54,20 +54,85 @@ function hasExplicitPort(urlString: string): boolean {
   }
 }
 
+/**
+ * Detect whether a bare hostname looks like a domain name (FQDN) vs an IP.
+ * FQDNs go through a reverse proxy (Nginx) on port 443 — no explicit port needed.
+ * IPs connect directly to the OpenClaw gateway on port 18789.
+ */
+function looksLikeDomain(host: string): boolean {
+  // IPv4 addresses: digits and dots only
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host)) return false;
+  // IPv6 addresses
+  if (host.startsWith("[") || host.includes("::")) return false;
+  // localhost
+  if (host === "localhost") return false;
+  // Has a dot and contains letters — it's a domain
+  return host.includes(".") && /[a-zA-Z]/.test(host);
+}
+
+/**
+ * Normalize a gateway address into a full URL.
+ *
+ * Accepts:
+ * - IP:port (10.0.10.21:18789)        → http://10.0.10.21:18789
+ * - IP only (10.0.10.21)              → http://10.0.10.21:18789
+ * - FQDN (cleobot.hoskins.fun)        → https://cleobot.hoskins.fun
+ * - FQDN:port (gateway.local:18789)   → http://gateway.local:18789
+ * - Full URL (http://..., ws://...)    → as-is
+ *
+ * The SDK derives both HTTP and WS URLs from whatever scheme is stored,
+ * so the user never needs to think about transport protocols.
+ */
+export function normalizeGatewayAddress(value: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+
+  // Already has a recognized scheme — pass through
+  if (/^(https?|wss?):\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  // Reject unrecognized schemes (ftp://, etc.)
+  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed)) {
+    return trimmed; // let validation catch the bad protocol
+  }
+
+  // Check if the input has an explicit port
+  const hasPort = hasExplicitPort(`http://${trimmed}`);
+
+  if (hasPort) {
+    // Has a port — connect directly via HTTP (LAN/direct access)
+    return `http://${trimmed}`;
+  }
+
+  // No port — determine scheme based on whether it's a domain or IP
+  const host = trimmed.split(/[/?#]/)[0];
+
+  if (looksLikeDomain(host)) {
+    // FQDN without port → HTTPS (behind reverse proxy like Nginx)
+    return `https://${trimmed}`;
+  }
+
+  // IP or localhost without port → HTTP with default OpenClaw port
+  return `http://${trimmed}:18789`;
+}
+
 export const validateGatewayUrl = (value: string) => {
   const trimmed = value.trim();
-  if (!trimmed) return "Gateway URL is required.";
+  if (!trimmed) return "Gateway address is required.";
+
+  const normalized = normalizeGatewayAddress(trimmed);
+
   try {
-    const url = new URL(trimmed);
+    const url = new URL(normalized);
     if (!["ws:", "wss:", "http:", "https:"].includes(url.protocol)) {
-      return "Gateway URL must start with http://, https://, ws://, or wss://.";
+      return "Invalid gateway address.";
     }
-    if (!hasExplicitPort(trimmed)) {
-      return "Gateway URL must include an explicit port.";
-    }
+    // FQDNs behind reverse proxy don't need explicit ports (443 implied)
+    // IPs and localhost always get a port from normalizeGatewayAddress
     return null;
   } catch {
-    return "Enter a valid gateway URL including port.";
+    return "Enter a valid gateway address (e.g. 10.0.10.21:18789 or gateway.example.com).";
   }
 };
 
@@ -84,7 +149,7 @@ export async function checkGatewayConnection(params: {
       gateway_disable_device_pairing: boolean;
       gateway_allow_insecure_tls: boolean;
     } = {
-      gateway_url: params.gatewayUrl.trim(),
+      gateway_url: normalizeGatewayAddress(params.gatewayUrl),
       gateway_disable_device_pairing: params.gatewayDisableDevicePairing,
       gateway_allow_insecure_tls: params.gatewayAllowInsecureTls,
     };

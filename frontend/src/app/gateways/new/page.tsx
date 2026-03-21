@@ -16,6 +16,7 @@ import {
   DEFAULT_WORKSPACE_ROOT,
   checkGatewayConnection,
   type GatewayCheckStatus,
+  normalizeGatewayAddress,
   validateGatewayUrl,
 } from "@/lib/gateway-form";
 
@@ -100,7 +101,7 @@ export default function NewGatewayPage() {
     createMutation.mutate({
       data: {
         name: name.trim(),
-        url: gatewayUrl.trim(),
+        url: normalizeGatewayAddress(gatewayUrl),
         token: gatewayToken.trim() || null,
         disable_device_pairing: disableDevicePairing,
         workspace_root: workspaceRoot.trim(),

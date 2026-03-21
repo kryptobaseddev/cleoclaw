@@ -100,14 +100,14 @@ export function GatewayForm({
       <div className="grid gap-6 md:grid-cols-2">
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-900">
-            Gateway URL <span className="text-red-500">*</span>
-            <InfoHint text="The WebSocket or HTTP URL of your OpenClaw gateway. Usually http://<ip>:18789 for LAN connections or wss://<domain>:18789 for TLS. This is where Mission Control connects to manage agents and sessions." />
+            Gateway address <span className="text-red-500">*</span>
+            <InfoHint text="The IP address or hostname of your OpenClaw gateway, with port. Mission Control handles the connection protocol automatically. Examples: 10.0.10.21:18789, gateway.example.com:18789, or just an IP (port 18789 is assumed)." />
           </label>
           <div className="relative">
             <Input
               value={gatewayUrl}
               onChange={(event) => onGatewayUrlChange(event.target.value)}
-              placeholder="http://gateway-ip:18789"
+              placeholder="10.0.10.21:18789"
               disabled={isLoading}
               className={gatewayUrlError ? "border-red-500" : undefined}
             />

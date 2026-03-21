@@ -21,6 +21,7 @@ import {
   DEFAULT_WORKSPACE_ROOT,
   checkGatewayConnection,
   type GatewayCheckStatus,
+  normalizeGatewayAddress,
   validateGatewayUrl,
 } from "@/lib/gateway-form";
 
@@ -144,7 +145,7 @@ export default function EditGatewayPage() {
 
     const payload: GatewayUpdate = {
       name: resolvedName.trim(),
-      url: resolvedGatewayUrl.trim(),
+      url: normalizeGatewayAddress(resolvedGatewayUrl),
       token: resolvedGatewayToken.trim() || null,
       disable_device_pairing: resolvedDisableDevicePairing,
       workspace_root: resolvedWorkspaceRoot.trim(),
