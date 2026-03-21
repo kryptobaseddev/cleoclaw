@@ -141,41 +141,6 @@ async def create_gateway(
     data["organization_id"] = ctx.organization.id
     gateway = await crud.create(session, Gateway, **data)
     gateway_manager.register(gateway)
-
-    # Create a local gateway agent record.  MC communicates with the gateway
-    # entirely via the SDK HTTP client (token auth, no pairing needed).
-    # No agent is created ON the gateway — MC doesn't need one.  When features
-    # like board creation or onboarding need AI, they call /v1/chat/completions
-    # which routes to the gateway's existing "main" agent.
-    from app.core.time import utcnow
-    from app.services.openclaw.constants import DEFAULT_HEARTBEAT_CONFIG
-    from app.services.openclaw.db_agent_state import mint_agent_token
-    from app.services.openclaw.shared import GatewayAgentIdentity
-
-    agent_name = f"{gateway.name} Gateway Agent"
-    agent = Agent(
-        name=agent_name,
-        status="active",
-        board_id=None,
-        gateway_id=gateway.id,
-        is_board_lead=False,
-        openclaw_session_id=GatewayAgentIdentity.session_key(gateway),
-        heartbeat_config=DEFAULT_HEARTBEAT_CONFIG.copy(),
-        identity_profile={
-            "role": "Gateway Agent",
-            "communication_style": "direct, concise, practical",
-            "emoji": ":compass:",
-        },
-        last_seen_at=utcnow(),
-    )
-    session.add(agent)
-    await session.flush()
-    mint_agent_token(agent)
-    agent.status = "active"
-    session.add(agent)
-    await session.commit()
-    await session.refresh(gateway)
-
     return gateway
 
 
