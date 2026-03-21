@@ -180,6 +180,7 @@ async def create_gateway(
     session.add(agent)
     await session.flush()
     mint_agent_token(agent)
+    agent.status = "active"
     session.add(agent)
     await session.commit()
     await session.refresh(gateway)
