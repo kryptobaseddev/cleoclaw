@@ -142,15 +142,27 @@ async def create_gateway(
     gateway = await crud.create(session, Gateway, **data)
     gateway_manager.register(gateway)
 
-    # Create a main gateway agent record in the DB and register it on the
-    # gateway via SDK RPC — no curl templates, no exec approvals.
-    from app.core.time import utcnow
+    # Create a main gateway agent — DB record + register on the gateway via
+    # SDK RPC.  No curl templates, no exec approvals, no template sync.
     from app.services.openclaw.constants import DEFAULT_HEARTBEAT_CONFIG
     from app.services.openclaw.db_agent_state import mint_agent_token
     from app.services.openclaw.shared import GatewayAgentIdentity
 
     session_key = GatewayAgentIdentity.session_key(gateway)
+    openclaw_agent_id = GatewayAgentIdentity.openclaw_agent_id(gateway)
     agent_name = f"{gateway.name} Gateway Agent"
+
+    # 1. Create agent on the OpenClaw gateway via SDK RPC.
+    try:
+        await client.rpc.agents_create(
+            agent_id=openclaw_agent_id,
+            config={"name": agent_name},
+        )
+    except GatewayError:
+        # Agent may already exist on the gateway — that's fine.
+        pass
+
+    # 2. Create agent DB record in Mission Control.
     agent = Agent(
         name=agent_name,
         status="active",
