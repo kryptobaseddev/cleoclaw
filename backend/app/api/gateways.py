@@ -143,76 +143,19 @@ async def create_gateway(
     gateway = await crud.create(session, Gateway, **data)
     gateway_manager.register(gateway)
 
-    # Create gateway agent on OpenClaw via RPC, then verify it exists.
-    # Only mark the MC agent record as active if OpenClaw confirms.
-    import logging
+    # Create a default "General" board linked to this gateway.
+    from app.models.boards import Board
 
-    from app.core.time import utcnow
-    from app.services.openclaw.constants import DEFAULT_HEARTBEAT_CONFIG
-    from app.services.openclaw.db_agent_state import mint_agent_token
-    from app.services.openclaw.shared import GatewayAgentIdentity
-
-    # IMPORTANT: workspace must be a subdirectory under the gateway root,
-    # NOT the root itself. Using ~/.openclaw directly causes agents.create
-    # to recycle the entire gateway data directory (wiping paired.json, config, etc).
-    gateway_root = payload.workspace_root or "~/.openclaw"
-    workspace = f"{gateway_root}/workspace-mc"
-    agent_name = f"{payload.name} Gateway Agent"
-    agent_confirmed_on_gateway = False
-    openclaw_agent_id: str | None = None
-
-    # Step 1: Try to create the agent on OpenClaw.
-    try:
-        create_result = await client.rpc.agents_create(
-            name=agent_name,
-            workspace=workspace,
-        )
-        openclaw_agent_id = create_result.agent_id
-        agent_confirmed_on_gateway = True
-    except GatewayError as exc:
-        error_msg = str(exc)
-        logging.getLogger(__name__).warning(
-            "gateway.create.agents_create_error: %s (confirmed=%s)",
-            error_msg,
-            "already exists" in error_msg,
-        )
-        if "already exists" in error_msg:
-            agent_confirmed_on_gateway = True
-
-    # Step 2: If create failed (not "already exists"), verify via agents.list.
-    if not agent_confirmed_on_gateway:
-        try:
-            agents_response = await client.rpc.agents_list()
-            for a in agents_response.agents:
-                if a.name == agent_name:
-                    openclaw_agent_id = a.id
-                    agent_confirmed_on_gateway = True
-                    break
-        except GatewayError:
-            pass
-
-    # Step 3: Create MC agent record — status reflects OpenClaw reality.
-    agent = Agent(
-        name=agent_name,
-        status="active" if agent_confirmed_on_gateway else "provisioning",
-        board_id=None,
+    board = Board(
+        name="General",
+        slug=f"general-{str(gateway_id)[:8]}",
+        description=f"Default board for {payload.name}",
+        board_type="general",
         gateway_id=gateway.id,
-        is_board_lead=False,
-        openclaw_session_id=GatewayAgentIdentity.session_key(gateway),
-        heartbeat_config=DEFAULT_HEARTBEAT_CONFIG.copy(),
-        identity_profile={
-            "role": "Gateway Agent",
-            "communication_style": "direct, concise, practical",
-            "emoji": ":compass:",
-        },
-        last_seen_at=utcnow() if agent_confirmed_on_gateway else None,
+        organization_id=ctx.organization.id,
     )
-    session.add(agent)
-    await session.flush()
-    mint_agent_token(agent)
-    if agent_confirmed_on_gateway:
-        agent.status = "active"
-    session.add(agent)
+    session.add(board)
+
     await session.commit()
     await session.refresh(gateway)
 
@@ -312,24 +255,36 @@ async def delete_gateway(
         gateway_id=gateway_id,
         organization_id=ctx.organization.id,
     )
-    main_agent = await service.find_main_agent(gateway)
-    if main_agent is not None:
-        await service.clear_agent_foreign_keys(agent_id=main_agent.id)
-        await session.delete(main_agent)
+    # Delete all agents linked to this gateway from CCMC and OpenClaw.
+    import logging
 
-    duplicate_main_agents = await Agent.objects.filter_by(
-        gateway_id=gateway.id,
-        board_id=None,
-    ).all(session)
-    for agent in duplicate_main_agents:
-        if main_agent is not None and agent.id == main_agent.id:
-            continue
+    all_agents = await Agent.objects.filter_by(gateway_id=gateway.id).all(session)
+    sdk_client = gateway_manager.get(gateway.id)
+    for agent in all_agents:
+        # Try to delete from OpenClaw (best effort — don't block CCMC deletion).
+        if sdk_client and agent.openclaw_session_id:
+            try:
+                # Derive the OpenClaw agent ID from the session key.
+                from app.services.openclaw.shared import GatewayAgentIdentity
+
+                oc_agent_id = GatewayAgentIdentity.openclaw_agent_id(gateway)
+                await sdk_client.rpc.agents_delete(oc_agent_id)
+            except Exception as exc:
+                logging.getLogger(__name__).warning(
+                    "gateway.delete.agent_cleanup_failed agent=%s: %s", agent.id, exc
+                )
         await service.clear_agent_foreign_keys(agent_id=agent.id)
         await session.delete(agent)
 
-    # NOTE: The migration declares `ondelete="CASCADE"` for gateway_installed_skills.gateway_id,
-    # but some backends/test environments (e.g. SQLite without FK pragma) may not
-    # enforce cascades. Delete rows explicitly to guarantee cleanup semantics.
+    # Unlink boards from this gateway (don't delete boards, just unlink).
+    from app.models.boards import Board
+
+    boards = await Board.objects.filter_by(gateway_id=gateway.id).all(session)
+    for board in boards:
+        board.gateway_id = None
+        session.add(board)
+
+    # Clean up installed skills.
     installed_skills = await GatewayInstalledSkill.objects.filter_by(
         gateway_id=gateway.id,
     ).all(session)
