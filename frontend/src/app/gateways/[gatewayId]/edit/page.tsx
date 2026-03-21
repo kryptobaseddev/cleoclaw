@@ -44,9 +44,6 @@ export default function EditGatewayPage() {
   const [disableDevicePairing, setDisableDevicePairing] = useState<
     boolean | undefined
   >(undefined);
-  const [workspaceRoot, setWorkspaceRoot] = useState<string | undefined>(
-    undefined,
-  );
   const [allowInsecureTls, setAllowInsecureTls] = useState<boolean | undefined>(
     undefined,
   );
@@ -92,7 +89,7 @@ export default function EditGatewayPage() {
   const resolvedDisableDevicePairing =
     disableDevicePairing ?? loadedGateway?.disable_device_pairing ?? false;
   const resolvedWorkspaceRoot =
-    workspaceRoot ?? loadedGateway?.workspace_root ?? DEFAULT_WORKSPACE_ROOT;
+    loadedGateway?.workspace_root ?? DEFAULT_WORKSPACE_ROOT;
   const resolvedAllowInsecureTls =
     allowInsecureTls ?? loadedGateway?.allow_insecure_tls ?? false;
 
@@ -104,8 +101,7 @@ export default function EditGatewayPage() {
 
   const canSubmit =
     Boolean(resolvedName.trim()) &&
-    Boolean(resolvedGatewayUrl.trim()) &&
-    Boolean(resolvedWorkspaceRoot.trim());
+    Boolean(resolvedGatewayUrl.trim());
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -120,10 +116,6 @@ export default function EditGatewayPage() {
     if (gatewayValidation) {
       setGatewayCheckStatus("error");
       setGatewayCheckMessage(gatewayValidation);
-      return;
-    }
-    if (!resolvedWorkspaceRoot.trim()) {
-      setError("Workspace root is required.");
       return;
     }
 
@@ -175,7 +167,6 @@ export default function EditGatewayPage() {
         gatewayUrl={resolvedGatewayUrl}
         gatewayToken={resolvedGatewayToken}
         disableDevicePairing={resolvedDisableDevicePairing}
-        workspaceRoot={resolvedWorkspaceRoot}
         allowInsecureTls={resolvedAllowInsecureTls}
         gatewayUrlError={gatewayUrlError}
         gatewayCheckStatus={gatewayCheckStatus}
@@ -183,7 +174,6 @@ export default function EditGatewayPage() {
         errorMessage={errorMessage}
         isLoading={isLoading}
         canSubmit={canSubmit}
-        workspaceRootPlaceholder={DEFAULT_WORKSPACE_ROOT}
         cancelLabel="Back"
         submitLabel="Save changes"
         submitBusyLabel="Saving…"
@@ -206,7 +196,6 @@ export default function EditGatewayPage() {
           setGatewayCheckStatus("idle");
           setGatewayCheckMessage(null);
         }}
-        onWorkspaceRootChange={setWorkspaceRoot}
         onAllowInsecureTlsChange={(next) => {
           setAllowInsecureTls(next);
           setGatewayCheckStatus("idle");

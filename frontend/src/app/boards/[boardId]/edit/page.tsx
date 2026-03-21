@@ -2,11 +2,10 @@
 
 export const dynamic = "force-dynamic";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useMemo, useRef, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 import { useAuth } from "@/auth/session";
-import { X } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/api/mutator";
@@ -43,10 +42,8 @@ import type {
   BoardRead,
   BoardUpdate,
 } from "@/api/generated/model";
-import { BoardOnboardingChat } from "@/components/BoardOnboardingChat";
 import { DashboardPageLayout } from "@/components/templates/DashboardPageLayout";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -275,7 +272,6 @@ export default function EditBoardPage() {
   const { isSignedIn } = useAuth();
   const queryClient = useQueryClient();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const params = useParams();
   const boardIdParam = params?.boardId;
   const boardId = Array.isArray(boardIdParam) ? boardIdParam[0] : boardIdParam;
@@ -284,7 +280,7 @@ export default function EditBoardPage() {
 
   const mainRef = useRef<HTMLElement | null>(null);
 
-  const [board, setBoard] = useState<BoardRead | null>(null);
+  const board: BoardRead | null = null;
   const [name, setName] = useState<string | undefined>(undefined);
   const [description, setDescription] = useState<string | undefined>(undefined);
   const [gatewayId, setGatewayId] = useState<string | undefined>(undefined);
@@ -321,54 +317,6 @@ export default function EditBoardPage() {
   const [webhookAgentValue, setWebhookAgentValue] = useState(LEAD_AGENT_VALUE);
   const [webhookError, setWebhookError] = useState<string | null>(null);
   const [copiedWebhookId, setCopiedWebhookId] = useState<string | null>(null);
-
-  const onboardingParam = searchParams.get("onboarding");
-  const searchParamsString = searchParams.toString();
-  const shouldAutoOpenOnboarding =
-    onboardingParam !== null &&
-    onboardingParam !== "" &&
-    onboardingParam !== "0" &&
-    onboardingParam.toLowerCase() !== "false";
-
-  const [isOnboardingOpen, setIsOnboardingOpen] = useState(
-    shouldAutoOpenOnboarding,
-  );
-
-  useEffect(() => {
-    if (!isOnboardingOpen) return;
-
-    const mainEl = mainRef.current;
-    const previousMainOverflow = mainEl?.style.overflow ?? "";
-    const previousHtmlOverflow = document.documentElement.style.overflow;
-    const previousBodyOverflow = document.body.style.overflow;
-
-    if (mainEl) {
-      mainEl.style.overflow = "hidden";
-    }
-    document.documentElement.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      if (mainEl) {
-        mainEl.style.overflow = previousMainOverflow;
-      }
-      document.documentElement.style.overflow = previousHtmlOverflow;
-      document.body.style.overflow = previousBodyOverflow;
-    };
-  }, [isOnboardingOpen]);
-
-  useEffect(() => {
-    if (!boardId) return;
-    if (!shouldAutoOpenOnboarding) return;
-
-    // Remove the flag from the URL so refreshes don't constantly reopen it.
-    const nextParams = new URLSearchParams(searchParamsString);
-    nextParams.delete("onboarding");
-    const qs = nextParams.toString();
-    router.replace(
-      qs ? `/boards/${boardId}/edit?${qs}` : `/boards/${boardId}/edit`,
-    );
-  }, [boardId, router, searchParamsString, shouldAutoOpenOnboarding]);
 
   const gatewaysQuery = useListGatewaysApiV1GatewaysGet<
     listGatewaysApiV1GatewaysGetResponse,
@@ -616,29 +564,6 @@ export default function EditBoardPage() {
       ? webhookAgentValue
       : LEAD_AGENT_VALUE;
 
-  const handleOnboardingConfirmed = (updated: BoardRead) => {
-    setBoard(updated);
-    setDescription(updated.description ?? "");
-    setBoardType(updated.board_type ?? "goal");
-    setObjective(updated.objective ?? "");
-    setRequireApprovalForDone(updated.require_approval_for_done ?? true);
-    setRequireReviewBeforeDone(updated.require_review_before_done ?? false);
-    setCommentRequiredForReview(updated.comment_required_for_review ?? false);
-    setBlockStatusChangesWithPendingApproval(
-      updated.block_status_changes_with_pending_approval ?? false,
-    );
-    setOnlyLeadCanChangeStatus(updated.only_lead_can_change_status ?? false);
-    setMaxAgents(updated.max_agents ?? 1);
-    setSuccessMetrics(
-      updated.success_metrics
-        ? JSON.stringify(updated.success_metrics, null, 2)
-        : "",
-    );
-    setTargetDate(toLocalDateInput(updated.target_date));
-    setBoardGroupId(updated.board_group_id ?? "none");
-    setIsOnboardingOpen(false);
-  };
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!isSignedIn || !boardId) return;
@@ -803,28 +728,6 @@ export default function EditBoardPage() {
             onSubmit={handleSubmit}
             className="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
           >
-            {resolvedBoardType !== "general" &&
-            baseBoard &&
-            !(baseBoard.goal_confirmed ?? false) ? (
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-amber-900">
-                    Goal needs confirmation
-                  </p>
-                  <p className="mt-1 text-xs text-amber-800/80">
-                    Start onboarding to draft an objective and success metrics.
-                  </p>
-                </div>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => setIsOnboardingOpen(true)}
-                  disabled={isLoading || !baseBoard}
-                >
-                  Start onboarding
-                </Button>
-              </div>
-            ) : null}
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-900">
@@ -1310,35 +1213,6 @@ export default function EditBoardPage() {
           </form>
         </div>
       </DashboardPageLayout>
-      <Dialog open={isOnboardingOpen} onOpenChange={setIsOnboardingOpen}>
-        <DialogContent
-          aria-label="Board onboarding"
-          onPointerDownOutside={(event) => event.preventDefault()}
-          onInteractOutside={(event) => event.preventDefault()}
-        >
-          <div className="flex">
-            <DialogClose asChild>
-              <button
-                type="button"
-                className="sticky top-4 z-10 ml-auto rounded-lg border border-slate-200 bg-[color:var(--surface)] p-2 text-slate-500 transition hover:bg-slate-50"
-                aria-label="Close onboarding"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </DialogClose>
-          </div>
-          {boardId ? (
-            <BoardOnboardingChat
-              boardId={boardId}
-              onConfirmed={handleOnboardingConfirmed}
-            />
-          ) : (
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
-              Unable to start onboarding.
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

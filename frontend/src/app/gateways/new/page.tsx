@@ -13,7 +13,6 @@ import { useOrganizationMembership } from "@/lib/use-organization-membership";
 import { GatewayForm } from "@/components/gateways/GatewayForm";
 import { DashboardPageLayout } from "@/components/templates/DashboardPageLayout";
 import {
-  DEFAULT_WORKSPACE_ROOT,
   checkGatewayConnection,
   type GatewayCheckStatus,
   normalizeGatewayAddress,
@@ -30,7 +29,6 @@ export default function NewGatewayPage() {
   const [gatewayUrl, setGatewayUrl] = useState("");
   const [gatewayToken, setGatewayToken] = useState("");
   const [disableDevicePairing, setDisableDevicePairing] = useState(false);
-  const [workspaceRoot, setWorkspaceRoot] = useState(DEFAULT_WORKSPACE_ROOT);
   const [allowInsecureTls, setAllowInsecureTls] = useState(false);
 
   const [gatewayUrlError, setGatewayUrlError] = useState<string | null>(null);
@@ -60,8 +58,7 @@ export default function NewGatewayPage() {
 
   const canSubmit =
     Boolean(name.trim()) &&
-    Boolean(gatewayUrl.trim()) &&
-    Boolean(workspaceRoot.trim());
+    Boolean(gatewayUrl.trim());
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -76,10 +73,6 @@ export default function NewGatewayPage() {
     if (gatewayValidation) {
       setGatewayCheckStatus("error");
       setGatewayCheckMessage(gatewayValidation);
-      return;
-    }
-    if (!workspaceRoot.trim()) {
-      setError("Workspace root is required.");
       return;
     }
 
@@ -104,7 +97,7 @@ export default function NewGatewayPage() {
         url: normalizeGatewayAddress(gatewayUrl),
         token: gatewayToken.trim() || null,
         disable_device_pairing: disableDevicePairing,
-        workspace_root: workspaceRoot.trim(),
+        workspace_root: "~/.openclaw",
         allow_insecure_tls: allowInsecureTls,
       },
     });
@@ -126,7 +119,6 @@ export default function NewGatewayPage() {
         gatewayUrl={gatewayUrl}
         gatewayToken={gatewayToken}
         disableDevicePairing={disableDevicePairing}
-        workspaceRoot={workspaceRoot}
         allowInsecureTls={allowInsecureTls}
         gatewayUrlError={gatewayUrlError}
         gatewayCheckStatus={gatewayCheckStatus}
@@ -134,7 +126,6 @@ export default function NewGatewayPage() {
         errorMessage={error}
         isLoading={isLoading}
         canSubmit={canSubmit}
-        workspaceRootPlaceholder={DEFAULT_WORKSPACE_ROOT}
         cancelLabel="Cancel"
         submitLabel="Create gateway"
         submitBusyLabel="Creating…"
@@ -157,7 +148,6 @@ export default function NewGatewayPage() {
           setGatewayCheckStatus("idle");
           setGatewayCheckMessage(null);
         }}
-        onWorkspaceRootChange={setWorkspaceRoot}
         onAllowInsecureTlsChange={(next) => {
           setAllowInsecureTls(next);
           setGatewayCheckStatus("idle");

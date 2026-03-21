@@ -32,7 +32,6 @@ type GatewayFormProps = {
   gatewayUrl: string;
   gatewayToken: string;
   disableDevicePairing: boolean;
-  workspaceRoot: string;
   allowInsecureTls: boolean;
   gatewayUrlError: string | null;
   gatewayCheckStatus: GatewayCheckStatus;
@@ -40,7 +39,6 @@ type GatewayFormProps = {
   errorMessage: string | null;
   isLoading: boolean;
   canSubmit: boolean;
-  workspaceRootPlaceholder: string;
   cancelLabel: string;
   submitLabel: string;
   submitBusyLabel: string;
@@ -50,7 +48,6 @@ type GatewayFormProps = {
   onGatewayUrlChange: (next: string) => void;
   onGatewayTokenChange: (next: string) => void;
   onDisableDevicePairingChange: (next: boolean) => void;
-  onWorkspaceRootChange: (next: string) => void;
   onAllowInsecureTlsChange: (next: boolean) => void;
 };
 
@@ -59,7 +56,6 @@ export function GatewayForm({
   gatewayUrl,
   gatewayToken,
   disableDevicePairing,
-  workspaceRoot,
   allowInsecureTls,
   gatewayUrlError,
   gatewayCheckStatus,
@@ -67,7 +63,6 @@ export function GatewayForm({
   errorMessage,
   isLoading,
   canSubmit,
-  workspaceRootPlaceholder,
   cancelLabel,
   submitLabel,
   submitBusyLabel,
@@ -77,7 +72,6 @@ export function GatewayForm({
   onGatewayUrlChange,
   onGatewayTokenChange,
   onDisableDevicePairingChange,
-  onWorkspaceRootChange,
   onAllowInsecureTlsChange,
 }: GatewayFormProps) {
   return (
@@ -132,49 +126,34 @@ export function GatewayForm({
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-900">
-            Workspace root <span className="text-red-500">*</span>
-            <InfoHint text="The absolute path on the gateway server where OpenClaw stores its configuration, agents, and session data. Usually ~/.openclaw or /root/.openclaw on Linux." />
-          </label>
-          <Input
-            value={workspaceRoot}
-            onChange={(event) => onWorkspaceRootChange(event.target.value)}
-            placeholder={workspaceRootPlaceholder}
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-slate-900">
+          Disable device pairing
+          <InfoHint text="When OFF (default), Mission Control authenticates via cryptographic device pairing (ECDSA signatures). The gateway must approve this device on first connection. When ON, uses control-UI mode instead, which requires HTTPS or localhost and skips device-level security. Leave OFF unless you know your gateway requires control-UI mode." />
+        </label>
+        <label className="flex h-10 items-center gap-3 px-1 text-sm text-slate-900">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={disableDevicePairing}
+            aria-label="Disable device pairing"
+            onClick={() =>
+              onDisableDevicePairingChange(!disableDevicePairing)
+            }
             disabled={isLoading}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-900">
-            Disable device pairing
-            <InfoHint text="When OFF (default), Mission Control authenticates via cryptographic device pairing (ECDSA signatures). The gateway must approve this device on first connection. When ON, uses control-UI mode instead, which requires HTTPS or localhost and skips device-level security. Leave OFF unless you know your gateway requires control-UI mode." />
-          </label>
-          <label className="flex h-10 items-center gap-3 px-1 text-sm text-slate-900">
-            <button
-              type="button"
-              role="switch"
-              aria-checked={disableDevicePairing}
-              aria-label="Disable device pairing"
-              onClick={() =>
-                onDisableDevicePairingChange(!disableDevicePairing)
-              }
-              disabled={isLoading}
-              className={`inline-flex h-6 w-11 shrink-0 items-center rounded-full border transition ${
-                disableDevicePairing
-                  ? "border-emerald-600 bg-emerald-600"
-                  : "border-slate-300 bg-slate-200"
-              } ${isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
-            >
-              <span
-                className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition ${
-                  disableDevicePairing ? "translate-x-5" : "translate-x-0.5"
-                }`}
-              />
-            </button>
-          </label>
-        </div>
+            className={`inline-flex h-6 w-11 shrink-0 items-center rounded-full border transition ${
+              disableDevicePairing
+                ? "border-emerald-600 bg-emerald-600"
+                : "border-slate-300 bg-slate-200"
+            } ${isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
+          >
+            <span
+              className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition ${
+                disableDevicePairing ? "translate-x-5" : "translate-x-0.5"
+              }`}
+            />
+          </button>
+        </label>
       </div>
 
       <div className="space-y-2">
