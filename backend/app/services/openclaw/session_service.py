@@ -223,53 +223,44 @@ class GatewaySessionService(OpenClawDBService):
             organization_id=organization_id,
         )
         self._require_same_org(board, organization_id)
+        # Use SDK HTTP health check instead of WebSocket version check.
+        # HTTP only requires the gateway token — no device pairing needed.
+        from app.services.openclaw.gateway_sdk.client import GatewayClient
+        from app.services.openclaw.gateway_sdk.config import GatewayConnectionConfig
+
         try:
-            compatibility = await check_gateway_version_compatibility(config)
-        except OpenClawGatewayError as exc:
+            sdk_config = GatewayConnectionConfig(
+                url=config.url,
+                token=config.token,
+                allow_insecure_tls=config.allow_insecure_tls,
+                disable_device_pairing=config.disable_device_pairing,
+            )
+            sdk_client = GatewayClient(sdk_config)
+            healthy = await sdk_client.http.is_healthy(timeout=10)
+            if not healthy:
+                return GatewaysStatusResponse(
+                    connected=False,
+                    gateway_url=config.url,
+                    error="Gateway is not reachable.",
+                )
+        except Exception as exc:
             return GatewaysStatusResponse(
                 connected=False,
                 gateway_url=config.url,
-                error=normalize_gateway_error_message(str(exc)),
+                error=str(exc),
             )
-        if not compatibility.compatible:
-            return GatewaysStatusResponse(
-                connected=False,
-                gateway_url=config.url,
-                error=compatibility.message,
-            )
-        try:
-            sessions = await openclaw_call("sessions.list", config=config)
-            if isinstance(sessions, dict):
-                sessions_list = self.as_object_list(sessions.get("sessions"))
-            else:
-                sessions_list = self.as_object_list(sessions)
-            main_session_entry: object | None = None
-            main_session_error: str | None = None
-            if main_session:
-                try:
-                    ensured = await ensure_session(
-                        main_session,
-                        config=config,
-                        label="Gateway Agent",
-                    )
-                    if isinstance(ensured, dict):
-                        main_session_entry = ensured.get("entry") or ensured
-                except OpenClawGatewayError as exc:
-                    main_session_error = str(exc)
-            return GatewaysStatusResponse(
-                connected=True,
-                gateway_url=config.url,
-                sessions_count=len(sessions_list),
-                sessions=sessions_list,
-                main_session=main_session_entry,
-                main_session_error=main_session_error,
-            )
-        except OpenClawGatewayError as exc:
-            return GatewaysStatusResponse(
-                connected=False,
-                gateway_url=config.url,
-                error=normalize_gateway_error_message(str(exc)),
-            )
+        # Gateway is reachable via HTTP — return connected status.
+        # Session listing via WebSocket RPC is skipped here to avoid
+        # device pairing requirements on the status check path.
+        return GatewaysStatusResponse(
+            connected=True,
+            gateway_url=config.url,
+            sessions_count=0,
+            sessions=[],
+            main_session=None,
+            main_session_error=None,
+            error=None,
+        )
 
     async def get_sessions(
         self,
