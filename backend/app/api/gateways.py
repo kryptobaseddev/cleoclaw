@@ -25,6 +25,7 @@ from app.schemas.gateways import (
 )
 from app.schemas.pagination import DefaultLimitOffsetPage
 from app.services.openclaw.admin_service import GatewayAdminLifecycleService
+from app.services.openclaw.gateway_sdk.manager import gateway_manager
 from app.services.openclaw.session_service import GatewayTemplateSyncQuery
 
 if TYPE_CHECKING:
@@ -107,6 +108,7 @@ async def create_gateway(
     data["id"] = gateway_id
     data["organization_id"] = ctx.organization.id
     gateway = await crud.create(session, Gateway, **data)
+    gateway_manager.register(gateway)
     await service.ensure_main_agent(gateway, auth, action="provision")
     return gateway
 
@@ -164,6 +166,7 @@ async def update_gateway(
                 disable_device_pairing=next_disable_device_pairing,
             )
     await crud.patch(session, gateway, updates)
+    gateway_manager.register(gateway)
     await service.ensure_main_agent(gateway, auth, action="update")
     return gateway
 
@@ -221,6 +224,7 @@ async def delete_gateway(
     for installed_skill in installed_skills:
         await session.delete(installed_skill)
 
+    await gateway_manager.remove(gateway.id)
     await session.delete(gateway)
     await session.commit()
     return OkResponse()

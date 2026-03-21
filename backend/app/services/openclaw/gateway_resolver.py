@@ -18,6 +18,8 @@ from fastapi import HTTPException, status
 from app.models.boards import Board
 from app.models.gateways import Gateway
 from app.services.openclaw.gateway_rpc import GatewayConfig as GatewayClientConfig
+from app.services.openclaw.gateway_sdk.client import GatewayClient
+from app.services.openclaw.gateway_sdk.manager import gateway_manager
 
 if TYPE_CHECKING:
     from sqlmodel.ext.asyncio.session import AsyncSession
@@ -104,3 +106,33 @@ async def require_gateway_for_board(
     if require_workspace_root:
         require_gateway_workspace_root(gateway)
     return gateway
+
+
+# ── SDK-aware helpers (new code should use these) ──────────────────────
+
+
+def gateway_sdk_client(gateway: Gateway) -> GatewayClient:
+    """Get or create a GatewayClient for a gateway, using the manager singleton."""
+    client = gateway_manager.get(gateway.id)
+    if client is not None:
+        return client
+    return gateway_manager.register(gateway)
+
+
+def optional_gateway_sdk_client(gateway: Gateway | None) -> GatewayClient | None:
+    """Get a GatewayClient when the gateway is configured; otherwise None."""
+    if gateway is None:
+        return None
+    url = (gateway.url or "").strip()
+    if not url:
+        return None
+    return gateway_sdk_client(gateway)
+
+
+async def require_gateway_sdk_client_for_board(
+    session: AsyncSession,
+    board: Board,
+) -> tuple[Gateway, GatewayClient]:
+    """Return a board's Gateway + GatewayClient, or raise 422."""
+    gateway = await require_gateway_for_board(session, board)
+    return gateway, gateway_sdk_client(gateway)

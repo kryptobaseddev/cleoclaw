@@ -13,12 +13,16 @@ from app.models.gateways import Gateway
 from app.services.openclaw.db_service import OpenClawDBService
 from app.services.openclaw.gateway_resolver import (
     gateway_client_config,
+    gateway_sdk_client,
     get_gateway_for_board,
     optional_gateway_client_config,
+    optional_gateway_sdk_client,
     require_gateway_for_board,
+    require_gateway_sdk_client_for_board,
 )
 from app.services.openclaw.gateway_rpc import GatewayConfig as GatewayClientConfig
 from app.services.openclaw.gateway_rpc import OpenClawGatewayError, ensure_session, send_message
+from app.services.openclaw.gateway_sdk.client import GatewayClient
 
 
 class GatewayDispatchService(OpenClawDBService):
@@ -77,3 +81,16 @@ class GatewayDispatchService(OpenClawDBService):
         if normalized:
             return normalized
         return f"{prefix}:{uuid4().hex[:12]}"
+
+    # ── SDK-aware methods (new code should use these) ──────────────────
+
+    async def sdk_client_for_board(self, board: Board) -> GatewayClient | None:
+        """Get a GatewayClient for a board's gateway, if configured."""
+        gateway = await get_gateway_for_board(self.session, board)
+        return optional_gateway_sdk_client(gateway)
+
+    async def require_sdk_client_for_board(
+        self, board: Board
+    ) -> tuple[Gateway, GatewayClient]:
+        """Get a board's Gateway + GatewayClient, or raise 422."""
+        return await require_gateway_sdk_client_for_board(self.session, board)
