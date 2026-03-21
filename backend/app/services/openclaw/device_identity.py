@@ -19,13 +19,14 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 DEFAULT_DEVICE_IDENTITY_PATH = Path.home() / ".openclaw" / "identity" / "device.json"
 
 
-@dataclass(frozen=True)
+@dataclass
 class DeviceIdentity:
     """Persisted gateway device identity used for connect signatures."""
 
     device_id: str
     public_key_pem: str
     private_key_pem: str
+    device_token: str | None = None
 
 
 def _identity_path() -> Path:
@@ -58,13 +59,15 @@ def _derive_device_id(public_key_pem: str) -> str:
 
 def _write_identity(path: Path, identity: DeviceIdentity) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    payload = {
+    payload: dict[str, Any] = {
         "version": 1,
         "deviceId": identity.device_id,
         "publicKeyPem": identity.public_key_pem,
         "privateKeyPem": identity.private_key_pem,
         "createdAtMs": int(time() * 1000),
     }
+    if identity.device_token:
+        payload["deviceToken"] = identity.device_token
     path.write_text(f"{json.dumps(payload, indent=2)}\n", encoding="utf-8")
     try:
         path.chmod(0o600)
@@ -107,10 +110,12 @@ def load_or_create_device_identity() -> DeviceIdentity:
             private_key_pem = str(payload.get("privateKeyPem") or "").strip()
             if device_id and public_key_pem and private_key_pem:
                 derived_id = _derive_device_id(public_key_pem)
+                device_token = str(payload.get("deviceToken") or "").strip() or None
                 identity = DeviceIdentity(
                     device_id=derived_id,
                     public_key_pem=public_key_pem,
                     private_key_pem=private_key_pem,
+                    device_token=device_token,
                 )
                 if derived_id != device_id:
                     _write_identity(path, identity)
@@ -122,6 +127,13 @@ def load_or_create_device_identity() -> DeviceIdentity:
     identity = _generate_identity()
     _write_identity(path, identity)
     return identity
+
+
+def save_device_token(token: str) -> None:
+    """Save the device token returned by the gateway after pairing approval."""
+    identity = load_or_create_device_identity()
+    identity.device_token = token
+    _write_identity(_identity_path(), identity)
 
 
 def public_key_raw_base64url_from_pem(public_key_pem: str) -> str:
