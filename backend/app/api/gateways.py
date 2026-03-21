@@ -135,12 +135,56 @@ async def create_gateway(
             detail=f"Cannot connect to gateway: {exc}",
         ) from exc
 
+    # Create gateway agent on OpenClaw via RPC.
+    workspace = payload.workspace_root or "~/.openclaw"
+    agent_name = f"{payload.name} Gateway Agent"
+    openclaw_agent_id: str | None = None
+    try:
+        create_result = await client.rpc.agents_create(
+            name=agent_name,
+            workspace=workspace,
+        )
+        openclaw_agent_id = create_result.agent_id
+    except GatewayError:
+        pass  # Agent may already exist
+
+    # Create gateway DB record.
     data = payload.model_dump()
     gateway_id = uuid4()
     data["id"] = gateway_id
     data["organization_id"] = ctx.organization.id
     gateway = await crud.create(session, Gateway, **data)
     gateway_manager.register(gateway)
+
+    # Create agent DB record linked to the gateway, synced with OpenClaw.
+    from app.core.time import utcnow
+    from app.services.openclaw.constants import DEFAULT_HEARTBEAT_CONFIG
+    from app.services.openclaw.db_agent_state import mint_agent_token
+    from app.services.openclaw.shared import GatewayAgentIdentity
+
+    agent = Agent(
+        name=agent_name,
+        status="active",
+        board_id=None,
+        gateway_id=gateway.id,
+        is_board_lead=False,
+        openclaw_session_id=GatewayAgentIdentity.session_key(gateway),
+        heartbeat_config=DEFAULT_HEARTBEAT_CONFIG.copy(),
+        identity_profile={
+            "role": "Gateway Agent",
+            "communication_style": "direct, concise, practical",
+            "emoji": ":compass:",
+        },
+        last_seen_at=utcnow(),
+    )
+    session.add(agent)
+    await session.flush()
+    mint_agent_token(agent)
+    agent.status = "active"
+    session.add(agent)
+    await session.commit()
+    await session.refresh(gateway)
+
     return gateway
 
 
