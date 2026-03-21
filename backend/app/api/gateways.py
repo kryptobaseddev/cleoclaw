@@ -135,23 +135,6 @@ async def create_gateway(
             detail=f"Cannot connect to gateway: {exc}",
         ) from exc
 
-    # Create gateway agent on OpenClaw via RPC.
-    workspace = payload.workspace_root or "~/.openclaw"
-    agent_name = f"{payload.name} Gateway Agent"
-    openclaw_agent_id: str | None = None
-    try:
-        create_result = await client.rpc.agents_create(
-            name=agent_name,
-            workspace=workspace,
-        )
-        openclaw_agent_id = create_result.agent_id
-    except GatewayError as exc:
-        # Log the error — don't block gateway creation but make it visible.
-        import logging
-        logging.getLogger(__name__).warning(
-            "gateway.create.agents_create_failed: %s", exc
-        )
-
     # Create gateway DB record.
     data = payload.model_dump()
     gateway_id = uuid4()
@@ -160,15 +143,53 @@ async def create_gateway(
     gateway = await crud.create(session, Gateway, **data)
     gateway_manager.register(gateway)
 
-    # Create agent DB record linked to the gateway, synced with OpenClaw.
+    # Create gateway agent on OpenClaw via RPC, then verify it exists.
+    # Only mark the MC agent record as active if OpenClaw confirms.
+    import logging
+
     from app.core.time import utcnow
     from app.services.openclaw.constants import DEFAULT_HEARTBEAT_CONFIG
     from app.services.openclaw.db_agent_state import mint_agent_token
     from app.services.openclaw.shared import GatewayAgentIdentity
 
+    workspace = payload.workspace_root or "~/.openclaw"
+    agent_name = f"{payload.name} Gateway Agent"
+    agent_confirmed_on_gateway = False
+    openclaw_agent_id: str | None = None
+
+    # Step 1: Try to create the agent on OpenClaw.
+    try:
+        create_result = await client.rpc.agents_create(
+            name=agent_name,
+            workspace=workspace,
+        )
+        openclaw_agent_id = create_result.agent_id
+        agent_confirmed_on_gateway = True
+    except GatewayError as exc:
+        error_msg = str(exc)
+        if "already exists" in error_msg:
+            agent_confirmed_on_gateway = True
+        else:
+            logging.getLogger(__name__).warning(
+                "gateway.create.agents_create_failed: %s", exc
+            )
+
+    # Step 2: If create failed (not "already exists"), verify via agents.list.
+    if not agent_confirmed_on_gateway:
+        try:
+            agents_response = await client.rpc.agents_list()
+            for a in agents_response.agents:
+                if a.name == agent_name:
+                    openclaw_agent_id = a.id
+                    agent_confirmed_on_gateway = True
+                    break
+        except GatewayError:
+            pass
+
+    # Step 3: Create MC agent record — status reflects OpenClaw reality.
     agent = Agent(
         name=agent_name,
-        status="active",
+        status="active" if agent_confirmed_on_gateway else "provisioning",
         board_id=None,
         gateway_id=gateway.id,
         is_board_lead=False,
@@ -179,12 +200,13 @@ async def create_gateway(
             "communication_style": "direct, concise, practical",
             "emoji": ":compass:",
         },
-        last_seen_at=utcnow(),
+        last_seen_at=utcnow() if agent_confirmed_on_gateway else None,
     )
     session.add(agent)
     await session.flush()
     mint_agent_token(agent)
-    agent.status = "active"
+    if agent_confirmed_on_gateway:
+        agent.status = "active"
     session.add(agent)
     await session.commit()
     await session.refresh(gateway)
