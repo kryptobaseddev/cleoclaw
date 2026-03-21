@@ -1,8 +1,31 @@
-import type { FormEvent } from "react";
+import { type FormEvent, useState } from "react";
+import { Info } from "lucide-react";
 
 import type { GatewayCheckStatus } from "@/lib/gateway-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
+function InfoHint({ text }: { text: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span className="relative ml-1 inline-block align-middle">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        onBlur={() => setOpen(false)}
+        className="inline-flex h-4 w-4 items-center justify-center rounded-full text-slate-400 hover:text-slate-600"
+        aria-label="More info"
+      >
+        <Info className="h-3.5 w-3.5" />
+      </button>
+      {open ? (
+        <span className="absolute bottom-full left-1/2 z-50 mb-2 w-64 -translate-x-1/2 rounded-lg border border-slate-200 bg-white p-3 text-xs font-normal leading-relaxed text-slate-600 shadow-lg">
+          {text}
+        </span>
+      ) : null}
+    </span>
+  );
+}
 
 type GatewayFormProps = {
   name: string;
@@ -78,6 +101,7 @@ export function GatewayForm({
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-900">
             Gateway URL <span className="text-red-500">*</span>
+            <InfoHint text="The WebSocket or HTTP URL of your OpenClaw gateway. Usually http://<ip>:18789 for LAN connections or wss://<domain>:18789 for TLS. This is where Mission Control connects to manage agents and sessions." />
           </label>
           <div className="relative">
             <Input
@@ -97,6 +121,7 @@ export function GatewayForm({
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-900">
             Gateway token
+            <InfoHint text="The bearer token used to authenticate with the gateway. Found in your OpenClaw config at gateway.auth.token or the OPENCLAW_GATEWAY_TOKEN environment variable. Required when gateway auth mode is 'token'." />
           </label>
           <Input
             value={gatewayToken}
@@ -111,6 +136,7 @@ export function GatewayForm({
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-900">
             Workspace root <span className="text-red-500">*</span>
+            <InfoHint text="The absolute path on the gateway server where OpenClaw stores its configuration, agents, and session data. Usually ~/.openclaw or /root/.openclaw on Linux." />
           </label>
           <Input
             value={workspaceRoot}
@@ -123,6 +149,7 @@ export function GatewayForm({
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-900">
             Disable device pairing
+            <InfoHint text="When OFF (default), Mission Control authenticates via cryptographic device pairing (ECDSA signatures). The gateway must approve this device on first connection. When ON, uses control-UI mode instead, which requires HTTPS or localhost and skips device-level security. Leave OFF unless you know your gateway requires control-UI mode." />
           </label>
           <label className="flex h-10 items-center gap-3 px-1 text-sm text-slate-900">
             <button
@@ -153,6 +180,7 @@ export function GatewayForm({
       <div className="space-y-2">
         <label className="text-sm font-medium text-slate-900">
           Allow self-signed TLS certificates
+          <InfoHint text="Enable this only if your gateway uses wss:// (WebSocket over TLS) with a self-signed certificate. This skips certificate verification for that gateway connection. Leave OFF for plain HTTP/WS connections or gateways with valid TLS certificates." />
         </label>
         <label className="flex h-10 items-center gap-3 px-1 text-sm text-slate-900">
           <button
