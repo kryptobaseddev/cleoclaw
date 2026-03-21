@@ -142,42 +142,24 @@ async def create_gateway(
     gateway = await crud.create(session, Gateway, **data)
     gateway_manager.register(gateway)
 
-    # Create a main gateway agent — DB record + register on the gateway via
-    # SDK RPC.  No curl templates, no exec approvals, no template sync.
+    # Create a local gateway agent record.  MC communicates with the gateway
+    # entirely via the SDK HTTP client (token auth, no pairing needed).
+    # No agent is created ON the gateway — MC doesn't need one.  When features
+    # like board creation or onboarding need AI, they call /v1/chat/completions
+    # which routes to the gateway's existing "main" agent.
+    from app.core.time import utcnow
     from app.services.openclaw.constants import DEFAULT_HEARTBEAT_CONFIG
     from app.services.openclaw.db_agent_state import mint_agent_token
     from app.services.openclaw.shared import GatewayAgentIdentity
 
-    session_key = GatewayAgentIdentity.session_key(gateway)
-    openclaw_agent_id = GatewayAgentIdentity.openclaw_agent_id(gateway)
     agent_name = f"{gateway.name} Gateway Agent"
-
-    # 1. Create agent on the OpenClaw gateway via SDK RPC.
-    workspace = payload.workspace_root or "~/.openclaw"
-    try:
-        create_result = await client.rpc.agents_create(
-            name=agent_name,
-            workspace=workspace,
-        )
-        openclaw_agent_id = create_result.agent_id
-    except GatewayError:
-        # Agent may already exist on the gateway — that's fine.
-        pass
-
-    # 2. Create agent DB record in Mission Control.
-    #    last_seen_at is set to now because we just confirmed the agent exists
-    #    on the gateway (agents.create succeeded or agent already existed).
-    #    Future updates to last_seen_at should come from gateway health checks
-    #    via the SDK, not from agent curl callbacks.
-    from app.core.time import utcnow
-
     agent = Agent(
         name=agent_name,
         status="active",
         board_id=None,
         gateway_id=gateway.id,
         is_board_lead=False,
-        openclaw_session_id=session_key,
+        openclaw_session_id=GatewayAgentIdentity.session_key(gateway),
         heartbeat_config=DEFAULT_HEARTBEAT_CONFIG.copy(),
         identity_profile={
             "role": "Gateway Agent",
