@@ -101,7 +101,7 @@ export function GatewayForm({
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-900">
             Gateway address <span className="text-red-500">*</span>
-            <InfoHint text="The IP address or hostname of your OpenClaw gateway, with port. Mission Control handles the connection protocol automatically. Examples: 10.0.10.21:18789, gateway.example.com:18789, or just an IP (port 18789 is assumed)." />
+            <InfoHint text="Enter the IP or domain of your OpenClaw gateway. Mission Control handles the protocol automatically. Examples: 10.0.10.21:18789 (direct LAN), 10.0.10.21 (default port 18789 assumed), cleobot.hoskins.fun (HTTPS through reverse proxy), gateway.local:18789 (direct with explicit port)." />
           </label>
           <div className="relative">
             <Input
