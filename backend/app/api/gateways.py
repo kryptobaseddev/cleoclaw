@@ -171,12 +171,13 @@ async def create_gateway(
         agent_confirmed_on_gateway = True
     except GatewayError as exc:
         error_msg = str(exc)
+        logging.getLogger(__name__).warning(
+            "gateway.create.agents_create_error: %s (confirmed=%s)",
+            error_msg,
+            "already exists" in error_msg,
+        )
         if "already exists" in error_msg:
             agent_confirmed_on_gateway = True
-        else:
-            logging.getLogger(__name__).warning(
-                "gateway.create.agents_create_failed: %s", exc
-            )
 
     # Step 2: If create failed (not "already exists"), verify via agents.list.
     if not agent_confirmed_on_gateway:
