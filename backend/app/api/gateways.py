@@ -95,21 +95,52 @@ async def create_gateway(
     auth: AuthContext = AUTH_DEP,
     ctx: OrganizationContext = ORG_ADMIN_DEP,
 ) -> Gateway:
-    """Create a gateway and provision or refresh its main agent."""
-    service = GatewayAdminLifecycleService(session)
-    await service.assert_gateway_runtime_compatible(
-        url=payload.url,
-        token=payload.token,
-        allow_insecure_tls=payload.allow_insecure_tls,
-        disable_device_pairing=payload.disable_device_pairing,
-    )
+    """Create a gateway and validate connectivity via SDK.
+
+    The gateway token is the only credential needed.  Mission Control
+    communicates with the gateway entirely through the SDK (HTTP + WS RPC),
+    so no gateway-side agent provisioning or template syncing is required
+    at registration time.
+    """
+    # Register with the SDK manager and validate connectivity.
+    from app.services.openclaw.gateway_sdk.config import GatewayConnectionConfig
+    from app.services.openclaw.gateway_sdk.errors import GatewayError
+
+    try:
+        sdk_config = GatewayConnectionConfig(
+            url=payload.url,
+            token=payload.token,
+            allow_insecure_tls=payload.allow_insecure_tls,
+            disable_device_pairing=payload.disable_device_pairing,
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Invalid gateway configuration: {exc}",
+        ) from exc
+
+    from app.services.openclaw.gateway_sdk.client import GatewayClient
+
+    client = GatewayClient(sdk_config)
+    try:
+        healthy = await client.http.is_healthy(timeout=10)
+        if not healthy:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail="Gateway is not reachable. Check the address and token.",
+            )
+    except GatewayError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Cannot connect to gateway: {exc}",
+        ) from exc
+
     data = payload.model_dump()
     gateway_id = uuid4()
     data["id"] = gateway_id
     data["organization_id"] = ctx.organization.id
     gateway = await crud.create(session, Gateway, **data)
     gateway_manager.register(gateway)
-    await service.ensure_main_agent(gateway, auth, action="provision")
     return gateway
 
 
@@ -136,38 +167,44 @@ async def update_gateway(
     auth: AuthContext = AUTH_DEP,
     ctx: OrganizationContext = ORG_ADMIN_DEP,
 ) -> Gateway:
-    """Patch a gateway and refresh the main-agent provisioning state."""
+    """Patch a gateway and re-validate connectivity via SDK."""
     service = GatewayAdminLifecycleService(session)
     gateway = await service.require_gateway(
         gateway_id=gateway_id,
         organization_id=ctx.organization.id,
     )
     updates = payload.model_dump(exclude_unset=True)
-    if (
-        "url" in updates
-        or "token" in updates
-        or "allow_insecure_tls" in updates
-        or "disable_device_pairing" in updates
-    ):
-        raw_next_url = updates.get("url", gateway.url)
-        next_url = raw_next_url.strip() if isinstance(raw_next_url, str) else ""
-        next_token = updates.get("token", gateway.token)
-        next_allow_insecure_tls = bool(
-            updates.get("allow_insecure_tls", gateway.allow_insecure_tls),
-        )
-        next_disable_device_pairing = bool(
-            updates.get("disable_device_pairing", gateway.disable_device_pairing),
-        )
-        if next_url:
-            await service.assert_gateway_runtime_compatible(
-                url=next_url,
-                token=next_token,
-                allow_insecure_tls=next_allow_insecure_tls,
-                disable_device_pairing=next_disable_device_pairing,
-            )
+    connection_changed = any(
+        k in updates for k in ("url", "token", "allow_insecure_tls", "disable_device_pairing")
+    )
     await crud.patch(session, gateway, updates)
+
+    if connection_changed:
+        from app.services.openclaw.gateway_sdk.client import GatewayClient
+        from app.services.openclaw.gateway_sdk.config import GatewayConnectionConfig
+        from app.services.openclaw.gateway_sdk.errors import GatewayError
+
+        try:
+            sdk_config = GatewayConnectionConfig(
+                url=gateway.url,
+                token=gateway.token,
+                allow_insecure_tls=gateway.allow_insecure_tls,
+                disable_device_pairing=gateway.disable_device_pairing,
+            )
+            client = GatewayClient(sdk_config)
+            healthy = await client.http.is_healthy(timeout=10)
+            if not healthy:
+                raise HTTPException(
+                    status_code=status.HTTP_502_BAD_GATEWAY,
+                    detail="Gateway is not reachable after update.",
+                )
+        except GatewayError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=f"Cannot connect to gateway: {exc}",
+            ) from exc
+
     gateway_manager.register(gateway)
-    await service.ensure_main_agent(gateway, auth, action="update")
     return gateway
 
 
