@@ -145,8 +145,12 @@ async def create_gateway(
             workspace=workspace,
         )
         openclaw_agent_id = create_result.agent_id
-    except GatewayError:
-        pass  # Agent may already exist
+    except GatewayError as exc:
+        # Log the error — don't block gateway creation but make it visible.
+        import logging
+        logging.getLogger(__name__).warning(
+            "gateway.create.agents_create_failed: %s", exc
+        )
 
     # Create gateway DB record.
     data = payload.model_dump()
