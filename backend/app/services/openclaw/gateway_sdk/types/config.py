@@ -15,12 +15,13 @@ __all__ = [
 
 
 class ConfigGetResponse(BaseModel):
-    raw: str
-    snapshot: dict[str, Any]
+    path: str | None = None
+    raw: str | None = None
+    snapshot: dict[str, Any] | None = None
     schema_: dict[str, Any] | None = Field(default=None, alias="schema")
     ui_hints: dict[str, Any] | None = Field(default=None, alias="uiHints")
 
-    model_config = {"populate_by_name": True}
+    model_config = {"populate_by_name": True, "extra": "allow"}
 
 
 class ConfigSetResponse(BaseModel):

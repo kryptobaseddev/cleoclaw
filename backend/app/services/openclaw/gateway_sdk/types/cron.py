@@ -38,10 +38,10 @@ class CronJobListResponse(BaseModel):
 
 class CronStatusResponse(BaseModel):
     enabled: bool
-    jobs_count: int = Field(alias="jobsCount")
+    jobs_count: int | None = Field(default=None, alias="jobsCount")
     next_run_at_ms: int | None = Field(default=None, alias="nextRunAtMs")
 
-    model_config = {"populate_by_name": True}
+    model_config = {"populate_by_name": True, "extra": "allow"}
 
 
 class CronRunEntry(BaseModel):
