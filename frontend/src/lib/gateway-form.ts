@@ -59,8 +59,8 @@ export const validateGatewayUrl = (value: string) => {
   if (!trimmed) return "Gateway URL is required.";
   try {
     const url = new URL(trimmed);
-    if (url.protocol !== "ws:" && url.protocol !== "wss:") {
-      return "Gateway URL must start with ws:// or wss://.";
+    if (!["ws:", "wss:", "http:", "https:"].includes(url.protocol)) {
+      return "Gateway URL must start with http://, https://, ws://, or wss://.";
     }
     if (!hasExplicitPort(trimmed)) {
       return "Gateway URL must include an explicit port.";

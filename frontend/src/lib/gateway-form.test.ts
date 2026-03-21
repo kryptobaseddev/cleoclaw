@@ -71,15 +71,21 @@ describe("validateGatewayUrl", () => {
     );
   });
 
-  it("rejects https:// scheme", () => {
-    expect(validateGatewayUrl("https://gateway.example.com:443")).toBe(
-      "Gateway URL must start with ws:// or wss://.",
-    );
+  it("accepts https:// with explicit port", () => {
+    expect(validateGatewayUrl("https://gateway.example.com:443")).toBeNull();
   });
 
-  it("rejects http:// scheme", () => {
-    expect(validateGatewayUrl("http://localhost:8080")).toBe(
-      "Gateway URL must start with ws:// or wss://.",
+  it("accepts http:// with explicit port", () => {
+    expect(validateGatewayUrl("http://localhost:8080")).toBeNull();
+  });
+
+  it("accepts http:// with gateway default port", () => {
+    expect(validateGatewayUrl("http://10.0.10.21:18789")).toBeNull();
+  });
+
+  it("rejects ftp:// scheme", () => {
+    expect(validateGatewayUrl("ftp://gateway.example.com:21")).toBe(
+      "Gateway URL must start with http://, https://, ws://, or wss://.",
     );
   });
 
