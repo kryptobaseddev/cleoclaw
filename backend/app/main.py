@@ -15,10 +15,12 @@ from app.api.agent import router as agent_router
 from app.api.agents import router as agents_router
 from app.api.approvals import router as approvals_router
 from app.api.auth import router as auth_router
+from app.api.board_ai import router as board_ai_router
 from app.api.board_group_memory import router as board_group_memory_router
 from app.api.board_groups import router as board_groups_router
 from app.api.board_memory import router as board_memory_router
 from app.api.board_onboarding import router as board_onboarding_router
+from app.api.board_onboarding_v2 import router as board_onboarding_v2_router
 from app.api.board_webhooks import router as board_webhooks_router
 from app.api.boards import router as boards_router
 from app.api.gateway import router as gateway_router
@@ -31,8 +33,6 @@ from app.api.tags import router as tags_router
 from app.api.task_custom_fields import router as task_custom_fields_router
 from app.api.tasks import router as tasks_router
 from app.api.users import router as users_router
-from app.api.board_ai import router as board_ai_router
-from app.api.board_onboarding_v2 import router as board_onboarding_v2_router
 from app.core.config import settings
 from app.core.error_handling import install_error_handling
 from app.core.logging import configure_logging, get_logger

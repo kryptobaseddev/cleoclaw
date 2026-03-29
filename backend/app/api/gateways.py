@@ -9,8 +9,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import col
 
 from app.api.deps import require_org_admin
-from app.core.config import settings
 from app.core.auth import AuthContext, get_auth_context
+from app.core.config import settings
 from app.db import crud
 from app.db.pagination import paginate
 from app.db.session import get_session

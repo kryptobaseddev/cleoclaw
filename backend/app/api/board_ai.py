@@ -10,7 +10,12 @@ from app.api.deps import require_org_member
 from app.core.logging import get_logger
 from app.schemas.board_ai import BoardAIGenerateRequest, BoardAIRefineRequest, BoardCreationDraft
 from app.services.openclaw.board_ai_service import board_ai_service
-from app.services.openclaw.gateway_sdk.errors import GatewayAuthError, GatewayConnectionError, GatewayError, GatewayTimeoutError
+from app.services.openclaw.gateway_sdk.errors import (
+    GatewayAuthError,
+    GatewayConnectionError,
+    GatewayError,
+    GatewayTimeoutError,
+)
 from app.services.organizations import OrganizationContext
 
 router = APIRouter(prefix="/boards/ai", tags=["board-ai"])

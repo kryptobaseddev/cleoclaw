@@ -24,12 +24,12 @@ from app.services.openclaw.device_identity import (
     sign_device_payload,
 )
 from app.services.openclaw.gateway_sdk.config import (
-    GATEWAY_OPERATOR_SCOPES,
-    PROTOCOL_VERSION,
     CONTROL_UI_CLIENT_ID,
     CONTROL_UI_CLIENT_MODE,
     DEFAULT_CLIENT_ID,
     DEFAULT_CLIENT_MODE,
+    GATEWAY_OPERATOR_SCOPES,
+    PROTOCOL_VERSION,
     GatewayConnectionConfig,
 )
 from app.services.openclaw.gateway_sdk.errors import (
