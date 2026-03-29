@@ -70,7 +70,7 @@ export function DashboardPageLayout({
         >
           <div
             className={cn(
-              "border-b border-[color:var(--border)] bg-[color:var(--surface)]",
+              "border-b border-app-border bg-app-surface",
               stickyHeader && "sticky top-0 z-30",
               headerClassName,
             )}
@@ -79,11 +79,11 @@ export function DashboardPageLayout({
               {headerActions ? (
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
-                    <h1 className="font-heading text-2xl font-semibold tracking-tight text-[color:var(--text)]">
+                    <h1 className="font-heading text-2xl font-semibold tracking-tight text-app-text">
                       {title}
                     </h1>
                     {description ? (
-                        <p className="mt-1 text-sm text-[color:var(--text-muted)]">
+                        <p className="mt-1 text-sm text-app-text-muted">
                         {description}
                       </p>
                     ) : null}
@@ -92,11 +92,11 @@ export function DashboardPageLayout({
                 </div>
               ) : (
                 <div>
-                  <h1 className="font-heading text-2xl font-semibold tracking-tight text-[color:var(--text)]">
+                  <h1 className="font-heading text-2xl font-semibold tracking-tight text-app-text">
                     {title}
                   </h1>
                   {description ? (
-                    <p className="mt-1 text-sm text-[color:var(--text-muted)]">{description}</p>
+                    <p className="mt-1 text-sm text-app-text-muted">{description}</p>
                   ) : null}
                 </div>
               )}
