@@ -4,42 +4,53 @@
 
 :root {
   color-scheme: dark;
-  /* ── Core surfaces ─────────────────────────────────────────── */
-  --bg: #0d1117;
-  --surface: #161b22;
-  --surface-muted: #1c2128;
-  --surface-strong: #222a33;
-  --border: #30363d;
-  --border-strong: #3b434c;
 
-  /* ── Typography ────────────────────────────────────────────── */
-  --text: #c9d1d9;
-  --text-muted: #8b949e;
-  --text-quiet: #6e7681;
+  /* ── Glass Cockpit Design System ───────────────────────────── */
 
-  /* ── Accent ────────────────────────────────────────────────── */
-  --accent: #58a6ff;
-  --accent-strong: #4c9aed;
-  --accent-soft: rgba(88, 166, 255, 0.14);
+  /* Core surfaces — tonal layering, no hard borders */
+  --bg: #10141a;
+  --surface: #181c22;
+  --surface-muted: #1c2026;
+  --surface-strong: #262a31;
+  --surface-highest: #31353c;
+  --border: rgba(61, 73, 76, 0.15);
+  --border-strong: rgba(61, 73, 76, 0.3);
 
-  /* ── Semantic colors ───────────────────────────────────────── */
+  /* Typography */
+  --text: #dfe2eb;
+  --text-muted: #bcc9cd;
+  --text-quiet: #869397;
+
+  /* Primary accent — holographic teal/cyan */
+  --accent: #2fd9f4;
+  --accent-strong: #00b7cf;
+  --accent-soft: rgba(47, 217, 244, 0.12);
+  --accent-gradient: linear-gradient(135deg, #2fd9f4, #06b6d4);
+
+  /* Secondary accent — luxury gold */
+  --gold: #e9c349;
+  --gold-soft: rgba(233, 195, 73, 0.12);
+
+  /* Semantic colors */
   --success: #3fb950;
-  --success-soft: rgba(63, 185, 80, 0.15);
-  --warning: #d29922;
-  --warning-soft: rgba(210, 153, 34, 0.15);
-  --danger: #f85149;
-  --danger-soft: rgba(248, 81, 73, 0.15);
+  --success-soft: rgba(63, 185, 80, 0.12);
+  --warning: #e9c349;
+  --warning-soft: rgba(233, 195, 73, 0.12);
+  --danger: #ffb4ab;
+  --danger-soft: rgba(255, 180, 171, 0.12);
 
-  /* ── Navigation ────────────────────────────────────────────── */
-  --nav-active-bg: rgba(88, 166, 255, 0.14);
-  --nav-active-text: #58a6ff;
+  /* Navigation */
+  --nav-active-bg: rgba(47, 217, 244, 0.1);
+  --nav-active-text: #2fd9f4;
   --nav-hover-bg: var(--surface-muted);
 
-  /* ── Shadows ───────────────────────────────────────────────── */
+  /* Shadows — ambient glow, not drop shadows */
   --shadow-panel:
-    0 1px 3px rgba(0, 0, 0, 0.24), 0 1px 2px rgba(0, 0, 0, 0.18);
+    0 4px 24px rgba(16, 20, 26, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-card:
-    0 1px 2px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0, 0, 0, 0.12);
+    0 2px 12px rgba(16, 20, 26, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-glow:
+    0 0 20px rgba(47, 217, 244, 0.08);
 }
 
 body {
