@@ -142,7 +142,7 @@ export const formatCustomFieldDetailValue = (
           href={parsedUrl.toString()}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-1 text-blue-700 underline decoration-blue-300 underline-offset-2 hover:text-blue-800"
+          className="inline-flex items-center gap-1 text-app-accent underline decoration-app-accent/40 underline-offset-2 hover:text-app-accent/80"
         >
           <span className="break-all">{parsedUrl.toString()}</span>
           <ArrowUpRight className="h-3.5 w-3.5 flex-shrink-0" />

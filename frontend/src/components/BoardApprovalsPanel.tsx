@@ -70,7 +70,7 @@ const statusBadgeClass = (status: string) => {
   if (status === "rejected") {
     return "bg-app-danger-soft text-app-danger";
   }
-  return "bg-amber-100 text-app-warning";
+  return "bg-app-warning-soft text-app-warning";
 };
 
 const confidenceBadgeClass = (confidence: number) => {
@@ -78,9 +78,9 @@ const confidenceBadgeClass = (confidence: number) => {
     return "bg-app-success-soft text-app-success";
   }
   if (confidence >= 80) {
-    return "bg-amber-100 text-app-warning";
+    return "bg-app-warning-soft text-app-warning";
   }
-  return "bg-orange-100 text-orange-700";
+  return "bg-app-warning-soft text-app-warning";
 };
 
 const humanizeAction = (value: string) =>
@@ -549,7 +549,7 @@ export function BoardApprovalsPanel({
   return (
     <div className={cn("space-y-6", scrollable && "h-full")}>
       {errorState ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-app-danger">
+        <div className="rounded-xl border border-app-danger/30 bg-app-danger-soft px-3 py-2 text-sm text-app-danger">
           {errorState}
         </div>
       ) : null}
@@ -633,7 +633,7 @@ export function BoardApprovalsPanel({
                     onClick={() => setSelectedId(approval.id)}
                     className={cn(
                       "w-full px-4 py-4 text-left transition hover:bg-app-surface-muted",
-                      isSelected && "bg-app-warning-soft border-l-2 border-amber-500",
+                      isSelected && "bg-app-warning-soft border-l-2 border-app-warning",
                       !isPending && "opacity-60",
                     )}
                   >
@@ -781,7 +781,7 @@ export function BoardApprovalsPanel({
                                 handleDecision(selectedApproval.id, "approved")
                               }
                               disabled={updatingId === selectedApproval.id}
-                              className="bg-app-surface-strong text-white hover:bg-app-surface-muted"
+                              className="bg-app-accent text-white hover:bg-app-accent/80"
                             >
                               Approve
                             </Button>
@@ -866,7 +866,7 @@ export function BoardApprovalsPanel({
                                 selectedApproval.board_id,
                                 task.id,
                               )}
-                              className="rounded-md border border-app-border bg-app-surface px-2 py-1 text-xs text-app-text-muted underline-offset-2 transition hover:border-app-border hover:bg-app-surface-muted hover:text-app-text hover:underline"
+                              className="rounded-md border border-app-border bg-app-surface px-2 py-1 text-xs text-app-text-muted underline-offset-2 transition hover:border-app-border-strong hover:bg-app-surface-muted hover:text-app-text hover:underline"
                             >
                               {task.title}
                             </Link>

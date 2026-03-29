@@ -227,7 +227,7 @@ function BoardChatComposerImpl({
           disabled={isSending || disabled}
         />
         {mentionTarget && filteredMentionOptions.length > 0 ? (
-          <div className="absolute bottom-full left-0 z-20 mb-2 w-full overflow-hidden rounded-xl border border-app-border bg-app-surface shadow-lg">
+          <div className="absolute bottom-full left-0 z-20 mb-2 w-full overflow-hidden rounded-xl border border-app-border bg-app-surface shadow-panel">
             <div className="max-h-52 overflow-y-auto py-1">
               {filteredMentionOptions.map((option, index) => (
                 <button

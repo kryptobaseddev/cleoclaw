@@ -51,7 +51,7 @@ const columns: Array<{
   {
     title: "Inbox",
     status: "inbox",
-    dot: "bg-app-surface-strong",
+    dot: "bg-app-text-quiet",
     accent: "hover:border-app-border-strong hover:bg-app-surface-muted",
     text: "group-hover:text-app-text-muted text-app-text-quiet",
     badge: "bg-app-surface-muted text-app-text-muted",

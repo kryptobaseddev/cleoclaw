@@ -385,7 +385,7 @@ export function BoardOnboardingChat({
       </DialogHeader>
 
       {error ? (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-app-danger">
+        <div className="rounded-lg border border-app-danger/30 bg-app-danger-soft px-3 py-2 text-sm text-app-danger">
           {error}
         </div>
       ) : null}

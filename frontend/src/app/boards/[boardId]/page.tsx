@@ -442,43 +442,43 @@ const liveFeedEventLabel = (eventType: LiveFeedEventType): string => {
 
 const liveFeedEventPillClass = (eventType: LiveFeedEventType): string => {
   if (eventType === "task.comment") {
-    return "border-blue-200 bg-blue-50 text-blue-700";
+    return "border-app-accent/30 bg-app-accent-soft text-app-accent";
   }
   if (eventType === "task.created") {
-    return "border-emerald-200 bg-app-success-soft text-app-success";
+    return "border-app-success/30 bg-app-success-soft text-app-success";
   }
   if (eventType === "task.status_changed") {
-    return "border-amber-200 bg-app-warning-soft text-app-warning";
+    return "border-app-warning/30 bg-app-warning-soft text-app-warning";
   }
   if (eventType === "board.chat") {
-    return "border-teal-200 bg-teal-50 text-teal-700";
+    return "border-teal-500/30 bg-[rgba(20,184,166,0.12)] text-teal-400";
   }
   if (eventType === "board.command") {
-    return "border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700";
+    return "border-fuchsia-500/30 bg-[rgba(217,70,239,0.12)] text-fuchsia-400";
   }
   if (eventType === "agent.created") {
-    return "border-violet-200 bg-violet-50 text-violet-700";
+    return "border-violet-500/30 bg-[rgba(139,92,246,0.12)] text-violet-400";
   }
   if (eventType === "agent.online") {
-    return "border-lime-200 bg-lime-50 text-lime-700";
+    return "border-lime-500/30 bg-[rgba(132,204,22,0.12)] text-lime-400";
   }
   if (eventType === "agent.offline") {
     return "border-app-border bg-app-surface-muted text-app-text-muted";
   }
   if (eventType === "agent.updated") {
-    return "border-indigo-200 bg-indigo-50 text-indigo-700";
+    return "border-indigo-500/30 bg-[rgba(99,102,241,0.12)] text-indigo-400";
   }
   if (eventType === "approval.created") {
-    return "border-cyan-200 bg-cyan-50 text-cyan-700";
+    return "border-cyan-500/30 bg-[rgba(6,182,212,0.12)] text-cyan-400";
   }
   if (eventType === "approval.updated") {
-    return "border-app-border bg-app-surface-muted text-app-accent";
+    return "border-app-accent/30 bg-app-accent-soft text-app-accent";
   }
   if (eventType === "approval.approved") {
-    return "border-emerald-200 bg-app-success-soft text-app-success";
+    return "border-app-success/30 bg-app-success-soft text-app-success";
   }
   if (eventType === "approval.rejected") {
-    return "border-rose-200 bg-app-danger-soft text-app-danger";
+    return "border-app-danger/30 bg-app-danger-soft text-app-danger";
   }
   return "border-app-border bg-app-surface-muted text-app-text-muted";
 };
@@ -2937,11 +2937,11 @@ export default function BoardDetailPage() {
   const statusBadgeClass = (value?: string) => {
     switch (value) {
       case "in_progress":
-        return "bg-purple-100 text-purple-700";
+        return "bg-[rgba(139,92,246,0.14)] text-[#a78bfa]";
       case "review":
-        return "bg-indigo-100 text-indigo-700";
+        return "bg-[rgba(99,102,241,0.14)] text-[#818cf8]";
       case "done":
-        return "bg-emerald-100 text-app-success";
+        return "bg-app-success-soft text-app-success";
       default:
         return "bg-app-surface-muted text-app-text-muted";
     }
@@ -2950,11 +2950,11 @@ export default function BoardDetailPage() {
   const priorityBadgeClass = (value?: string) => {
     switch (value?.toLowerCase()) {
       case "high":
-        return "bg-rose-100 text-app-danger";
+        return "bg-app-danger-soft text-app-danger";
       case "medium":
-        return "bg-amber-100 text-app-warning";
+        return "bg-app-warning-soft text-app-warning";
       case "low":
-        return "bg-emerald-100 text-app-success";
+        return "bg-app-success-soft text-app-success";
       default:
         return "bg-app-surface-muted text-app-text-muted";
     }
@@ -3111,7 +3111,7 @@ export default function BoardDetailPage() {
             isSidePanelOpen ? "overflow-hidden" : "overflow-y-auto",
           )}
         >
-          <div className="sticky top-0 z-30 border-b border-app-border bg-app-surface shadow-card">
+          <div className="sticky top-0 z-30 border-b border-app-border bg-app-surface/80 backdrop-blur-glass shadow-card">
             <div className="px-4 py-4 md:px-8 md:py-6">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
@@ -3292,7 +3292,7 @@ export default function BoardDetailPage() {
                               variant="agent"
                               className={cn(
                                 "absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-app-surface",
-                                isWorking && "ring-2 ring-emerald-200",
+                                isWorking && "ring-2 ring-app-success/30",
                               )}
                             />
                           </div>
@@ -3328,7 +3328,7 @@ export default function BoardDetailPage() {
                   {viewMode === "list" ? (
                     <>
                       {groupSnapshotError ? (
-                        <div className="rounded-lg border border-amber-200 bg-app-warning-soft p-3 text-sm text-app-warning shadow-card">
+                        <div className="rounded-lg border border-app-warning/30 bg-app-warning-soft p-3 text-sm text-app-warning shadow-card">
                           {groupSnapshotError}
                         </div>
                       ) : null}
@@ -3607,7 +3607,7 @@ export default function BoardDetailPage() {
                                 <div className="flex flex-wrap items-center gap-3 text-xs text-app-text-quiet">
                                   {task.approvals_pending_count ? (
                                     <span className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-app-warning">
-                                      <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                                      <span className="h-1.5 w-1.5 rounded-full bg-app-warning-soft0" />
                                       Approval needed ·{" "}
                                       {task.approvals_pending_count}
                                     </span>
@@ -3691,7 +3691,7 @@ export default function BoardDetailPage() {
       ) : null}
       <aside
         className={cn(
-          "fixed right-0 top-0 z-50 h-full w-full max-w-[99vw] transform bg-app-surface shadow-2xl transition-transform md:w-[max(760px,45vw)]",
+          "fixed right-0 top-0 z-50 h-full w-full max-w-[99vw] transform bg-app-surface shadow-panel transition-transform md:w-[max(760px,45vw)]",
           isDetailOpen ? "transform-none" : "translate-x-full",
         )}
       >
@@ -3937,7 +3937,7 @@ export default function BoardDetailPage() {
                               approvalsUpdatingId === approval.id || !canWrite
                             }
                             title={canWrite ? "Reject" : "Read-only access"}
-                            className="border-app-border text-app-text-muted"
+                            className="border-app-border-strong text-app-text-muted"
                           >
                             Reject
                           </Button>
@@ -4004,7 +4004,7 @@ export default function BoardDetailPage() {
 
       <aside
         className={cn(
-          "fixed right-0 top-0 z-50 h-full w-full max-w-[96vw] transform border-l border-app-border bg-app-surface shadow-2xl transition-transform md:w-[560px]",
+          "fixed right-0 top-0 z-50 h-full w-full max-w-[96vw] transform border-l border-app-border bg-app-surface shadow-panel transition-transform md:w-[560px]",
           isChatOpen ? "transform-none" : "translate-x-full",
         )}
       >
@@ -4066,7 +4066,7 @@ export default function BoardDetailPage() {
 
       <aside
         className={cn(
-          "fixed right-0 top-0 z-50 h-full w-full max-w-[96vw] transform border-l border-app-border bg-app-surface shadow-2xl transition-transform md:w-[520px]",
+          "fixed right-0 top-0 z-50 h-full w-full max-w-[96vw] transform border-l border-app-border bg-app-surface shadow-panel transition-transform md:w-[520px]",
           isLiveFeedOpen ? "transform-none" : "translate-x-full",
         )}
       >
@@ -4320,7 +4320,7 @@ export default function BoardDetailPage() {
                           className={cn(
                             "rounded-full p-0.5 text-app-text-quiet transition",
                             canWrite
-                              ? "hover:bg-app-surface hover:text-app-text-muted"
+                              ? "hover:bg-app-surface-muted hover:text-app-text"
                               : "opacity-50 cursor-not-allowed",
                           )}
                           aria-label="Remove tag"
@@ -4376,7 +4376,7 @@ export default function BoardDetailPage() {
                         className={cn(
                           "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs",
                           isDone
-                            ? "border-emerald-200 bg-app-success-soft text-app-success"
+                            ? "border-app-success/30 bg-app-success-soft text-app-success"
                             : "border-app-border bg-app-surface-muted text-app-text-muted",
                         )}
                       >
@@ -4393,7 +4393,7 @@ export default function BoardDetailPage() {
                             className={cn(
                               "rounded-full p-0.5 text-app-text-quiet transition",
                               canWrite
-                                ? "hover:bg-app-surface hover:text-app-text-muted"
+                                ? "hover:bg-app-surface-muted hover:text-app-text"
                                 : "opacity-50 cursor-not-allowed",
                             )}
                             aria-label="Remove dependency"
@@ -4419,7 +4419,7 @@ export default function BoardDetailPage() {
               variant="outline"
               onClick={() => setIsDeleteDialogOpen(true)}
               disabled={!selectedTask || isSavingTask || !canWrite}
-              className="border-rose-200 text-app-danger hover:border-rose-300 hover:text-app-danger"
+              className="border-app-danger/30 text-app-danger hover:border-app-danger/50 hover:text-app-danger"
               title={canWrite ? "Delete task" : "Read-only access"}
             >
               Delete task
@@ -4454,7 +4454,7 @@ export default function BoardDetailPage() {
             </DialogDescription>
           </DialogHeader>
           {deleteTaskError ? (
-            <div className="rounded-lg border border-rose-200 bg-app-danger-soft p-3 text-xs text-app-danger">
+            <div className="rounded-lg border border-app-danger/30 bg-app-danger-soft p-3 text-xs text-app-danger">
               {deleteTaskError}
             </div>
           ) : null}
@@ -4469,7 +4469,7 @@ export default function BoardDetailPage() {
             <Button
               onClick={handleDeleteTask}
               disabled={isDeletingTask || !canWrite}
-              className="bg-rose-600 text-white hover:bg-rose-700"
+              className="bg-app-danger text-white hover:bg-app-danger/80"
             >
               {isDeletingTask ? "Deleting…" : "Delete task"}
             </Button>
@@ -4596,7 +4596,7 @@ export default function BoardDetailPage() {
                         <button
                           type="button"
                           onClick={() => removeCreateTag(tagId)}
-                          className="rounded-full p-0.5 text-app-text-quiet transition hover:bg-app-surface hover:text-app-text-muted"
+                          className="rounded-full p-0.5 text-app-text-quiet transition hover:bg-app-surface-muted hover:text-app-text"
                           aria-label="Remove tag"
                           disabled={!canWrite || isCreating}
                         >
@@ -4655,7 +4655,7 @@ export default function BoardDetailPage() {
             </DialogHeader>
 
             {agentsControlError ? (
-              <div className="rounded-lg border border-rose-200 bg-app-danger-soft p-3 text-sm text-app-danger">
+              <div className="rounded-lg border border-app-danger/30 bg-app-danger-soft p-3 text-sm text-app-danger">
                 {agentsControlError}
               </div>
             ) : null}
@@ -4707,15 +4707,15 @@ export default function BoardDetailPage() {
               className={cn(
                 "rounded-xl border bg-app-surface px-4 py-3 text-sm shadow-lush",
                 toast.tone === "error"
-                  ? "border-rose-200 text-app-danger"
-                  : "border-emerald-200 text-app-success",
+                  ? "border-app-danger/30 text-app-danger"
+                  : "border-app-success/30 text-app-success",
               )}
             >
               <div className="flex items-start gap-3">
                 <span
                   className={cn(
                     "mt-1 h-2 w-2 rounded-full",
-                    toast.tone === "error" ? "bg-rose-500" : "bg-emerald-500",
+                    toast.tone === "error" ? "bg-app-danger-soft0" : "bg-app-success-soft0",
                   )}
                 />
                 <p className="flex-1 text-sm text-app-text-muted">{toast.message}</p>
