@@ -157,17 +157,17 @@ function BoardAccessEditor({
   return (
     <div className="space-y-3">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
           Board access
         </p>
-        <div className="mt-3 inline-flex rounded-xl border border-slate-200 bg-slate-100 p-1">
+        <div className="mt-3 inline-flex rounded-xl border border-app-border bg-app-surface-muted p-1">
           <button
             type="button"
             className={cn(
               "rounded-md px-3 py-1.5 text-xs font-semibold transition",
               scope === "all"
-                ? "bg-white text-slate-900 shadow-sm"
-                : "text-slate-500 hover:text-slate-700",
+                ? "bg-app-surface text-app-text shadow-card"
+                : "text-app-text-quiet hover:text-app-text-muted",
             )}
             onClick={() => onScopeChange("all")}
             disabled={disabled}
@@ -179,8 +179,8 @@ function BoardAccessEditor({
             className={cn(
               "rounded-md px-3 py-1.5 text-xs font-semibold transition",
               scope === "custom"
-                ? "bg-white text-slate-900 shadow-sm"
-                : "text-slate-500 hover:text-slate-700",
+                ? "bg-app-surface text-app-text shadow-card"
+                : "text-app-text-quiet hover:text-app-text-muted",
             )}
             onClick={() => onScopeChange("custom")}
             disabled={disabled}
@@ -191,8 +191,8 @@ function BoardAccessEditor({
       </div>
 
       {scope === "all" ? (
-        <div className="flex flex-wrap items-center gap-6 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm">
-          <label className="flex items-center gap-2 text-slate-600">
+        <div className="flex flex-wrap items-center gap-6 rounded-xl border border-app-border bg-app-surface px-4 py-2.5 text-sm">
+          <label className="flex items-center gap-2 text-app-text-muted">
             <input
               type="checkbox"
               className="h-4 w-4"
@@ -202,7 +202,7 @@ function BoardAccessEditor({
             />
             Read
           </label>
-          <label className="flex items-center gap-2 text-slate-600">
+          <label className="flex items-center gap-2 text-app-text-muted">
             <input
               type="checkbox"
               className="h-4 w-4"
@@ -212,18 +212,18 @@ function BoardAccessEditor({
             />
             Write
           </label>
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-app-text-quiet">
             Write access implies read permissions.
           </span>
         </div>
       ) : (
         <div>
           {boards.length === 0 ? (
-            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500">
+            <div className="rounded-xl border border-app-border bg-app-surface-muted px-4 py-3 text-sm text-app-text-quiet">
               {emptyMessage ?? "No boards available yet."}
             </div>
           ) : (
-            <div className="overflow-hidden rounded-xl border border-slate-200">
+            <div className="overflow-hidden rounded-xl border border-app-border">
               <BoardAccessTable
                 boards={boards}
                 access={access}
@@ -702,13 +702,13 @@ export default function OrganizationPage() {
       </SignedOut>
       <SignedIn>
         <DashboardSidebar />
-        <main className="flex-1 overflow-y-auto bg-slate-50">
-          <div className="sticky top-0 z-30 border-b border-slate-200 bg-white">
+        <main className="flex-1 overflow-y-auto bg-app-surface-muted">
+          <div className="sticky top-0 z-30 border-b border-app-border bg-app-surface">
             <div className="px-4 py-4 md:px-8 md:py-6">
               <div className="flex flex-wrap items-center justify-between gap-6">
                 <div>
                   <div className="flex flex-wrap items-center gap-3">
-                    <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+                    <h1 className="text-2xl font-semibold tracking-tight text-app-text">
                       Organization
                     </h1>
                     <Badge
@@ -719,24 +719,24 @@ export default function OrganizationPage() {
                       {orgName}
                     </Badge>
                   </div>
-                  <p className="mt-1 text-sm text-slate-500">
+                  <p className="mt-1 text-sm text-app-text-quiet">
                     Manage members and board access across your workspace.
                   </p>
-                  <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-slate-500">
+                  <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-app-text-quiet">
                     <span>
-                      <strong className="text-slate-900">
+                      <strong className="text-app-text">
                         {members.length}
                       </strong>{" "}
                       members
                     </span>
                     <span>
-                      <strong className="text-slate-900">
+                      <strong className="text-app-text">
                         {boards.length}
                       </strong>{" "}
                       boards
                     </span>
                     <span>
-                      <strong className="text-slate-900">
+                      <strong className="text-app-text">
                         {invites.length}
                       </strong>{" "}
                       pending
@@ -748,7 +748,7 @@ export default function OrganizationPage() {
                     <Button
                       type="button"
                       variant="outline"
-                      className="border-rose-200 text-rose-600 hover:border-rose-300 hover:text-rose-700"
+                      className="border-rose-200 text-app-danger hover:border-rose-300 hover:text-app-danger"
                       onClick={() => {
                         deleteOrganizationMutation.reset();
                         setDeleteOrgOpen(true);
@@ -776,17 +776,17 @@ export default function OrganizationPage() {
           </div>
 
           <div className="px-4 py-4 md:px-8 md:py-8">
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-4">
+            <div className="overflow-hidden rounded-2xl border border-app-border bg-app-surface">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-app-border px-5 py-4">
                 <div>
-                  <h2 className="text-sm font-semibold text-slate-900">
+                  <h2 className="text-sm font-semibold text-app-text">
                     Members & invites
                   </h2>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-app-text-quiet">
                     Invite teammates and tune their board permissions.
                   </p>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-slate-500">
+                <div className="flex items-center gap-2 text-xs text-app-text-quiet">
                   <Users className="h-4 w-4" />
                   {members.length + invites.length} total
                 </div>
@@ -829,7 +829,7 @@ export default function OrganizationPage() {
             <form className="space-y-5" onSubmit={handleInviteSubmit}>
               <div className="grid gap-4 sm:grid-cols-[1fr_200px]">
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                     Email address
                   </label>
                   <Input
@@ -841,7 +841,7 @@ export default function OrganizationPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                     Role
                   </label>
                   <Select value={inviteRole} onValueChange={setInviteRole}>
@@ -874,7 +874,7 @@ export default function OrganizationPage() {
               />
 
               {inviteError ? (
-                <p className="text-sm text-rose-500">{inviteError}</p>
+                <p className="text-sm text-app-danger">{inviteError}</p>
               ) : null}
 
               <DialogFooter>
@@ -893,7 +893,7 @@ export default function OrganizationPage() {
               </DialogFooter>
             </form>
           ) : (
-            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500">
+            <div className="rounded-xl border border-app-border bg-app-surface-muted px-4 py-3 text-sm text-app-text-quiet">
               Only organization admins can invite new members.
             </div>
           )}
@@ -910,26 +910,26 @@ export default function OrganizationPage() {
           </DialogHeader>
 
           {memberDetailsQuery.isLoading ? (
-            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500">
+            <div className="rounded-xl border border-app-border bg-app-surface-muted px-4 py-3 text-sm text-app-text-quiet">
               Loading member access...
             </div>
           ) : memberDetailsQuery.data?.status === 200 ? (
             <div className="space-y-6">
-              <div className="rounded-xl border border-slate-200 bg-white px-5 py-4">
-                <p className="text-sm font-semibold text-slate-900">
+              <div className="rounded-xl border border-app-border bg-app-surface px-5 py-4">
+                <p className="text-sm font-semibold text-app-text">
                   {memberDetailsQuery.data.data.user?.name ||
                     memberDetailsQuery.data.data.user?.preferred_name ||
                     memberDetailsQuery.data.data.user?.email ||
                     memberDetailsQuery.data.data.user_id}
                 </p>
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-app-text-quiet">
                   {memberDetailsQuery.data.data.user?.email ??
                     "No email on file"}
                 </p>
               </div>
 
               <div className="space-y-3">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                   Role
                 </label>
                 <Select
@@ -963,11 +963,11 @@ export default function OrganizationPage() {
               />
 
               {accessError ? (
-                <p className="text-sm text-rose-500">{accessError}</p>
+                <p className="text-sm text-app-danger">{accessError}</p>
               ) : null}
             </div>
           ) : (
-            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500">
+            <div className="rounded-xl border border-app-border bg-app-surface-muted px-4 py-3 text-sm text-app-text-quiet">
               Unable to load member access.
             </div>
           )}
@@ -977,7 +977,7 @@ export default function OrganizationPage() {
               <Button
                 type="button"
                 variant="outline"
-                className="mr-auto border-rose-200 text-rose-600 hover:border-rose-300 hover:text-rose-700"
+                className="mr-auto border-rose-200 text-app-danger hover:border-rose-300 hover:text-app-danger"
                 onClick={() => {
                   removeMemberMutation.reset();
                   setRemoveMemberOpen(true);

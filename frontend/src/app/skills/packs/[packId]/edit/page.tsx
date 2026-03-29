@@ -54,15 +54,15 @@ export default function EditSkillPackPage() {
       stickyHeader
     >
       {packQuery.isLoading ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
+        <div className="rounded-xl border border-app-border bg-app-surface p-6 text-sm text-app-text-quiet shadow-card">
           Loading pack...
         </div>
       ) : packQuery.error ? (
-        <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700 shadow-sm">
+        <div className="rounded-xl border border-rose-200 bg-app-danger-soft p-6 text-sm text-app-danger shadow-card">
           {packQuery.error.message}
         </div>
       ) : !pack ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
+        <div className="rounded-xl border border-app-border bg-app-surface p-6 text-sm text-app-text-quiet shadow-card">
           Pack not found.
         </div>
       ) : (

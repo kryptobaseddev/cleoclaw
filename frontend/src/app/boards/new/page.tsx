@@ -180,13 +180,13 @@ export default function NewBoardPage() {
     >
       <form
         onSubmit={handleSubmit}
-        className="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+        className="space-y-6 rounded-xl border border-app-border bg-app-surface p-6 shadow-card"
       >
         <div className="space-y-4">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-900">
-                Board name <span className="text-red-500">*</span>
+              <label className="text-sm font-medium text-app-text">
+                Board name <span className="text-app-danger">*</span>
               </label>
               <Input
                 value={name}
@@ -196,8 +196,8 @@ export default function NewBoardPage() {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-900">
-                Gateway <span className="text-red-500">*</span>
+              <label className="text-sm font-medium text-app-text">
+                Gateway <span className="text-app-danger">*</span>
               </label>
               <Select
                 value={selectedGatewayId}
@@ -220,7 +220,7 @@ export default function NewBoardPage() {
 
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-900">
+              <label className="text-sm font-medium text-app-text">
                 Board group
               </label>
               <Select
@@ -239,15 +239,15 @@ export default function NewBoardPage() {
                   ))}
                 </SelectContent>
               </Select>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-app-text-quiet">
                 Optional. Groups increase cross-board visibility.
               </p>
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-900">
-              Description <span className="text-red-500">*</span>
+            <label className="text-sm font-medium text-app-text">
+              Description <span className="text-app-danger">*</span>
             </label>
             <Textarea
               value={description}
@@ -260,7 +260,7 @@ export default function NewBoardPage() {
         </div>
 
         {gateways.length === 0 ? (
-          <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+          <div className="rounded-lg border border-app-border bg-app-surface-muted px-4 py-3 text-sm text-app-text-muted">
             <p>
               No gateways available. Create one in{" "}
               <Link
@@ -275,7 +275,7 @@ export default function NewBoardPage() {
         ) : null}
 
         {errorMessage ? (
-          <p className="text-sm text-red-500">{errorMessage}</p>
+          <p className="text-sm text-app-danger">{errorMessage}</p>
         ) : null}
 
         <div className="flex justify-end gap-3">

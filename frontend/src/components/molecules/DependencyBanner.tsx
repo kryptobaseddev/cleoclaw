@@ -23,7 +23,7 @@ interface DependencyBannerProps {
 type DependencyBannerVariant = "blocked" | "resolved";
 
 const toneClassByVariant: Record<DependencyBannerVariant, string> = {
-  blocked: "border-rose-200 bg-rose-50 text-rose-700",
+  blocked: "border-rose-200 bg-app-danger-soft text-app-danger",
   resolved: "border-blue-200 bg-blue-50 text-blue-700",
 };
 
@@ -49,25 +49,25 @@ export function DependencyBanner({
               className={cn(
                 "w-full rounded-lg border px-3 py-2 text-left transition",
                 isBlocking
-                  ? "border-rose-200 bg-rose-50 hover:bg-rose-100/40"
+                  ? "border-rose-200 bg-app-danger-soft hover:bg-rose-100/40"
                   : isDone
-                    ? "border-emerald-200 bg-emerald-50 hover:bg-emerald-100/40"
-                    : "border-slate-200 bg-white hover:bg-slate-50",
+                    ? "border-emerald-200 bg-app-success-soft hover:bg-emerald-100/40"
+                    : "border-app-border bg-app-surface hover:bg-app-surface-muted",
                 dependency.disabled && "cursor-not-allowed opacity-60",
               )}
             >
               <div className="flex items-center justify-between gap-3">
-                <p className="truncate text-sm font-medium text-slate-900">
+                <p className="truncate text-sm font-medium text-app-text">
                   {dependency.title}
                 </p>
                 <span
                   className={cn(
                     "text-[10px] font-semibold uppercase tracking-wide",
                     isBlocking
-                      ? "text-rose-700"
+                      ? "text-app-danger"
                       : isDone
-                        ? "text-emerald-700"
-                        : "text-slate-500",
+                        ? "text-app-success"
+                        : "text-app-text-quiet",
                   )}
                 >
                   {dependency.statusLabel}
@@ -77,7 +77,7 @@ export function DependencyBanner({
           );
         })
       ) : (
-        <p className="text-sm text-slate-500">{emptyMessage}</p>
+        <p className="text-sm text-app-text-quiet">{emptyMessage}</p>
       )}
       {children ? (
         <div

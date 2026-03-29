@@ -142,10 +142,10 @@ function WebhookCard({
   return (
     <div
       key={webhook.id}
-      className="space-y-3 rounded-lg border border-slate-200 px-4 py-4"
+      className="space-y-3 rounded-lg border border-app-border px-4 py-4"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="text-sm font-semibold text-slate-900">
+        <span className="text-sm font-semibold text-app-text">
           Webhook {webhook.id.slice(0, 8)}
         </span>
         <div className="flex items-center gap-2">
@@ -223,7 +223,7 @@ function WebhookCard({
             disabled={isBusy}
           />
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-900">Agent</label>
+            <label className="text-sm font-medium text-app-text">Agent</label>
             <Select
               value={selectedDraftAgentValue}
               onValueChange={setDraftAgentValue}
@@ -248,19 +248,19 @@ function WebhookCard({
         </>
       ) : (
         <>
-          <div className="text-sm text-slate-700">
+          <div className="text-sm text-app-text-muted">
             <Markdown
               content={webhook.description || ""}
               variant="description"
             />
           </div>
-          <p className="text-xs text-slate-600">
+          <p className="text-xs text-app-text-muted">
             Recipient: {mappedAgent?.name ?? "Lead agent"}
           </p>
         </>
       )}
-      <div className="rounded-md bg-slate-50 px-3 py-2">
-        <code className="break-all text-xs text-slate-700">
+      <div className="rounded-md bg-app-surface-muted px-3 py-2">
+        <code className="break-all text-xs text-app-text-muted">
           {webhook.endpoint_url ?? webhook.endpoint_path}
         </code>
       </div>
@@ -726,12 +726,12 @@ export default function EditBoardPage() {
         <div className="space-y-6">
           <form
             onSubmit={handleSubmit}
-            className="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+            className="space-y-6 rounded-xl border border-app-border bg-app-surface p-6 shadow-card"
           >
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-900">
-                  Board name <span className="text-red-500">*</span>
+                <label className="text-sm font-medium text-app-text">
+                  Board name <span className="text-app-danger">*</span>
                 </label>
                 <Input
                   value={resolvedName}
@@ -741,8 +741,8 @@ export default function EditBoardPage() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-900">
-                  Gateway <span className="text-red-500">*</span>
+                <label className="text-sm font-medium text-app-text">
+                  Gateway <span className="text-app-danger">*</span>
                 </label>
                 <Select
                   value={selectedGatewayId}
@@ -765,7 +765,7 @@ export default function EditBoardPage() {
 
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-900">
+                <label className="text-sm font-medium text-app-text">
                   Board type
                 </label>
                 <Select value={resolvedBoardType} onValueChange={setBoardType}>
@@ -778,7 +778,7 @@ export default function EditBoardPage() {
                   </SelectContent>
                 </Select>
                 <div className="space-y-2 pt-1">
-                  <label className="text-sm font-medium text-slate-900">
+                  <label className="text-sm font-medium text-app-text">
                     Max worker agents
                   </label>
                   <Input
@@ -799,7 +799,7 @@ export default function EditBoardPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-900">
+                <label className="text-sm font-medium text-app-text">
                   Board group
                 </label>
                 <Select
@@ -818,14 +818,14 @@ export default function EditBoardPage() {
                     ))}
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-app-text-quiet">
                   Boards in the same group can share cross-board context for
                   agents.
                 </p>
               </div>
               {resolvedBoardType !== "general" ? (
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-900">
+                  <label className="text-sm font-medium text-app-text">
                     Target date
                   </label>
                   <Input
@@ -839,8 +839,8 @@ export default function EditBoardPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-900">
-                Description <span className="text-red-500">*</span>
+              <label className="text-sm font-medium text-app-text">
+                Description <span className="text-app-danger">*</span>
               </label>
               <Textarea
                 value={resolvedDescription}
@@ -854,10 +854,10 @@ export default function EditBoardPage() {
             {resolvedBoardType !== "general" ? (
               <>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-900">
+                  <label className="text-sm font-medium text-app-text">
                     Objective
                     {isGoalFieldsRequired && (
-                      <span className="text-red-500"> *</span>
+                      <span className="text-app-danger"> *</span>
                     )}
                   </label>
                   <Textarea
@@ -870,10 +870,10 @@ export default function EditBoardPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-900">
+                  <label className="text-sm font-medium text-app-text">
                     Success metrics (JSON)
                     {isGoalFieldsRequired && (
-                      <span className="text-red-500"> *</span>
+                      <span className="text-app-danger"> *</span>
                     )}
                   </label>
                   <Textarea
@@ -883,26 +883,26 @@ export default function EditBoardPage() {
                     className="min-h-[140px] font-mono text-xs"
                     disabled={isLoading}
                   />
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-app-text-quiet">
                     Add key outcomes so the lead agent can measure progress.
                   </p>
                   {metricsError ? (
-                    <p className="text-xs text-red-500">{metricsError}</p>
+                    <p className="text-xs text-app-danger">{metricsError}</p>
                   ) : null}
                 </div>
               </>
             ) : null}
 
-            <section className="space-y-3 border-t border-slate-200 pt-4">
+            <section className="space-y-3 border-t border-app-border pt-4">
               <div>
-                <h2 className="text-base font-semibold text-slate-900">
+                <h2 className="text-base font-semibold text-app-text">
                   Rules
                 </h2>
-                <p className="text-xs text-slate-600">
+                <p className="text-xs text-app-text-muted">
                   Configure board-level workflow enforcement.
                 </p>
               </div>
-              <div className="flex items-start gap-3 rounded-lg border border-slate-200 px-3 py-3">
+              <div className="flex items-start gap-3 rounded-lg border border-app-border px-3 py-3">
                 <button
                   type="button"
                   role="switch"
@@ -915,11 +915,11 @@ export default function EditBoardPage() {
                   className={`mt-0.5 inline-flex h-6 w-11 shrink-0 items-center rounded-full border transition ${
                     resolvedRequireApprovalForDone
                       ? "border-emerald-600 bg-emerald-600"
-                      : "border-slate-300 bg-slate-200"
+                      : "border-app-border bg-app-surface-strong"
                   } ${isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
                 >
                   <span
-                    className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition ${
+                    className={`inline-block h-5 w-5 rounded-full bg-app-surface shadow-card transition ${
                       resolvedRequireApprovalForDone
                         ? "translate-x-5"
                         : "translate-x-0.5"
@@ -927,17 +927,17 @@ export default function EditBoardPage() {
                   />
                 </button>
                 <span className="space-y-1">
-                  <span className="block text-sm font-medium text-slate-900">
+                  <span className="block text-sm font-medium text-app-text">
                     Require approval
                   </span>
-                  <span className="block text-xs text-slate-600">
+                  <span className="block text-xs text-app-text-muted">
                     Require at least one linked approval in{" "}
                     <code>approved</code> state before a task can be marked{" "}
                     <code>done</code>.
                   </span>
                 </span>
               </div>
-              <div className="flex items-start gap-3 rounded-lg border border-slate-200 px-3 py-3">
+              <div className="flex items-start gap-3 rounded-lg border border-app-border px-3 py-3">
                 <button
                   type="button"
                   role="switch"
@@ -950,11 +950,11 @@ export default function EditBoardPage() {
                   className={`mt-0.5 inline-flex h-6 w-11 shrink-0 items-center rounded-full border transition ${
                     resolvedRequireReviewBeforeDone
                       ? "border-emerald-600 bg-emerald-600"
-                      : "border-slate-300 bg-slate-200"
+                      : "border-app-border bg-app-surface-strong"
                   } ${isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
                 >
                   <span
-                    className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition ${
+                    className={`inline-block h-5 w-5 rounded-full bg-app-surface shadow-card transition ${
                       resolvedRequireReviewBeforeDone
                         ? "translate-x-5"
                         : "translate-x-0.5"
@@ -962,16 +962,16 @@ export default function EditBoardPage() {
                   />
                 </button>
                 <span className="space-y-1">
-                  <span className="block text-sm font-medium text-slate-900">
+                  <span className="block text-sm font-medium text-app-text">
                     Require review before done
                   </span>
-                  <span className="block text-xs text-slate-600">
+                  <span className="block text-xs text-app-text-muted">
                     Tasks must move to <code>review</code> before they can be
                     marked <code>done</code>.
                   </span>
                 </span>
               </div>
-              <div className="flex items-start gap-3 rounded-lg border border-slate-200 px-3 py-3">
+              <div className="flex items-start gap-3 rounded-lg border border-app-border px-3 py-3">
                 <button
                   type="button"
                   role="switch"
@@ -986,11 +986,11 @@ export default function EditBoardPage() {
                   className={`mt-0.5 inline-flex h-6 w-11 shrink-0 items-center rounded-full border transition ${
                     resolvedCommentRequiredForReview
                       ? "border-emerald-600 bg-emerald-600"
-                      : "border-slate-300 bg-slate-200"
+                      : "border-app-border bg-app-surface-strong"
                   } ${isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
                 >
                   <span
-                    className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition ${
+                    className={`inline-block h-5 w-5 rounded-full bg-app-surface shadow-card transition ${
                       resolvedCommentRequiredForReview
                         ? "translate-x-5"
                         : "translate-x-0.5"
@@ -998,16 +998,16 @@ export default function EditBoardPage() {
                   />
                 </button>
                 <span className="space-y-1">
-                  <span className="block text-sm font-medium text-slate-900">
+                  <span className="block text-sm font-medium text-app-text">
                     Require comment for review
                   </span>
-                  <span className="block text-xs text-slate-600">
+                  <span className="block text-xs text-app-text-muted">
                     Require a task comment when moving status to{" "}
                     <code>review</code>.
                   </span>
                 </span>
               </div>
-              <div className="flex items-start gap-3 rounded-lg border border-slate-200 px-3 py-3">
+              <div className="flex items-start gap-3 rounded-lg border border-app-border px-3 py-3">
                 <button
                   type="button"
                   role="switch"
@@ -1022,11 +1022,11 @@ export default function EditBoardPage() {
                   className={`mt-0.5 inline-flex h-6 w-11 shrink-0 items-center rounded-full border transition ${
                     resolvedBlockStatusChangesWithPendingApproval
                       ? "border-emerald-600 bg-emerald-600"
-                      : "border-slate-300 bg-slate-200"
+                      : "border-app-border bg-app-surface-strong"
                   } ${isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
                 >
                   <span
-                    className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition ${
+                    className={`inline-block h-5 w-5 rounded-full bg-app-surface shadow-card transition ${
                       resolvedBlockStatusChangesWithPendingApproval
                         ? "translate-x-5"
                         : "translate-x-0.5"
@@ -1034,16 +1034,16 @@ export default function EditBoardPage() {
                   />
                 </button>
                 <span className="space-y-1">
-                  <span className="block text-sm font-medium text-slate-900">
+                  <span className="block text-sm font-medium text-app-text">
                     Block status changes with pending approval
                   </span>
-                  <span className="block text-xs text-slate-600">
+                  <span className="block text-xs text-app-text-muted">
                     Prevent status transitions while any linked approval is in{" "}
                     <code>pending</code> state.
                   </span>
                 </span>
               </div>
-              <div className="flex items-start gap-3 rounded-lg border border-slate-200 px-3 py-3">
+              <div className="flex items-start gap-3 rounded-lg border border-app-border px-3 py-3">
                 <button
                   type="button"
                   role="switch"
@@ -1056,11 +1056,11 @@ export default function EditBoardPage() {
                   className={`mt-0.5 inline-flex h-6 w-11 shrink-0 items-center rounded-full border transition ${
                     resolvedOnlyLeadCanChangeStatus
                       ? "border-emerald-600 bg-emerald-600"
-                      : "border-slate-300 bg-slate-200"
+                      : "border-app-border bg-app-surface-strong"
                   } ${isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
                 >
                   <span
-                    className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition ${
+                    className={`inline-block h-5 w-5 rounded-full bg-app-surface shadow-card transition ${
                       resolvedOnlyLeadCanChangeStatus
                         ? "translate-x-5"
                         : "translate-x-0.5"
@@ -1068,10 +1068,10 @@ export default function EditBoardPage() {
                   />
                 </button>
                 <span className="space-y-1">
-                  <span className="block text-sm font-medium text-slate-900">
+                  <span className="block text-sm font-medium text-app-text">
                     Only lead can change status
                   </span>
-                  <span className="block text-xs text-slate-600">
+                  <span className="block text-xs text-app-text-muted">
                     Restrict status changes to the board lead.
                   </span>
                 </span>
@@ -1079,7 +1079,7 @@ export default function EditBoardPage() {
             </section>
 
             {gateways.length === 0 ? (
-              <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+              <div className="rounded-lg border border-app-border bg-app-surface-muted px-4 py-3 text-sm text-app-text-muted">
                 <p>
                   No gateways available. Create one in Gateways to continue.
                 </p>
@@ -1087,7 +1087,7 @@ export default function EditBoardPage() {
             ) : null}
 
             {errorMessage ? (
-              <p className="text-sm text-red-500">{errorMessage}</p>
+              <p className="text-sm text-app-danger">{errorMessage}</p>
             ) : null}
 
             <div className="flex justify-end gap-3">
@@ -1107,18 +1107,18 @@ export default function EditBoardPage() {
               </Button>
             </div>
 
-            <section className="space-y-4 border-t border-slate-200 pt-4">
+            <section className="space-y-4 border-t border-app-border pt-4">
               <div>
-                <h2 className="text-base font-semibold text-slate-900">
+                <h2 className="text-base font-semibold text-app-text">
                   Webhooks
                 </h2>
-                <p className="text-xs text-slate-600">
+                <p className="text-xs text-app-text-muted">
                   Add inbound webhook endpoints so the lead agent can react to
                   external events.
                 </p>
               </div>
-              <div className="space-y-3 rounded-lg border border-slate-200 px-4 py-4">
-                <label className="text-sm font-medium text-slate-900">
+              <div className="space-y-3 rounded-lg border border-app-border px-4 py-4">
+                <label className="text-sm font-medium text-app-text">
                   Lead agent instruction
                 </label>
                 <Textarea
@@ -1131,7 +1131,7 @@ export default function EditBoardPage() {
                   disabled={isLoading || isWebhookBusy}
                 />
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-900">
+                  <label className="text-sm font-medium text-app-text">
                     Agent
                   </label>
                   <Select
@@ -1174,15 +1174,15 @@ export default function EditBoardPage() {
               </div>
 
               {webhookErrorMessage ? (
-                <p className="text-sm text-red-500">{webhookErrorMessage}</p>
+                <p className="text-sm text-app-danger">{webhookErrorMessage}</p>
               ) : null}
 
               {webhooksQuery.isLoading ? (
-                <p className="text-sm text-slate-500">Loading webhooks…</p>
+                <p className="text-sm text-app-text-quiet">Loading webhooks…</p>
               ) : null}
 
               {!webhooksQuery.isLoading && webhooks.length === 0 ? (
-                <p className="rounded-lg border border-dashed border-slate-300 px-4 py-3 text-sm text-slate-600">
+                <p className="rounded-lg border border-dashed border-app-border px-4 py-3 text-sm text-app-text-muted">
                   No webhooks configured yet.
                 </p>
               ) : null}

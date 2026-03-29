@@ -69,14 +69,14 @@ function InviteContent() {
 
   return (
     <div className="min-h-screen bg-app text-strong">
-      <header className="border-b border-[color:var(--border)] bg-white">
+      <header className="border-b border-[color:var(--border)] bg-app-surface">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <BrandMark />
         </div>
       </header>
 
       <main className="mx-auto flex max-w-3xl flex-col gap-6 px-6 py-16">
-        <div className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 md:p-8 shadow-sm">
+        <div className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 md:p-8 shadow-card">
           <div className="flex flex-col gap-3">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-quiet">
               Organization Invite
@@ -99,7 +99,7 @@ function InviteContent() {
             />
 
             {error ? (
-              <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-600">
+              <div className="rounded-lg border border-rose-200 bg-app-danger-soft px-4 py-2 text-sm text-app-danger">
                 {error}
               </div>
             ) : null}
@@ -152,13 +152,13 @@ export default function InvitePage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-app text-strong">
-          <header className="border-b border-[color:var(--border)] bg-white">
+          <header className="border-b border-[color:var(--border)] bg-app-surface">
             <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
               <BrandMark />
             </div>
           </header>
           <main className="mx-auto flex max-w-3xl flex-col gap-6 px-6 py-16">
-            <div className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 md:p-8 shadow-sm">
+            <div className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 md:p-8 shadow-card">
               <div className="text-sm text-muted">Loading invite…</div>
             </div>
           </main>

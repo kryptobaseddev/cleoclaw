@@ -65,20 +65,20 @@ const formatTimestamp = (value?: string | null) => {
 
 const statusBadgeClass = (status: string) => {
   if (status === "approved") {
-    return "bg-emerald-50 text-emerald-700";
+    return "bg-app-success-soft text-app-success";
   }
   if (status === "rejected") {
-    return "bg-rose-50 text-rose-700";
+    return "bg-app-danger-soft text-app-danger";
   }
-  return "bg-amber-100 text-amber-700";
+  return "bg-amber-100 text-app-warning";
 };
 
 const confidenceBadgeClass = (confidence: number) => {
   if (confidence >= 90) {
-    return "bg-emerald-50 text-emerald-700";
+    return "bg-app-success-soft text-app-success";
   }
   if (confidence >= 80) {
-    return "bg-amber-100 text-amber-700";
+    return "bg-amber-100 text-app-warning";
   }
   return "bg-orange-100 text-orange-700";
 };
@@ -134,14 +134,14 @@ const formatRubricTooltipValue = (
 
   return (
     <div className="flex w-full items-center justify-between gap-3">
-      <span className="flex items-center gap-2 text-slate-600">
+      <span className="flex items-center gap-2 text-app-text-muted">
         <span
           className="h-2.5 w-2.5 rounded-[2px]"
           style={{ backgroundColor: indicatorColor }}
         />
         <span>{label}</span>
       </span>
-      <span className="font-mono font-medium tabular-nums text-slate-900">
+      <span className="font-mono font-medium tabular-nums text-app-text">
         {displayValue}
       </span>
     </div>
@@ -549,27 +549,27 @@ export function BoardApprovalsPanel({
   return (
     <div className={cn("space-y-6", scrollable && "h-full")}>
       {errorState ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-app-danger">
           {errorState}
         </div>
       ) : null}
       {loadingState ? (
-        <p className="text-sm text-slate-500">Loading approvals…</p>
+        <p className="text-sm text-app-text-quiet">Loading approvals…</p>
       ) : pendingCount === 0 && resolvedCount === 0 ? (
         <div
           className={cn(
-            "rounded-xl border border-dashed border-slate-200 bg-white px-6 py-10 text-center",
+            "rounded-xl border border-dashed border-app-border bg-app-surface px-6 py-10 text-center",
             scrollable && "flex h-full items-center justify-center",
           )}
         >
           <div className="max-w-sm">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-app-success-soft text-app-success">
               <CheckCircle2 className="h-6 w-6" />
             </div>
-            <p className="mt-4 text-sm font-semibold text-slate-900">
+            <p className="mt-4 text-sm font-semibold text-app-text">
               All clear
             </p>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-app-text-quiet">
               No approvals to review right now. New approvals will show up here
               as soon as they arrive.
             </p>
@@ -584,21 +584,21 @@ export function BoardApprovalsPanel({
         >
           <div
             className={cn(
-              "overflow-hidden rounded-xl border border-slate-200 bg-white",
+              "overflow-hidden rounded-xl border border-app-border bg-app-surface",
               scrollable && "flex min-h-0 flex-col",
             )}
           >
-            <div className="border-b border-slate-200 bg-slate-50 px-4 py-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+            <div className="border-b border-app-border bg-app-surface-muted px-4 py-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-app-text-quiet">
                 Unapproved tasks
               </p>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-xs text-app-text-quiet">
                 {pendingCount} pending · {resolvedCount} resolved
               </p>
             </div>
             <div
               className={cn(
-                "divide-y divide-slate-100",
+                "divide-y divide-app-border",
                 scrollable && "min-h-0 overflow-y-auto",
               )}
             >
@@ -632,13 +632,13 @@ export function BoardApprovalsPanel({
                     type="button"
                     onClick={() => setSelectedId(approval.id)}
                     className={cn(
-                      "w-full px-4 py-4 text-left transition hover:bg-slate-50",
-                      isSelected && "bg-amber-50 border-l-2 border-amber-500",
+                      "w-full px-4 py-4 text-left transition hover:bg-app-surface-muted",
+                      isSelected && "bg-app-warning-soft border-l-2 border-amber-500",
                       !isPending && "opacity-60",
                     )}
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-app-text-quiet">
                         {humanizeAction(approval.action_type)}
                       </span>
                       <span
@@ -650,16 +650,16 @@ export function BoardApprovalsPanel({
                         {formatStatusLabel(approval.status)}
                       </span>
                     </div>
-                    <p className="mt-2 text-sm font-semibold text-slate-900">
+                    <p className="mt-2 text-sm font-semibold text-app-text">
                       {primaryLabel}
                     </p>
                     {boardText ? (
-                      <p className="mt-1 text-xs text-slate-500">
+                      <p className="mt-1 text-xs text-app-text-quiet">
                         Board · {boardText}
                       </p>
                     ) : null}
-                    <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
-                      <span className="rounded bg-slate-100 px-1.5 py-0.5 font-semibold text-slate-700">
+                    <div className="mt-2 flex items-center gap-2 text-xs text-app-text-quiet">
+                      <span className="rounded bg-app-surface-muted px-1.5 py-0.5 font-semibold text-app-text-muted">
                         {approval.confidence}% score
                       </span>
                       <Clock className="h-3.5 w-3.5 opacity-60" />
@@ -673,19 +673,19 @@ export function BoardApprovalsPanel({
 
           <div
             className={cn(
-              "overflow-hidden rounded-xl border border-slate-200 bg-white",
+              "overflow-hidden rounded-xl border border-app-border bg-app-surface",
               scrollable && "flex min-h-0 flex-col",
             )}
           >
-            <div className="border-b border-slate-200 bg-slate-50 px-4 py-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+            <div className="border-b border-app-border bg-app-surface-muted px-4 py-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-app-text-quiet">
                 {selectedApproval?.status === "pending"
                   ? "Latest unapproved task"
                   : "Approval detail"}
               </p>
             </div>
             {!selectedApproval ? (
-              <div className="flex h-full items-center justify-center px-6 py-10 text-sm text-slate-500">
+              <div className="flex h-full items-center justify-center px-6 py-10 text-sm text-app-text-quiet">
                 Select an approval to review details.
               </div>
             ) : (
@@ -755,10 +755,10 @@ export function BoardApprovalsPanel({
                   <div className="flex h-full flex-col gap-6 px-6 py-6">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
-                        <p className="text-lg font-semibold text-slate-900">
+                        <p className="text-lg font-semibold text-app-text">
                           {humanizeAction(selectedApproval.action_type)}
                         </p>
-                        <p className="mt-1 text-xs text-slate-500">
+                        <p className="mt-1 text-xs text-app-text-quiet">
                           Requested{" "}
                           {formatTimestamp(selectedApproval.created_at)}
                         </p>
@@ -781,7 +781,7 @@ export function BoardApprovalsPanel({
                                 handleDecision(selectedApproval.id, "approved")
                               }
                               disabled={updatingId === selectedApproval.id}
-                              className="bg-slate-900 text-white hover:bg-slate-800"
+                              className="bg-app-surface-strong text-white hover:bg-app-surface-muted"
                             >
                               Approve
                             </Button>
@@ -792,7 +792,7 @@ export function BoardApprovalsPanel({
                                 handleDecision(selectedApproval.id, "rejected")
                               }
                               disabled={updatingId === selectedApproval.id}
-                              className="border-slate-300 text-slate-700 hover:bg-slate-100"
+                              className="border-app-border text-app-text-muted hover:bg-app-surface-muted"
                             >
                               Reject
                             </Button>
@@ -801,17 +801,17 @@ export function BoardApprovalsPanel({
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+                    <div className="flex items-center gap-3 rounded-lg border border-app-border bg-app-surface-muted px-4 py-3">
                       <StatusDot
                         status={selectedApproval.status}
                         variant="approval"
                         className={cn("h-2 w-2 rounded-full")}
                       />
                       <div>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-app-text-quiet">
                           Status
                         </p>
-                        <p className="text-sm font-medium text-slate-700">
+                        <p className="text-sm font-medium text-app-text-muted">
                           {formatStatusLabel(selectedApproval.status)} ·{" "}
                           {selectedApproval.status === "pending"
                             ? "Awaiting your decision"
@@ -822,10 +822,10 @@ export function BoardApprovalsPanel({
 
                     {titleText ? (
                       <div className="space-y-2">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-app-text-quiet">
                           Title
                         </p>
-                        <div className="text-sm font-medium text-slate-900">
+                        <div className="text-sm font-medium text-app-text">
                           {titleText}
                         </div>
                       </div>
@@ -833,10 +833,10 @@ export function BoardApprovalsPanel({
 
                     {descriptionText ? (
                       <div className="space-y-2">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-app-text-quiet">
                           Description
                         </p>
-                        <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+                        <div className="rounded-lg border border-app-border bg-app-surface px-4 py-3 text-sm text-app-text-muted">
                           {descriptionText}
                         </div>
                       </div>
@@ -844,10 +844,10 @@ export function BoardApprovalsPanel({
 
                     {reasoningText ? (
                       <div className="space-y-2">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-app-text-quiet">
                           Lead reasoning
                         </p>
-                        <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+                        <div className="rounded-lg border border-app-border bg-app-surface px-4 py-3 text-sm text-app-text-muted">
                           <p>{reasoningText}</p>
                         </div>
                       </div>
@@ -855,7 +855,7 @@ export function BoardApprovalsPanel({
 
                     {relatedTasks.length > 0 ? (
                       <div className="space-y-2">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-app-text-quiet">
                           Related tasks
                         </p>
                         <div className="flex flex-wrap gap-2">
@@ -866,7 +866,7 @@ export function BoardApprovalsPanel({
                                 selectedApproval.board_id,
                                 task.id,
                               )}
-                              className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs text-slate-700 underline-offset-2 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 hover:underline"
+                              className="rounded-md border border-app-border bg-app-surface px-2 py-1 text-xs text-app-text-muted underline-offset-2 transition hover:border-app-border hover:bg-app-surface-muted hover:text-app-text hover:underline"
                             >
                               {task.title}
                             </Link>
@@ -877,19 +877,19 @@ export function BoardApprovalsPanel({
 
                     {extraRows.length > 0 ? (
                       <div className="space-y-2">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-app-text-quiet">
                           Details
                         </p>
                         <div className="grid gap-3 sm:grid-cols-2">
                           {extraRows.map((row) => (
                             <div
                               key={`${selectedApproval.id}-${row.label}`}
-                              className="rounded-lg border border-slate-200 bg-white px-3 py-2"
+                              className="rounded-lg border border-app-border bg-app-surface px-3 py-2"
                             >
-                              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-app-text-quiet">
                                 {row.label}
                               </p>
-                              <p className="mt-1 text-sm font-medium text-slate-900">
+                              <p className="mt-1 text-sm font-medium text-app-text">
                                 {row.value}
                               </p>
                             </div>
@@ -900,7 +900,7 @@ export function BoardApprovalsPanel({
 
                     {hasRubric ? (
                       <div className="space-y-4">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-app-text-quiet">
                           Rubric scores
                         </p>
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -915,11 +915,11 @@ export function BoardApprovalsPanel({
                                     className="h-2.5 w-2.5 rounded-full"
                                     style={{ backgroundColor: entry.fill }}
                                   />
-                                  <span className="text-slate-700">
+                                  <span className="text-app-text-muted">
                                     {entry.name}
                                   </span>
                                 </div>
-                                <span className="font-medium tabular-nums text-slate-900">
+                                <span className="font-medium tabular-nums text-app-text">
                                   {entry.percentLabel}
                                 </span>
                               </div>

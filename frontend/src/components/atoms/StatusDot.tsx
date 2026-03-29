@@ -6,9 +6,9 @@ const AGENT_STATUS_DOT_CLASS_BY_STATUS: Record<string, string> = {
   online: "bg-emerald-500",
   busy: "bg-amber-500",
   provisioning: "bg-amber-500",
-  updating: "bg-sky-500",
+  updating: "bg-gradient-to-r from-[#2fd9f4] to-[#06b6d4]",
   deleting: "bg-rose-500",
-  offline: "bg-slate-400",
+  offline: "bg-app-surface-strong",
 };
 
 const APPROVAL_STATUS_DOT_CLASS_BY_STATUS: Record<string, string> = {
@@ -18,7 +18,7 @@ const APPROVAL_STATUS_DOT_CLASS_BY_STATUS: Record<string, string> = {
 };
 
 const TASK_STATUS_DOT_CLASS_BY_STATUS: Record<string, string> = {
-  inbox: "bg-slate-400",
+  inbox: "bg-app-surface-strong",
   in_progress: "bg-purple-500",
   review: "bg-indigo-500",
   done: "bg-emerald-500",
@@ -34,9 +34,9 @@ const STATUS_DOT_CLASS_BY_VARIANT: Record<
 };
 
 const DEFAULT_STATUS_DOT_CLASS: Record<StatusDotVariant, string> = {
-  agent: "bg-slate-300",
+  agent: "bg-app-surface-strong",
   approval: "bg-amber-500",
-  task: "bg-slate-300",
+  task: "bg-app-surface-strong",
 };
 
 export const statusDotClass = (

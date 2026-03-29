@@ -133,12 +133,12 @@ export default function NewBoardGroupPage() {
     >
       <form
         onSubmit={handleSubmit}
-        className="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+        className="space-y-6 rounded-xl border border-app-border bg-app-surface p-6 shadow-card"
       >
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-900">
-              Group name <span className="text-red-500">*</span>
+            <label className="text-sm font-medium text-app-text">
+              Group name <span className="text-app-danger">*</span>
             </label>
             <Input
               value={name}
@@ -150,7 +150,7 @@ export default function NewBoardGroupPage() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-900">
+          <label className="text-sm font-medium text-app-text">
             Description
           </label>
           <Textarea
@@ -164,8 +164,8 @@ export default function NewBoardGroupPage() {
 
         <div className="space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <label className="text-sm font-medium text-slate-900">Boards</label>
-            <span className="text-xs text-slate-500">
+            <label className="text-sm font-medium text-app-text">Boards</label>
+            <span className="text-xs text-app-text-quiet">
               {selectedBoardIds.size} selected
             </span>
           </div>
@@ -175,21 +175,21 @@ export default function NewBoardGroupPage() {
             placeholder="Search boards..."
             disabled={isCreating}
           />
-          <div className="max-h-64 overflow-auto rounded-xl border border-slate-200 bg-slate-50/40">
+          <div className="max-h-64 overflow-auto rounded-xl border border-app-border bg-app-surface-muted/40">
             {boardsQuery.isLoading ? (
-              <div className="px-4 py-6 text-sm text-slate-500">
+              <div className="px-4 py-6 text-sm text-app-text-quiet">
                 Loading boards…
               </div>
             ) : boardsQuery.error ? (
-              <div className="px-4 py-6 text-sm text-rose-700">
+              <div className="px-4 py-6 text-sm text-app-danger">
                 {boardsQuery.error.message}
               </div>
             ) : boards.length === 0 ? (
-              <div className="px-4 py-6 text-sm text-slate-500">
+              <div className="px-4 py-6 text-sm text-app-text-quiet">
                 No boards found.
               </div>
             ) : (
-              <ul className="divide-y divide-slate-200">
+              <ul className="divide-y divide-app-border">
                 {boards
                   .filter((board) => {
                     const q = boardSearch.trim().toLowerCase();
@@ -207,7 +207,7 @@ export default function NewBoardGroupPage() {
                         <label className="flex cursor-pointer items-start gap-3">
                           <input
                             type="checkbox"
-                            className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600"
+                            className="mt-1 h-4 w-4 rounded border-app-border text-blue-600"
                             checked={checked}
                             onChange={() => {
                               setSelectedBoardIds((prev) => {
@@ -223,15 +223,15 @@ export default function NewBoardGroupPage() {
                             disabled={isCreating}
                           />
                           <div className="min-w-0">
-                            <p className="truncate text-sm font-medium text-slate-900">
+                            <p className="truncate text-sm font-medium text-app-text">
                               {board.name}
                             </p>
-                            <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                              <span className="font-mono text-[11px] text-slate-400">
+                            <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-app-text-quiet">
+                              <span className="font-mono text-[11px] text-app-text-quiet">
                                 {board.id}
                               </span>
                               {isAlreadyGrouped ? (
-                                <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-amber-900">
+                                <span className="rounded-full border border-amber-200 bg-app-warning-soft px-2 py-0.5 text-app-warning">
                                   currently grouped
                                 </span>
                               ) : null}
@@ -244,14 +244,14 @@ export default function NewBoardGroupPage() {
               </ul>
             )}
           </div>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-app-text-quiet">
             Optional. Selected boards will be assigned to this group after
             creation. You can change membership later in group edit or board
             settings.
           </p>
         </div>
 
-        {error ? <p className="text-sm text-red-500">{error}</p> : null}
+        {error ? <p className="text-sm text-app-danger">{error}</p> : null}
 
         <div className="flex justify-end gap-3">
           <Button
@@ -267,7 +267,7 @@ export default function NewBoardGroupPage() {
           </Button>
         </div>
 
-        <div className="border-t border-slate-100 pt-4 text-xs text-slate-500">
+        <div className="border-t border-app-border pt-4 text-xs text-app-text-quiet">
           Want to assign boards later? Update each board in{" "}
           <Link
             href="/boards"
