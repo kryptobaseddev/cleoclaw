@@ -1,0 +1,1 @@
+# Screenshots\n\nPlaceholder directory for CleoClaw screenshots.\n\nNeeded:\n- dashboard.png — Main dashboard overview\n- board-chat.png — Board chat with agent responses\n- gateway-wizard.png — Gateway onboarding wizard steps\n- agent-status.png — Agent list with health status indicators\n- approval-flow.png — Approval governance workflow

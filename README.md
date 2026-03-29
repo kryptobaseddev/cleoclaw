@@ -1,182 +1,241 @@
 # CleoClaw Mission Control
 
-[![CI](https://github.com/abhi1693/openclaw-mission-control/actions/workflows/ci.yml/badge.svg)](https://github.com/abhi1693/openclaw-mission-control/actions/workflows/ci.yml) ![Static Badge](https://img.shields.io/badge/Join-Slack-active?style=flat&color=blue&link=https%3A%2F%2Fjoin.slack.com%2Ft%2Foc-mission-control%2Fshared_invite%2Fzt-3qpcm57xh-AI9C~smc3MDBVzEhvwf7gg)
+CleoClaw is a self-hosted control plane for [OpenClaw](https://github.com/openclaw/openclaw) AI agent instances. It gives you a single web dashboard to connect gateways, manage agents, run board-based chat, and govern operations across your OpenClaw deployment.
 
-CleoClaw Mission Control is the centralized operations and governance platform for running OpenClaw across teams and organizations, with unified visibility, approval controls, and gateway-aware orchestration.
-It gives operators a single interface for work orchestration, agent and gateway management, approval-driven governance, and API-backed automation.
+<!-- TODO: Add dashboard screenshot -->
+<!-- ![CleoClaw Dashboard](docs/screenshots/dashboard.png) -->
 
-<img width="1896" height="869" alt="Mission Control dashboard" src="https://github.com/user-attachments/assets/49a3c823-6aaf-4c56-8328-fb1485ee940f" />
-<img width="1896" height="858" alt="image" src="https://github.com/user-attachments/assets/2bfee13a-3dab-4f4a-9135-e47bb6949dcf" />
-<img width="1890" height="865" alt="image" src="https://github.com/user-attachments/assets/84c2e867-5dc7-4a36-9290-e29179d2a659" />
-<img width="1912" height="881" alt="image" src="https://github.com/user-attachments/assets/3bbd825c-9969-4bbf-bf31-987f9168f370" />
-<img width="1902" height="878" alt="image" src="https://github.com/user-attachments/assets/eea09632-60e4-4d6d-9e6e-bdfa0ac97630" />
+## What CleoClaw does
+
+- **Gateway onboarding wizard** — Step-by-step connection to OpenClaw instances with automatic agent provisioning, proxy configuration guidance, and health verification
+- **Board-based agent chat** — Real-time messaging with discrete OpenClaw agents through a board UI. Each agent has its own workspace and tools
+- **Agent lifecycle management** — Create, provision, monitor, and manage agents with live status indicators. Agents are real OpenClaw agents, not proxied through the main agent
+- **Approval governance** — Route sensitive actions through explicit approval workflows with audit trails
+- **Multi-organization support** — Teams, organizations, and role-based access powered by Better Auth
+
+<!-- TODO: Add board chat screenshot -->
+<!-- ![Board Chat](docs/screenshots/board-chat.png) -->
+
+## What makes CleoClaw different
+
+- **Your main agent stays untouched.** CleoClaw creates its own discrete agents on OpenClaw with isolated workspaces, auth profiles, and sessions. Your personal main agent is never modified, routed through, or contaminated
+- **Batteries-included auth.** Email/password authentication with admin roles and organization management out of the box via [Better Auth](https://www.better-auth.com/). No external auth service needed
+- **Gateway-aware orchestration.** Built specifically for OpenClaw's multi-agent architecture with proper session key routing, agent provisioning, and workspace template deployment
+- **Self-hosted and private.** Runs entirely on your infrastructure. No cloud dependencies, no telemetry, no external calls except to your own OpenClaw instances
 
 ## Platform overview
 
-Mission Control is designed to be the day-to-day operations surface for OpenClaw.
-Instead of splitting work across multiple tools, teams can plan, execute, review, and audit activity in one system.
+CleoClaw is designed as the day-to-day operations surface for OpenClaw. Instead of SSH-ing into your server and managing agents via CLI, you get a web UI that handles:
 
-Core operational areas:
+- **Work orchestration** — Organizations, boards, tasks, and tags in a structured workspace
+- **Agent operations** — Create, inspect, and manage agent lifecycle from a unified control surface
+- **Gateway management** — Connect and operate OpenClaw instances from local or remote environments
+- **Activity visibility** — Timeline of system actions for debugging and accountability
+- **API-first model** — Every UI action is backed by an API endpoint for automation
 
-- Work orchestration: manage organizations, board groups, boards, tasks, and tags.
-- Agent operations: create, inspect, and manage agent lifecycle from a unified control surface.
-- Governance and approvals: route sensitive actions through explicit approval flows.
-- Gateway management: connect and operate gateway integrations for distributed environments.
-- Activity visibility: review a timeline of system actions for faster debugging and accountability.
-- API-first model: support both web workflows and automation clients from the same platform.
+## Who it's for
+
+- **Self-hosters** running OpenClaw on their own infrastructure who want a web UI instead of CLI-only management
+- **Teams** that need shared visibility into agent operations with role-based access control
+- **Operators** who want approval workflows and audit trails for agent actions
+- **Developers** building on top of OpenClaw who want an API-accessible operations layer
 
 ## Use cases
 
-- Multi-team agent operations: run multiple boards and board groups across organizations from a single control plane.
-- Human-in-the-loop execution: require approvals before sensitive actions and keep decision trails attached to work.
-- Distributed runtime control: connect gateways and operate remote execution environments without changing operator workflow.
-- Audit and incident review: use activity history to reconstruct what happened, when it happened, and who initiated it.
-- API-backed process integration: connect internal workflows and automation clients to the same operational model used in the UI.
+- **Personal AI operations** — Manage your OpenClaw instance from a web dashboard instead of terminal
+- **Multi-agent orchestration** — Run multiple board-specific agents simultaneously with isolated workspaces
+- **Approval-gated execution** — Require human approval before agents take sensitive actions
+- **Remote gateway management** — Connect to OpenClaw instances running on different servers or VMs
 
-## What makes Mission Control different
+## Architecture
 
-- Operations-first design: built for running agent work reliably, not just creating tasks.
-- Governance built in: approvals, auth modes, and clear control boundaries are first-class.
-- Gateway-aware orchestration: built to operate both local and connected runtime environments.
-- Unified UI and API model: operators and automation act on the same objects and lifecycle.
-- Team-scale structure: organizations, board groups, boards, tasks, tags, and users in one system of record.
-
-## Who it is for
-
-- Platform teams running OpenClaw in self-hosted or internal environments.
-- Operations and engineering teams that need clear approval and auditability controls.
-- Organizations that want API-accessible operations without losing a usable web UI.
-
-## Get started in minutes
-
-### Option A: One-command production-style bootstrap
-
-If you haven't cloned the repo yet, you can run the installer in one line:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/abhi1693/openclaw-mission-control/master/install.sh | bash
+```
+Browser --> NPM (TLS) --> Next.js (:3011) --> FastAPI (:8011) --> OpenClaw Gateway (:18789)
+                                                   |
+                                                   v
+                                              PostgreSQL
 ```
 
-This clones the repository into `./openclaw-mission-control` if no local checkout is found in your current directory.
+| Layer | Stack |
+|-------|-------|
+| **Frontend** | Next.js 16, React 19, TanStack Query/Table, Radix UI, Tailwind CSS |
+| **Backend** | Python 3.12+, FastAPI, SQLAlchemy/SQLModel, Alembic |
+| **Database** | PostgreSQL 15+ |
+| **Auth** | Better Auth (email/password, admin roles, organizations) |
+| **Queue** | Redis + RQ (background task processing) |
 
-If you already cloned the repo:
+## Quick start
 
-```bash
-./install.sh
-```
-
-The installer is interactive and will:
-
-- Ask for deployment mode (`docker` or `local`).
-- Install missing system dependencies when possible.
-- Generate and configure environment files.
-- Bootstrap and start the selected deployment mode.
-
-Installer support matrix: [`docs/installer-support.md`](./docs/installer-support.md)
-
-### Option B: Manual setup
-
-### Prerequisites
-
-- **Supported platforms**: Linux and macOS. On macOS, Docker mode requires [Docker Desktop](https://www.docker.com/products/docker-desktop/); local mode requires [Homebrew](https://brew.sh) and Node.js 22+.
-- Docker Engine
-- Docker Compose v2 (`docker compose`)
-
-### 1. Configure environment
+### Option A: Docker (recommended)
 
 ```bash
+git clone https://github.com/kryptobaseddev/cleoclaw.git
+cd cleoclaw
 cp .env.example .env
 ```
 
-Before startup:
-
-- Set `LOCAL_AUTH_TOKEN` to a non-placeholder value (minimum 50 characters) when `AUTH_MODE=local`.
-- Ensure `BASE_URL` matches the public backend origin if you are not using `http://localhost:8000`.
-- `NEXT_PUBLIC_API_URL=auto` (default) resolves to `http(s)://<current-host>:8000`.
-  - Set an explicit URL when your API is behind a reverse proxy or non-default port.
-
-### 2. Start Mission Control
+Edit `.env` to set your `LOCAL_AUTH_TOKEN` (50+ characters) and database credentials, then:
 
 ```bash
-docker compose -f compose.yml --env-file .env up -d --build
+docker compose up -d --build
 ```
 
-If you are iterating on the UI in Docker and want automatic frontend rebuilds on
-source changes, run:
+CleoClaw will be available at `http://localhost:3000` with the backend at `http://localhost:8000`.
+
+To rebuild after pulling changes:
 
 ```bash
-docker compose -f compose.yml --env-file .env up --build --watch
+docker compose up -d --build --force-recreate
 ```
 
-Notes:
+### Option B: Local development
 
-- Compose Watch requires Docker Compose **2.22.0+**.
-- You can also run watch separately after startup:
+#### Prerequisites
+
+- Node.js 22+ and npm
+- Python 3.12+ and [uv](https://docs.astral.sh/uv/)
+- PostgreSQL 15+ (running)
+- Redis (for background tasks)
+- An OpenClaw instance ([install guide](https://docs.openclaw.ai/install/npm))
+
+#### 1. Configure
 
 ```bash
-docker compose -f compose.yml --env-file .env up -d --build
-docker compose -f compose.yml --env-file .env watch
+git clone https://github.com/kryptobaseddev/cleoclaw.git
+cd cleoclaw
+cp .env.example .env
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
 ```
 
-After pulling new changes, rebuild and recreate all services:
-
+Key settings in `backend/.env`:
 ```bash
-docker compose -f compose.yml --env-file .env up -d --build --force-recreate
+DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/mission_control
+AUTH_MODE=local
+LOCAL_AUTH_TOKEN=your-secure-token-at-least-50-characters-long-change-this
 ```
 
-For a fully clean rebuild (no cached build layers):
-
+Key settings in `frontend/.env`:
 ```bash
-docker compose -f compose.yml --env-file .env build --no-cache --pull
-docker compose -f compose.yml --env-file .env up -d --force-recreate
+NEXT_PUBLIC_API_URL=http://localhost:8011
+NEXT_PUBLIC_AUTH_MODE=better-auth
+BETTER_AUTH_SECRET=your-secret-at-least-32-characters
 ```
 
-### 3. Open the application
-
-- Mission Control UI: http://localhost:3000
-- Backend health: http://localhost:8000/healthz
-
-### 4. Stop the stack
+#### 2. Backend
 
 ```bash
-docker compose -f compose.yml --env-file .env down
+cd backend
+uv sync
+uv run alembic upgrade head
+uv run uvicorn app.main:app --host 0.0.0.0 --port 8011
+```
+
+#### 3. Frontend
+
+```bash
+cd frontend
+npm install
+npm run build
+npm run start -- --hostname 0.0.0.0 --port 3011
+```
+
+#### 4. Open CleoClaw
+
+Navigate to `http://localhost:3011`, create an account, and connect your first gateway.
+
+## Gateway onboarding
+
+The gateway wizard walks you through connecting to an OpenClaw instance:
+
+<!-- TODO: Add wizard screenshot -->
+<!-- ![Gateway Wizard](docs/screenshots/gateway-wizard.png) -->
+
+### Step 1: Connect
+Enter your OpenClaw gateway address and token. CleoClaw verifies the connection is reachable.
+
+- **Local deployment** (same machine): Use `http://127.0.0.1:18789`
+- **Remote deployment**: Use `http://<server-ip>:18789` or your domain
+
+### Step 2: Proxy configuration
+If you're using a reverse proxy (Nginx Proxy Manager, Caddy, etc.), the wizard shows the configuration needed for SSE (Server-Sent Events) support:
+
+**For the CleoClaw proxy host:**
+```nginx
+proxy_buffering off;
+proxy_cache off;
+proxy_read_timeout 86400s;
+proxy_send_timeout 86400s;
+```
+
+**For the OpenClaw gateway proxy host** (if exposed via domain):
+```nginx
+proxy_set_header X-Forwarded-User ccmc@mission-control;
+proxy_buffering off;
+proxy_cache off;
+proxy_read_timeout 86400s;
+proxy_send_timeout 86400s;
+```
+
+### Step 3: Create
+Name your gateway and CleoClaw handles the rest:
+1. Registers the gateway connection
+2. Creates a dedicated CleoClaw agent on OpenClaw (with full tools, its own workspace and auth)
+3. Sets up a default "General" board with a board lead agent
+4. Verifies the agent is alive and responding
+
+### Device pairing
+If device pairing is required, CleoClaw will prompt you to approve the pairing on the OpenClaw instance:
+```bash
+openclaw devices list
+openclaw devices approve <request-id>
 ```
 
 ## Authentication
 
-Mission Control supports two authentication modes:
+CleoClaw uses [Better Auth](https://www.better-auth.com/) for authentication. No external auth service is required — everything runs locally.
 
-- `local`: shared bearer token mode (default for self-hosted use)
-- `clerk`: Clerk JWT mode
+- **Email/password** registration and login
+- **Admin roles** for organization management
+- **Organization/team** support for multi-user deployments
+- **Session management** via SQLite (frontend-side)
 
-Environment templates:
+First user to register becomes the admin. Additional users can be invited through the organization settings.
 
-- Root: [`.env.example`](./.env.example)
-- Backend: [`backend/.env.example`](./backend/.env.example)
-- Frontend: [`frontend/.env.example`](./frontend/.env.example)
+## Key design principle
+
+**CleoClaw never touches your main OpenClaw agent.** All CleoClaw operations use dedicated, discrete agents with their own workspaces, auth profiles, and session stores. Your personal OpenClaw agent — its workspace files, Telegram pairing, and configuration — remains completely untouched.
 
 ## Documentation
 
-Complete guides for deployment, production, troubleshooting, and testing are in [`/docs`](./docs/).
+- [Getting started](./docs/getting-started/)
+- [Gateway onboarding](./docs/getting-started/gateway-onboarding.md)
+- [Deployment guides](./docs/deployment/)
+- [API reference](./docs/reference/api.md)
+- [Configuration](./docs/reference/configuration.md)
 
 ## Project status
 
-Mission Control is under active development.
+CleoClaw is under active development. Core features (gateway onboarding, board chat, agent management) are functional. APIs and features may change between releases.
 
-- Features and APIs may change between releases.
-- Validate and harden your configuration before production use.
+### Roadmap
+
+- [ ] Real-time SSE streaming for agent responses (typing indicators)
+- [ ] Agent health status via OpenClaw heartbeat integration
+- [ ] Provisioning status check in gateway wizard
+- [ ] One-click installer for common platforms
+- [ ] Skill marketplace integration
 
 ## Contributing
 
-Issues and pull requests are welcome.
+Issues and pull requests are welcome at [github.com/kryptobaseddev/cleoclaw](https://github.com/kryptobaseddev/cleoclaw).
 
-- [Contributing guide](./CONTRIBUTING.md)
-- [Open issues](https://github.com/abhi1693/openclaw-mission-control/issues)
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidelines.
 
 ## License
 
-This project is licensed under the MIT License. See [`LICENSE`](./LICENSE).
+MIT — see [LICENSE](./LICENSE).
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=abhi1693/openclaw-mission-control&type=date&legend=top-left)](https://www.star-history.com/#abhi1693/openclaw-mission-control&type=date&legend=top-left)
+[![Star History Chart](https://api.star-history.com/svg?repos=kryptobaseddev/cleoclaw&type=date)](https://star-history.com/#kryptobaseddev/cleoclaw&Date)
