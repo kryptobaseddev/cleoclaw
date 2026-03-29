@@ -94,7 +94,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-app text-strong" data-sidebar={sidebarOpen ? "open" : "closed"}>
-      <header className="sticky top-0 z-50 border-b border-[color:var(--border)] bg-[color:var(--surface)] shadow-sm">
+      <header className="sticky top-0 z-50 border-b border-[color:var(--accent)]/10 bg-[#10141a]/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
         <div className="flex items-center py-3">
           <div className="flex items-center px-4 md:px-6 md:w-[260px]">
             {isSignedIn ? (
@@ -119,10 +119,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           <SignedIn>
             <div className="ml-auto flex items-center gap-3 px-4 md:px-6">
               <div className="hidden text-right lg:block">
-                 <p className="text-sm font-semibold text-[color:var(--text)]">
+                 <p className="text-sm font-semibold text-app-text">
                   {displayName}
                 </p>
-                 <p className="text-xs text-[color:var(--text-muted)]">Operator</p>
+                 <p className="text-xs text-app-text-muted">Operator</p>
               </div>
               <UserMenu displayName={displayName} displayEmail={displayEmail} />
             </div>
