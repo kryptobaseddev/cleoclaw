@@ -72,26 +72,26 @@ export function PairingApprovalModal({
         </DialogHeader>
 
         <div className="space-y-4 py-2">
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-            <p className="mb-3 font-medium text-slate-900">
+          <div className="rounded-lg border border-app-border bg-app-surface-muted p-4 text-sm text-app-text-muted">
+            <p className="mb-3 font-medium text-app-text">
               On your gateway server, approve the pending pairing request:
             </p>
             <div className="flex items-center gap-2">
-              <code className="flex-1 rounded bg-slate-100 px-3 py-2 font-mono text-xs">
+              <code className="flex-1 rounded bg-app-surface px-3 py-2 font-mono text-xs">
                 openclaw device list
               </code>
               <button
                 type="button"
                 onClick={handleCopy}
-                className="rounded-md p-2 text-slate-500 hover:bg-slate-200 hover:text-slate-700"
+                className="rounded-md p-2 text-app-text-quiet hover:bg-app-surface-muted hover:text-app-text-muted"
                 aria-label="Copy command"
               >
-                {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+                {copied ? <Check className="h-4 w-4 text-app-success" /> : <Copy className="h-4 w-4" />}
               </button>
             </div>
-            <p className="mt-3 text-xs text-slate-500">
+            <p className="mt-3 text-xs text-app-text-quiet">
               Then approve the pending request with{" "}
-              <code className="rounded bg-slate-100 px-1 py-0.5 font-mono">
+              <code className="rounded bg-app-surface px-1 py-0.5 font-mono">
                 openclaw device approve &lt;request-id&gt;
               </code>
               . You can also approve via Telegram if configured.
@@ -99,7 +99,7 @@ export function PairingApprovalModal({
           </div>
 
           {polling ? (
-            <div className="flex items-center gap-2 text-sm text-slate-500">
+            <div className="flex items-center gap-2 text-sm text-app-text-quiet">
               <Loader2 className="h-4 w-4 animate-spin" />
               <span>Waiting for pairing approval...</span>
             </div>

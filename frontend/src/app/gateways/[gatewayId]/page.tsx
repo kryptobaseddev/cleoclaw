@@ -185,29 +185,29 @@ export default function GatewayDetailPage() {
         adminOnlyMessage="Only organization owners and admins can access gateways."
       >
         {gatewayQuery.isLoading ? (
-          <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
+          <div className="rounded-xl border border-app-border bg-app-surface p-6 text-sm text-app-text-quiet backdrop-blur-glass shadow-card">
             Loading gateway…
           </div>
         ) : gatewayQuery.error ? (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
+          <div className="rounded-xl border border-app-border bg-app-danger-soft p-6 text-sm text-app-danger">
             {gatewayQuery.error.message}
           </div>
         ) : gateway ? (
           <div className="space-y-6">
             <div className="grid gap-6 lg:grid-cols-2">
-              <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="rounded-xl border border-app-border bg-app-surface p-6 backdrop-blur-glass shadow-card">
                 <div className="flex items-center justify-between">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-app-text-quiet">
                     Connection
                   </p>
-                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                  <div className="flex items-center gap-2 text-xs text-app-text-quiet">
                     <span
                       className={`h-2 w-2 rounded-full ${
                         statusQuery.isLoading
-                          ? "bg-slate-300"
+                          ? "bg-app-text-quiet"
                           : isConnected
-                            ? "bg-emerald-500"
-                            : "bg-rose-500"
+                            ? "bg-app-success"
+                            : "bg-app-danger"
                       }`}
                     />
                     <span>
@@ -219,59 +219,59 @@ export default function GatewayDetailPage() {
                     </span>
                   </div>
                 </div>
-                <div className="mt-4 space-y-3 text-sm text-slate-700">
+                <div className="mt-4 space-y-3 text-sm text-app-text-muted">
                   <div>
-                    <p className="text-xs uppercase text-slate-400">
+                    <p className="text-xs uppercase text-app-text-quiet">
                       Gateway URL
                     </p>
-                    <p className="mt-1 text-sm font-medium text-slate-900">
+                    <p className="mt-1 text-sm font-medium text-app-text">
                       {gateway.url}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs uppercase text-slate-400">Token</p>
-                    <p className="mt-1 text-sm font-medium text-slate-900">
+                    <p className="text-xs uppercase text-app-text-quiet">Token</p>
+                    <p className="mt-1 text-sm font-medium text-app-text">
                       {maskToken(gateway.token)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs uppercase text-slate-400">
+                    <p className="text-xs uppercase text-app-text-quiet">
                       Device pairing
                     </p>
-                    <p className="mt-1 text-sm font-medium text-slate-900">
+                    <p className="mt-1 text-sm font-medium text-app-text">
                       {gateway.disable_device_pairing ? "Disabled" : "Required"}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <div className="rounded-xl border border-app-border bg-app-surface p-6 backdrop-blur-glass shadow-card">
+                <p className="text-xs font-semibold uppercase tracking-wide text-app-text-quiet">
                   Runtime
                 </p>
-                <div className="mt-4 space-y-3 text-sm text-slate-700">
+                <div className="mt-4 space-y-3 text-sm text-app-text-muted">
                   <div>
-                    <p className="text-xs uppercase text-slate-400">
+                    <p className="text-xs uppercase text-app-text-quiet">
                       Workspace root
                     </p>
-                    <p className="mt-1 text-sm font-medium text-slate-900">
+                    <p className="mt-1 text-sm font-medium text-app-text">
                       {gateway.workspace_root}
                     </p>
                   </div>
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div>
-                      <p className="text-xs uppercase text-slate-400">
+                      <p className="text-xs uppercase text-app-text-quiet">
                         Created
                       </p>
-                      <p className="mt-1 text-sm font-medium text-slate-900">
+                      <p className="mt-1 text-sm font-medium text-app-text">
                         {formatTimestamp(gateway.created_at)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs uppercase text-slate-400">
+                      <p className="text-xs uppercase text-app-text-quiet">
                         Updated
                       </p>
-                      <p className="mt-1 text-sm font-medium text-slate-900">
+                      <p className="mt-1 text-sm font-medium text-app-text">
                         {formatTimestamp(gateway.updated_at)}
                       </p>
                     </div>
@@ -280,15 +280,15 @@ export default function GatewayDetailPage() {
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-xl border border-app-border bg-app-surface p-6 backdrop-blur-glass shadow-card">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <p className="text-xs font-semibold uppercase tracking-wide text-app-text-quiet">
                   Agents
                 </p>
                 {agentsQuery.isLoading ? (
-                  <span className="text-xs text-slate-500">Loading…</span>
+                  <span className="text-xs text-app-text-quiet">Loading…</span>
                 ) : (
-                  <span className="text-xs text-slate-500">
+                  <span className="text-xs text-app-text-quiet">
                     {agents.length} total
                   </span>
                 )}
