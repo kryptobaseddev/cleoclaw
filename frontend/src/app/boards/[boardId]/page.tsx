@@ -442,45 +442,45 @@ const liveFeedEventLabel = (eventType: LiveFeedEventType): string => {
 
 const liveFeedEventPillClass = (eventType: LiveFeedEventType): string => {
   if (eventType === "task.comment") {
-    return "border-blue-200 bg-blue-50 text-blue-700";
+    return "border-app-accent/30 bg-app-accent-soft text-app-accent";
   }
   if (eventType === "task.created") {
-    return "border-emerald-200 bg-emerald-50 text-emerald-700";
+    return "border-app-success/30 bg-app-success-soft text-app-success";
   }
   if (eventType === "task.status_changed") {
-    return "border-amber-200 bg-amber-50 text-amber-700";
+    return "border-app-warning/30 bg-app-warning-soft text-app-warning";
   }
   if (eventType === "board.chat") {
-    return "border-teal-200 bg-teal-50 text-teal-700";
+    return "border-teal-500/30 bg-[rgba(20,184,166,0.12)] text-teal-400";
   }
   if (eventType === "board.command") {
-    return "border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700";
+    return "border-fuchsia-500/30 bg-[rgba(217,70,239,0.12)] text-fuchsia-400";
   }
   if (eventType === "agent.created") {
-    return "border-violet-200 bg-violet-50 text-violet-700";
+    return "border-violet-500/30 bg-[rgba(139,92,246,0.12)] text-violet-400";
   }
   if (eventType === "agent.online") {
-    return "border-lime-200 bg-lime-50 text-lime-700";
+    return "border-lime-500/30 bg-[rgba(132,204,22,0.12)] text-lime-400";
   }
   if (eventType === "agent.offline") {
-    return "border-slate-300 bg-slate-100 text-slate-700";
+    return "border-app-border bg-app-surface-muted text-app-text-muted";
   }
   if (eventType === "agent.updated") {
-    return "border-indigo-200 bg-indigo-50 text-indigo-700";
+    return "border-indigo-500/30 bg-[rgba(99,102,241,0.12)] text-indigo-400";
   }
   if (eventType === "approval.created") {
-    return "border-cyan-200 bg-cyan-50 text-cyan-700";
+    return "border-cyan-500/30 bg-[rgba(6,182,212,0.12)] text-cyan-400";
   }
   if (eventType === "approval.updated") {
-    return "border-sky-200 bg-sky-50 text-sky-700";
+    return "border-app-accent/30 bg-app-accent-soft text-app-accent";
   }
   if (eventType === "approval.approved") {
-    return "border-emerald-200 bg-emerald-50 text-emerald-700";
+    return "border-app-success/30 bg-app-success-soft text-app-success";
   }
   if (eventType === "approval.rejected") {
-    return "border-rose-200 bg-rose-50 text-rose-700";
+    return "border-app-danger/30 bg-app-danger-soft text-app-danger";
   }
-  return "border-slate-200 bg-slate-100 text-slate-700";
+  return "border-app-border bg-app-surface-muted text-app-text-muted";
 };
 
 const normalizeTask = (task: TaskCardRead): Task => ({
@@ -670,7 +670,7 @@ const LiveFeedCard = memo(function LiveFeedCard({
       className={cn(
         "rounded-xl border p-3 transition-colors duration-300",
         isNew
-          ? "border-[color:rgba(88,166,255,0.25)] bg-app-accent-soft shadow-sm hover:border-[color:rgba(88,166,255,0.4)] motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:slide-in-from-right-2 motion-safe:duration-300"
+          ? "border-[color:rgba(88,166,255,0.25)] bg-app-accent-soft shadow-card hover:border-[color:rgba(88,166,255,0.4)] motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:slide-in-from-right-2 motion-safe:duration-300"
           : "border-app-border bg-app-surface hover:border-app-border-strong",
       )}
     >
@@ -2937,26 +2937,26 @@ export default function BoardDetailPage() {
   const statusBadgeClass = (value?: string) => {
     switch (value) {
       case "in_progress":
-        return "bg-purple-100 text-purple-700";
+        return "bg-[rgba(139,92,246,0.14)] text-[#a78bfa]";
       case "review":
-        return "bg-indigo-100 text-indigo-700";
+        return "bg-[rgba(99,102,241,0.14)] text-[#818cf8]";
       case "done":
-        return "bg-emerald-100 text-emerald-700";
+        return "bg-app-success-soft text-app-success";
       default:
-        return "bg-slate-100 text-slate-600";
+        return "bg-app-surface-muted text-app-text-muted";
     }
   };
 
   const priorityBadgeClass = (value?: string) => {
     switch (value?.toLowerCase()) {
       case "high":
-        return "bg-rose-100 text-rose-700";
+        return "bg-app-danger-soft text-app-danger";
       case "medium":
-        return "bg-amber-100 text-amber-700";
+        return "bg-app-warning-soft text-app-warning";
       case "low":
-        return "bg-emerald-100 text-emerald-700";
+        return "bg-app-success-soft text-app-success";
       default:
-        return "bg-slate-100 text-slate-600";
+        return "bg-app-surface-muted text-app-text-muted";
     }
   };
 
@@ -3111,7 +3111,7 @@ export default function BoardDetailPage() {
             isSidePanelOpen ? "overflow-hidden" : "overflow-y-auto",
           )}
         >
-          <div className="sticky top-0 z-30 border-b border-app-border bg-app-surface shadow-sm">
+          <div className="sticky top-0 z-30 border-b border-app-border bg-app-surface/80 backdrop-blur-glass shadow-card">
             <div className="px-4 py-4 md:px-8 md:py-6">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
@@ -3250,7 +3250,7 @@ export default function BoardDetailPage() {
 
           <div className="relative flex flex-col gap-4 p-4 md:flex-row md:gap-6 md:p-6">
             {isOrgAdmin ? (
-              <aside className="flex w-full flex-col rounded-xl border border-app-border bg-app-surface shadow-sm md:h-full md:w-64">
+              <aside className="flex w-full flex-col rounded-xl border border-app-border bg-app-surface shadow-card md:h-full md:w-64">
                 <div className="flex items-center justify-between border-b border-app-border px-4 py-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
@@ -3292,7 +3292,7 @@ export default function BoardDetailPage() {
                               variant="agent"
                               className={cn(
                                 "absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-app-surface",
-                                isWorking && "ring-2 ring-emerald-200",
+                                isWorking && "ring-2 ring-app-success/30",
                               )}
                             />
                           </div>
@@ -3314,13 +3314,13 @@ export default function BoardDetailPage() {
 
             <div className="min-w-0 flex-1 space-y-6">
               {error && (
-                <div className="rounded-lg border border-app-border bg-app-surface p-3 text-sm text-app-text-muted shadow-sm">
+                <div className="rounded-lg border border-app-border bg-app-surface p-3 text-sm text-app-text-muted shadow-card">
                   {error}
                 </div>
               )}
 
               {isLoading ? (
-                <div className="flex min-h-[50vh] items-center justify-center text-sm text-slate-500">
+                <div className="flex min-h-[50vh] items-center justify-center text-sm text-app-text-quiet">
                   Loading {titleLabel}…
                 </div>
               ) : (
@@ -3328,13 +3328,13 @@ export default function BoardDetailPage() {
                   {viewMode === "list" ? (
                     <>
                       {groupSnapshotError ? (
-                        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 shadow-sm">
+                        <div className="rounded-lg border border-app-warning/30 bg-app-warning-soft p-3 text-sm text-app-warning shadow-card">
                           {groupSnapshotError}
                         </div>
                       ) : null}
 
                       {groupSnapshot?.group ? (
-                        <div className="rounded-xl border border-app-border bg-app-surface shadow-sm">
+                        <div className="rounded-xl border border-app-border bg-app-surface shadow-card">
                           <div className="border-b border-app-border px-5 py-4">
                             <div className="flex flex-wrap items-center justify-between gap-3">
                               <div className="min-w-0">
@@ -3426,7 +3426,7 @@ export default function BoardDetailPage() {
                                         {item.tasks.slice(0, 3).map((task) => (
                                           <li
                                             key={task.id}
-                                            className="rounded-lg border border-slate-200 bg-white p-3"
+                                            className="rounded-lg border border-app-border bg-app-surface p-3"
                                           >
                                             <div className="flex flex-wrap items-center justify-between gap-2">
                                               <div className="flex min-w-0 items-center gap-2">
@@ -3453,19 +3453,19 @@ export default function BoardDetailPage() {
                                                 >
                                                   {task.priority}
                                                 </span>
-                                                <p className="truncate text-sm font-medium text-slate-900">
+                                                <p className="truncate text-sm font-medium text-app-text">
                                                   {task.title}
                                                 </p>
                                               </div>
-                                              <p className="text-xs text-slate-500">
+                                              <p className="text-xs text-app-text-quiet">
                                                 {formatTaskTimestamp(
                                                   task.updated_at,
                                                 )}
                                               </p>
                                             </div>
-                                            <p className="mt-2 truncate text-xs text-slate-600">
+                                            <p className="mt-2 truncate text-xs text-app-text-muted">
                                               Assignee:{" "}
-                                              <span className="font-medium text-slate-900">
+                                              <span className="font-medium text-app-text">
                                                 {task.assignee ?? "Unassigned"}
                                               </span>
                                             </p>
@@ -3476,7 +3476,7 @@ export default function BoardDetailPage() {
                                                   .map((tag) => (
                                                     <span
                                                       key={tag.id}
-                                                      className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-700"
+                                                      className="inline-flex items-center gap-1 rounded-full border border-app-border bg-app-surface px-2 py-0.5 text-[10px] font-semibold text-app-text-muted"
                                                     >
                                                       <span
                                                         className="h-1.5 w-1.5 rounded-full"
@@ -3494,13 +3494,13 @@ export default function BoardDetailPage() {
                                           </li>
                                         ))}
                                         {item.tasks.length > 3 ? (
-                                          <li className="text-xs text-slate-500">
+                                          <li className="text-xs text-app-text-quiet">
                                             +{item.tasks.length - 3} more…
                                           </li>
                                         ) : null}
                                       </ul>
                                     ) : (
-                                      <p className="mt-3 text-sm text-slate-500">
+                                      <p className="mt-3 text-sm text-app-text-quiet">
                                         No tasks in this snapshot.
                                       </p>
                                     )}
@@ -3508,18 +3508,18 @@ export default function BoardDetailPage() {
                                 ))}
                               </div>
                             ) : (
-                              <p className="text-sm text-slate-500">
+                              <p className="text-sm text-app-text-quiet">
                                 No other boards in this group yet.
                               </p>
                             )}
                           </div>
                         </div>
                       ) : groupSnapshot ? (
-                        <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600 shadow-sm">
-                          <p className="font-semibold text-slate-900">
+                        <div className="rounded-xl border border-app-border bg-app-surface p-4 text-sm text-app-text-muted shadow-card">
+                          <p className="font-semibold text-app-text">
                             No board group configured
                           </p>
-                          <p className="mt-1 text-sm text-slate-600">
+                          <p className="mt-1 text-sm text-app-text-muted">
                             Assign this board to a group to give agents
                             visibility into related work.
                           </p>
@@ -3555,14 +3555,14 @@ export default function BoardDetailPage() {
                       readOnly={!canWrite}
                     />
                   ) : (
-                    <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
-                      <div className="border-b border-slate-200 px-5 py-4">
+                    <div className="rounded-xl border border-app-border bg-app-surface shadow-card">
+                      <div className="border-b border-app-border px-5 py-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-sm font-semibold text-slate-900">
+                            <p className="text-sm font-semibold text-app-text">
                               All tasks
                             </p>
-                            <p className="text-xs text-slate-500">
+                            <p className="text-xs text-app-text-quiet">
                               {tasks.length} tasks in this board
                             </p>
                           </div>
@@ -3577,9 +3577,9 @@ export default function BoardDetailPage() {
                           </Button>
                         </div>
                       </div>
-                      <div className="divide-y divide-slate-100">
+                      <div className="divide-y divide-app-border">
                         {tasks.length === 0 ? (
-                          <div className="px-5 py-8 text-sm text-slate-500">
+                          <div className="px-5 py-8 text-sm text-app-text-quiet">
                             No tasks yet. Create your first task to get started.
                           </div>
                         ) : (
@@ -3587,15 +3587,15 @@ export default function BoardDetailPage() {
                             <button
                               key={task.id}
                               type="button"
-                              className="w-full px-5 py-4 text-left transition hover:bg-slate-50"
+                              className="w-full px-5 py-4 text-left transition hover:bg-app-surface-muted"
                               onClick={() => openComments(task)}
                             >
                               <div className="flex flex-wrap items-center justify-between gap-3">
                                 <div className="min-w-0">
-                                  <p className="truncate text-sm font-semibold text-slate-900">
+                                  <p className="truncate text-sm font-semibold text-app-text">
                                     {task.title}
                                   </p>
-                                  <p className="mt-1 text-xs text-slate-500">
+                                  <p className="mt-1 text-xs text-app-text-quiet">
                                     {task.description
                                       ? task.description
                                           .toString()
@@ -3604,10 +3604,10 @@ export default function BoardDetailPage() {
                                       : "No description"}
                                   </p>
                                 </div>
-                                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+                                <div className="flex flex-wrap items-center gap-3 text-xs text-app-text-quiet">
                                   {task.approvals_pending_count ? (
-                                    <span className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-amber-700">
-                                      <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                                    <span className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-app-warning">
+                                      <span className="h-1.5 w-1.5 rounded-full bg-app-warning-soft0" />
                                       Approval needed ·{" "}
                                       {task.approvals_pending_count}
                                     </span>
@@ -3633,7 +3633,7 @@ export default function BoardDetailPage() {
                                       {task.tags.slice(0, 2).map((tag) => (
                                         <span
                                           key={tag.id}
-                                          className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-700"
+                                          className="inline-flex items-center gap-1 rounded-full border border-app-border bg-app-surface px-2 py-0.5 text-[10px] font-semibold text-app-text-muted"
                                         >
                                           <span
                                             className="h-1.5 w-1.5 rounded-full"
@@ -3647,16 +3647,16 @@ export default function BoardDetailPage() {
                                         </span>
                                       ))}
                                       {task.tags.length > 2 ? (
-                                        <span className="text-[10px] font-semibold text-slate-500">
+                                        <span className="text-[10px] font-semibold text-app-text-quiet">
                                           +{task.tags.length - 2}
                                         </span>
                                       ) : null}
                                     </div>
                                   ) : null}
-                                  <span className="text-xs text-slate-500">
+                                  <span className="text-xs text-app-text-quiet">
                                     {task.assignee ?? "Unassigned"}
                                   </span>
-                                  <span className="text-xs text-slate-500">
+                                  <span className="text-xs text-app-text-quiet">
                                     {formatTaskTimestamp(
                                       task.updated_at ?? task.created_at,
                                     )}
@@ -3691,7 +3691,7 @@ export default function BoardDetailPage() {
       ) : null}
       <aside
         className={cn(
-          "fixed right-0 top-0 z-50 h-full w-full max-w-[99vw] transform bg-app-surface shadow-2xl transition-transform md:w-[max(760px,45vw)]",
+          "fixed right-0 top-0 z-50 h-full w-full max-w-[99vw] transform bg-app-surface shadow-panel transition-transform md:w-[max(760px,45vw)]",
           isDetailOpen ? "transform-none" : "translate-x-full",
         )}
       >
@@ -3737,19 +3737,19 @@ export default function BoardDetailPage() {
                   />
                 </div>
               ) : (
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-app-text-quiet">
                   No description provided.
                 </p>
               )}
             </div>
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                 Custom fields
               </p>
               {customFieldDefinitionsQuery.isLoading ? (
-                <p className="text-sm text-slate-500">Loading custom fields…</p>
+                <p className="text-sm text-app-text-quiet">Loading custom fields…</p>
               ) : boardCustomFieldDefinitions.length > 0 ? (
-                <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                <div className="rounded-lg border border-app-border bg-app-surface-muted p-3">
                   <dl className="space-y-2">
                     {boardCustomFieldDefinitions.map((definition) => {
                       const value =
@@ -3762,13 +3762,13 @@ export default function BoardDetailPage() {
                           key={definition.id}
                           className="grid grid-cols-1 gap-2 sm:grid-cols-[160px_1fr] sm:gap-3"
                         >
-                          <dt className="text-xs font-semibold text-slate-600">
+                          <dt className="text-xs font-semibold text-app-text-muted">
                             {definition.label || definition.field_key}
                             {definition.required === true ? (
-                              <span className="ml-1 text-rose-600">*</span>
+                              <span className="ml-1 text-app-danger">*</span>
                             ) : null}
                           </dt>
-                          <dd className="text-xs text-slate-800">
+                          <dd className="text-xs text-app-text">
                             {formatCustomFieldDetailValue(definition, value)}
                           </dd>
                         </div>
@@ -3777,11 +3777,11 @@ export default function BoardDetailPage() {
                   </dl>
                 </div>
               ) : (
-                <p className="text-sm text-slate-500">No custom fields.</p>
+                <p className="text-sm text-app-text-quiet">No custom fields.</p>
               )}
             </div>
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                 Tags
               </p>
               {selectedTask?.tags?.length ? (
@@ -3789,7 +3789,7 @@ export default function BoardDetailPage() {
                   {selectedTask.tags.map((tag) => (
                     <span
                       key={tag.id}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-app-border bg-app-surface px-2.5 py-1 text-xs font-semibold text-app-text-muted"
                     >
                       <span
                         className="h-2 w-2 rounded-full"
@@ -3802,11 +3802,11 @@ export default function BoardDetailPage() {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-slate-500">No tags assigned.</p>
+                <p className="text-sm text-app-text-quiet">No tags assigned.</p>
               )}
             </div>
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                 Dependencies
               </p>
               {(() => {
@@ -3849,7 +3849,7 @@ export default function BoardDetailPage() {
             </div>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                   Approvals
                 </p>
                 <Button
@@ -3861,13 +3861,13 @@ export default function BoardDetailPage() {
                 </Button>
               </div>
               {approvalsError ? (
-                <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500">
+                <div className="rounded-lg border border-app-border bg-app-surface-muted p-3 text-xs text-app-text-quiet">
                   {approvalsError}
                 </div>
               ) : isApprovalsLoading ? (
-                <p className="text-sm text-slate-500">Loading approvals…</p>
+                <p className="text-sm text-app-text-quiet">Loading approvals…</p>
               ) : taskApprovals.length === 0 ? (
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-app-text-quiet">
                   No approvals tied to this task.{" "}
                   {pendingApprovals.length > 0
                     ? `${pendingApprovals.length} pending on this board.`
@@ -3882,26 +3882,26 @@ export default function BoardDetailPage() {
                     >
                       <div className="flex flex-wrap items-start justify-between gap-2 text-xs text-app-text-quiet">
                         <div>
-                          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                          <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                             {humanizeApprovalAction(approval.action_type)}
                           </p>
-                          <p className="mt-1 text-xs text-slate-500">
+                          <p className="mt-1 text-xs text-app-text-quiet">
                             Requested{" "}
                             {formatApprovalTimestamp(approval.created_at)}
                           </p>
                         </div>
-                        <span className="text-xs font-semibold text-slate-700">
+                        <span className="text-xs font-semibold text-app-text-muted">
                           {approval.confidence}% confidence · {approval.status}
                         </span>
                       </div>
                       {approvalRows(approval).length > 0 ? (
-                        <div className="mt-2 grid gap-2 text-xs text-slate-600 sm:grid-cols-2">
+                        <div className="mt-2 grid gap-2 text-xs text-app-text-muted sm:grid-cols-2">
                           {approvalRows(approval).map((row) => (
                             <div key={`${approval.id}-${row.label}`}>
-                              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                              <p className="text-[11px] font-semibold uppercase tracking-wider text-app-text-quiet">
                                 {row.label}
                               </p>
-                              <p className="mt-1 text-xs text-slate-700">
+                              <p className="mt-1 text-xs text-app-text-muted">
                                 {row.value}
                               </p>
                             </div>
@@ -3909,7 +3909,7 @@ export default function BoardDetailPage() {
                         </div>
                       ) : null}
                       {approvalReason(approval) ? (
-                        <p className="mt-2 text-xs text-slate-600">
+                        <p className="mt-2 text-xs text-app-text-muted">
                           {approvalReason(approval)}
                         </p>
                       ) : null}
@@ -3937,7 +3937,7 @@ export default function BoardDetailPage() {
                               approvalsUpdatingId === approval.id || !canWrite
                             }
                             title={canWrite ? "Reject" : "Read-only access"}
-                            className="border-slate-300 text-slate-700"
+                            className="border-app-border-strong text-app-text-muted"
                           >
                             Reject
                           </Button>
@@ -3965,22 +3965,22 @@ export default function BoardDetailPage() {
                   mentionSuggestions={boardChatMentionSuggestions}
                 />
                 {postCommentError ? (
-                  <p className="text-xs text-rose-600">{postCommentError}</p>
+                  <p className="text-xs text-app-danger">{postCommentError}</p>
                 ) : null}
                 {!canWrite ? (
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-app-text-quiet">
                     Read-only access. You cannot post comments on this board.
                   </p>
                 ) : null}
               </div>
               {isCommentsLoading ? (
-                <p className="text-sm text-slate-500">Loading comments…</p>
+                <p className="text-sm text-app-text-quiet">Loading comments…</p>
               ) : commentsError ? (
-                <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500">
+                <div className="rounded-lg border border-app-border bg-app-surface-muted p-3 text-xs text-app-text-quiet">
                   {commentsError}
                 </div>
               ) : comments.length === 0 ? (
-                <p className="text-sm text-slate-500">No comments yet.</p>
+                <p className="text-sm text-app-text-quiet">No comments yet.</p>
               ) : (
                 <div className="space-y-3">
                   {comments.map((comment) => (
@@ -4004,7 +4004,7 @@ export default function BoardDetailPage() {
 
       <aside
         className={cn(
-          "fixed right-0 top-0 z-50 h-full w-full max-w-[96vw] transform border-l border-app-border bg-app-surface shadow-2xl transition-transform md:w-[560px]",
+          "fixed right-0 top-0 z-50 h-full w-full max-w-[96vw] transform border-l border-app-border bg-app-surface shadow-panel transition-transform md:w-[560px]",
           isChatOpen ? "transform-none" : "translate-x-full",
         )}
       >
@@ -4066,7 +4066,7 @@ export default function BoardDetailPage() {
 
       <aside
         className={cn(
-          "fixed right-0 top-0 z-50 h-full w-full max-w-[96vw] transform border-l border-app-border bg-app-surface shadow-2xl transition-transform md:w-[520px]",
+          "fixed right-0 top-0 z-50 h-full w-full max-w-[96vw] transform border-l border-app-border bg-app-surface shadow-panel transition-transform md:w-[520px]",
           isLiveFeedOpen ? "transform-none" : "translate-x-full",
         )}
       >
@@ -4093,11 +4093,11 @@ export default function BoardDetailPage() {
             {isLiveFeedHistoryLoading && orderedLiveFeed.length === 0 ? (
               <p className="text-sm text-app-text-quiet">Loading feed…</p>
             ) : liveFeedHistoryError ? (
-              <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-700 shadow-sm">
+              <div className="rounded-lg border border-app-border bg-app-surface p-4 text-sm text-app-text-muted shadow-card">
                 {liveFeedHistoryError}
               </div>
             ) : orderedLiveFeed.length === 0 ? (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-app-text-quiet">
                 Waiting for new activity…
               </p>
             ) : (
@@ -4157,7 +4157,7 @@ export default function BoardDetailPage() {
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                 Title
               </label>
               <Input
@@ -4168,7 +4168,7 @@ export default function BoardDetailPage() {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                 Description
               </label>
               <Textarea
@@ -4180,7 +4180,7 @@ export default function BoardDetailPage() {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                 Custom fields
               </label>
               <TaskCustomFieldsEditor
@@ -4193,7 +4193,7 @@ export default function BoardDetailPage() {
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                   Status
                 </label>
                 <Select
@@ -4214,7 +4214,7 @@ export default function BoardDetailPage() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                   Priority
                 </label>
                 <Select
@@ -4235,7 +4235,7 @@ export default function BoardDetailPage() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                   Due date
                 </label>
                 <Input
@@ -4247,7 +4247,7 @@ export default function BoardDetailPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                 Assignee
               </label>
               <Select
@@ -4270,20 +4270,20 @@ export default function BoardDetailPage() {
                 </SelectContent>
               </Select>
               {assignableAgents.length === 0 ? (
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-app-text-quiet">
                   Add agents to assign tasks.
                 </p>
               ) : null}
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between gap-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                   Tags
                 </label>
                 <button
                   type="button"
                   onClick={() => router.push("/tags")}
-                  className="text-xs font-medium text-slate-500 underline underline-offset-2 transition hover:text-slate-700"
+                  className="text-xs font-medium text-app-text-quiet underline underline-offset-2 transition hover:text-app-text-muted"
                 >
                   Manage tags
                 </button>
@@ -4297,7 +4297,7 @@ export default function BoardDetailPage() {
                 emptyMessage="No tags configured."
               />
               {editTagIds.length === 0 ? (
-                <p className="text-xs text-slate-500">No tags assigned.</p>
+                <p className="text-xs text-app-text-quiet">No tags assigned.</p>
               ) : (
                 <div className="flex flex-wrap gap-2">
                   {editTagIds.map((tagId) => {
@@ -4307,7 +4307,7 @@ export default function BoardDetailPage() {
                     return (
                       <span
                         key={tagId}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-700"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-app-border bg-app-surface-muted px-3 py-1 text-xs text-app-text-muted"
                       >
                         <span
                           className="h-1.5 w-1.5 rounded-full"
@@ -4318,9 +4318,9 @@ export default function BoardDetailPage() {
                           type="button"
                           onClick={() => removeEditTag(tagId)}
                           className={cn(
-                            "rounded-full p-0.5 text-slate-500 transition",
+                            "rounded-full p-0.5 text-app-text-quiet transition",
                             canWrite
-                              ? "hover:bg-white hover:text-slate-700"
+                              ? "hover:bg-app-surface-muted hover:text-app-text"
                               : "opacity-50 cursor-not-allowed",
                           )}
                           aria-label="Remove tag"
@@ -4335,10 +4335,10 @@ export default function BoardDetailPage() {
               )}
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                 Dependencies
               </label>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-app-text-quiet">
                 Tasks stay blocked until every dependency is marked done.
               </p>
               <DropdownSelect
@@ -4355,12 +4355,12 @@ export default function BoardDetailPage() {
                 emptyMessage="No other tasks found."
               />
               {selectedTask?.status === "done" ? (
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-app-text-quiet">
                   Dependencies can only be edited until the task is done.
                 </p>
               ) : null}
               {editDependsOnTaskIds.length === 0 ? (
-                <p className="text-xs text-slate-500">No dependencies.</p>
+                <p className="text-xs text-app-text-quiet">No dependencies.</p>
               ) : (
                 <div className="flex flex-wrap gap-2">
                   {editDependsOnTaskIds.map((depId) => {
@@ -4376,13 +4376,13 @@ export default function BoardDetailPage() {
                         className={cn(
                           "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs",
                           isDone
-                            ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-                            : "border-slate-200 bg-slate-50 text-slate-700",
+                            ? "border-app-success/30 bg-app-success-soft text-app-success"
+                            : "border-app-border bg-app-surface-muted text-app-text-muted",
                         )}
                       >
                         <span className="max-w-[18rem] truncate">{label}</span>
                         {statusLabel ? (
-                          <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                          <span className="text-[10px] font-semibold uppercase tracking-wide text-app-text-quiet">
                             {statusLabel}
                           </span>
                         ) : null}
@@ -4391,9 +4391,9 @@ export default function BoardDetailPage() {
                             type="button"
                             onClick={() => removeTaskDependency(depId)}
                             className={cn(
-                              "rounded-full p-0.5 text-slate-500 transition",
+                              "rounded-full p-0.5 text-app-text-quiet transition",
                               canWrite
-                                ? "hover:bg-white hover:text-slate-700"
+                                ? "hover:bg-app-surface-muted hover:text-app-text"
                                 : "opacity-50 cursor-not-allowed",
                             )}
                             aria-label="Remove dependency"
@@ -4409,7 +4409,7 @@ export default function BoardDetailPage() {
               )}
             </div>
             {saveTaskError ? (
-              <div className="rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-600">
+              <div className="rounded-lg border border-app-border bg-app-surface p-3 text-xs text-app-text-muted">
                 {saveTaskError}
               </div>
             ) : null}
@@ -4419,7 +4419,7 @@ export default function BoardDetailPage() {
               variant="outline"
               onClick={() => setIsDeleteDialogOpen(true)}
               disabled={!selectedTask || isSavingTask || !canWrite}
-              className="border-rose-200 text-rose-600 hover:border-rose-300 hover:text-rose-700"
+              className="border-app-danger/30 text-app-danger hover:border-app-danger/50 hover:text-app-danger"
               title={canWrite ? "Delete task" : "Read-only access"}
             >
               Delete task
@@ -4454,7 +4454,7 @@ export default function BoardDetailPage() {
             </DialogDescription>
           </DialogHeader>
           {deleteTaskError ? (
-            <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-600">
+            <div className="rounded-lg border border-app-danger/30 bg-app-danger-soft p-3 text-xs text-app-danger">
               {deleteTaskError}
             </div>
           ) : null}
@@ -4469,7 +4469,7 @@ export default function BoardDetailPage() {
             <Button
               onClick={handleDeleteTask}
               disabled={isDeletingTask || !canWrite}
-              className="bg-rose-600 text-white hover:bg-rose-700"
+              className="bg-app-danger text-white hover:bg-app-danger/80"
             >
               {isDeletingTask ? "Deleting…" : "Delete task"}
             </Button>
@@ -4565,7 +4565,7 @@ export default function BoardDetailPage() {
                 <button
                   type="button"
                   onClick={() => router.push("/tags")}
-                  className="text-xs font-medium text-slate-500 underline underline-offset-2 transition hover:text-slate-700"
+                  className="text-xs font-medium text-app-text-quiet underline underline-offset-2 transition hover:text-app-text-muted"
                 >
                   Manage tags
                 </button>
@@ -4586,7 +4586,7 @@ export default function BoardDetailPage() {
                     return (
                       <span
                         key={tagId}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-700"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-app-border bg-app-surface-muted px-3 py-1 text-xs text-app-text-muted"
                       >
                         <span
                           className="h-1.5 w-1.5 rounded-full"
@@ -4596,7 +4596,7 @@ export default function BoardDetailPage() {
                         <button
                           type="button"
                           onClick={() => removeCreateTag(tagId)}
-                          className="rounded-full p-0.5 text-slate-500 transition hover:bg-white hover:text-slate-700"
+                          className="rounded-full p-0.5 text-app-text-quiet transition hover:bg-app-surface-muted hover:text-app-text"
                           aria-label="Remove tag"
                           disabled={!canWrite || isCreating}
                         >
@@ -4607,7 +4607,7 @@ export default function BoardDetailPage() {
                   })}
                 </div>
               ) : (
-                <p className="text-xs text-slate-500">No tags assigned.</p>
+                <p className="text-xs text-app-text-quiet">No tags assigned.</p>
               )}
             </div>
             {createError ? (
@@ -4655,13 +4655,13 @@ export default function BoardDetailPage() {
             </DialogHeader>
 
             {agentsControlError ? (
-              <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+              <div className="rounded-lg border border-app-danger/30 bg-app-danger-soft p-3 text-sm text-app-danger">
                 {agentsControlError}
               </div>
             ) : null}
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
-              <p className="font-semibold text-slate-900">What happens</p>
+            <div className="rounded-lg border border-app-border bg-app-surface-muted p-3 text-sm text-app-text-muted">
+              <p className="font-semibold text-app-text">What happens</p>
               <ul className="mt-2 list-disc space-y-1 pl-5">
                 <li>
                   This posts{" "}
@@ -4705,23 +4705,23 @@ export default function BoardDetailPage() {
             <div
               key={toast.id}
               className={cn(
-                "rounded-xl border bg-white px-4 py-3 text-sm shadow-lush",
+                "rounded-xl border bg-app-surface px-4 py-3 text-sm shadow-lush",
                 toast.tone === "error"
-                  ? "border-rose-200 text-rose-700"
-                  : "border-emerald-200 text-emerald-700",
+                  ? "border-app-danger/30 text-app-danger"
+                  : "border-app-success/30 text-app-success",
               )}
             >
               <div className="flex items-start gap-3">
                 <span
                   className={cn(
                     "mt-1 h-2 w-2 rounded-full",
-                    toast.tone === "error" ? "bg-rose-500" : "bg-emerald-500",
+                    toast.tone === "error" ? "bg-app-danger-soft0" : "bg-app-success-soft0",
                   )}
                 />
-                <p className="flex-1 text-sm text-slate-700">{toast.message}</p>
+                <p className="flex-1 text-sm text-app-text-muted">{toast.message}</p>
                 <button
                   type="button"
-                  className="text-xs text-slate-400 hover:text-slate-600"
+                  className="text-xs text-app-text-quiet hover:text-app-text-muted"
                   onClick={() => dismissToast(toast.id)}
                 >
                   Dismiss
