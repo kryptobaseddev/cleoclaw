@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="CleoClaw">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#58a6ff"/>
+      <stop offset="100%" stop-color="#4c9aed"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="14" fill="#161b22" stroke="#30363d"/>
+  <path d="M20 24h10c8 0 14 6 14 14s-6 14-14 14H20z" fill="url(#g)"/>
+  <path d="M30 24h14v8H30z" fill="#0d1117" opacity="0.45"/>
+</svg>
