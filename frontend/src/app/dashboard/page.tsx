@@ -371,24 +371,24 @@ function TopMetricCard({
 }) {
   const iconTone =
     accent === "blue"
-      ? "bg-blue-50 text-blue-600"
+      ? "bg-app-accent/10 text-app-accent"
       : accent === "green"
-        ? "bg-emerald-50 text-emerald-600"
+        ? "bg-app-success-soft text-app-success"
         : accent === "violet"
-          ? "bg-violet-50 text-violet-600"
-          : "bg-green-50 text-green-600";
+          ? "bg-app-accent/10 text-app-accent"
+          : "bg-app-success-soft text-app-success";
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+    <section className="rounded-xl border border-app-border bg-app-surface backdrop-blur-glass shadow-card p-4 md:p-6 transition hover:-translate-y-0.5 hover:shadow-md">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-1.5">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
               {title}
             </p>
             {infoText ? (
               <span
-                className="inline-flex text-slate-400"
+                className="inline-flex text-app-text-quiet"
                 title={infoText}
                 aria-label={infoText}
               >
@@ -397,9 +397,9 @@ function TopMetricCard({
             ) : null}
           </div>
           <div className="mt-2 flex items-end gap-2">
-            <p className="font-heading text-4xl font-bold text-slate-900">{value}</p>
+            <p className="font-heading text-4xl font-bold text-app-text">{value}</p>
             {secondary ? (
-              <p className="pb-1 text-xs text-slate-500">{secondary}</p>
+              <p className="pb-1 text-xs text-app-text-quiet">{secondary}</p>
             ) : null}
           </div>
         </div>
@@ -423,13 +423,13 @@ function InfoBlock({
   rows: SummaryRow[];
 }) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
+    <section className="rounded-xl border border-app-border bg-app-surface backdrop-blur-glass shadow-card p-4 md:p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-1.5">
-          <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
+          <h3 className="text-lg font-semibold text-app-text font-heading">{title}</h3>
           {infoText ? (
             <span
-              className="inline-flex text-slate-400"
+              className="inline-flex text-app-text-quiet"
               title={infoText}
               aria-label={infoText}
             >
@@ -441,29 +441,29 @@ function InfoBlock({
           <span
             className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
               badge.tone === "online"
-                ? "bg-emerald-100 text-emerald-700"
+                ? "bg-app-success-soft text-app-success"
                 : badge.tone === "offline"
-                  ? "bg-rose-100 text-rose-700"
-                  : "bg-slate-200 text-slate-700"
+                  ? "bg-app-danger-soft text-app-danger"
+                  : "bg-app-surface-strong text-app-text-muted"
             }`}
           >
             {badge.text}
           </span>
         ) : null}
       </div>
-      <div className="divide-y divide-slate-100 rounded-lg border border-slate-200 bg-white">
+      <div className="divide-y divide-app-border rounded-lg border border-app-border bg-app-surface">
         {rows.map((row) => (
           <div key={`${row.label}-${row.value}`} className="flex items-start justify-between gap-3 px-3 py-2">
-            <span className="min-w-0 text-sm text-slate-500">{row.label}</span>
+            <span className="min-w-0 text-sm text-app-text-quiet">{row.label}</span>
             <span
               className={`max-w-[65%] break-words text-right text-sm font-medium leading-5 ${
                 row.tone === "success"
-                  ? "text-emerald-700"
+                  ? "text-app-success"
                   : row.tone === "warning"
-                    ? "text-amber-700"
+                    ? "text-app-warning"
                     : row.tone === "danger"
-                      ? "text-rose-700"
-                      : "text-slate-800"
+                      ? "text-app-danger"
+                      : "text-app-text"
               }`}
             >
               {row.value}
@@ -900,10 +900,10 @@ export default function DashboardPage() {
       </SignedOut>
       <SignedIn>
         <DashboardSidebar />
-        <main className="flex-1 overflow-y-auto bg-slate-50">
+        <main className="flex-1 overflow-y-auto bg-app-bg">
           <div className="p-4 md:p-8">
             {metricsQuery.error ? (
-              <div className="mb-4 rounded-lg border border-rose-300 bg-rose-50 p-3 text-sm text-rose-700">
+              <div className="mb-4 rounded-lg border border-[rgba(255,180,171,0.25)] bg-app-danger-soft p-3 text-sm text-app-danger">
                 Load failed: {metricsQuery.error.message}
               </div>
             ) : null}
@@ -960,12 +960,12 @@ export default function DashboardPage() {
               />
             </div>
 
-            <section className="mt-4 rounded-xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
+            <section className="mt-4 rounded-xl border border-app-border bg-app-surface backdrop-blur-glass shadow-card p-4 md:p-6">
               <div className="mb-3 flex items-center justify-between gap-3">
-                <h3 className="text-lg font-semibold text-slate-900">Pending Approvals</h3>
+                <h3 className="text-lg font-semibold text-app-text font-heading">Pending Approvals</h3>
                 <Link
                   href="/approvals"
-                  className="inline-flex items-center gap-1 text-xs text-slate-500 transition hover:text-slate-700"
+                  className="inline-flex items-center gap-1 text-xs text-app-text-quiet transition hover:text-app-accent"
                 >
                   Open global approvals
                   <ArrowUpRight className="h-3.5 w-3.5" />
@@ -973,69 +973,69 @@ export default function DashboardPage() {
               </div>
 
               {!metrics && metricsQuery.isLoading ? (
-                <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
+                <div className="rounded-lg border border-app-border bg-app-surface-muted p-3 text-sm text-app-text-quiet">
                   Loading pending approvals...
                 </div>
               ) : !metrics && metricsQuery.error ? (
-                <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
+                <div className="rounded-lg border border-[rgba(233,195,73,0.25)] bg-app-warning-soft p-3 text-sm text-app-warning">
                   Pending approvals are temporarily unavailable.
                 </div>
               ) : hasPendingApprovals ? (
                 <div className="space-y-2">
-                  <div className="divide-y divide-slate-100 rounded-lg border border-slate-200 bg-white">
+                  <div className="divide-y divide-app-border rounded-lg border border-app-border bg-app-surface">
                     {pendingApprovalItems.map((item) => (
                       <Link
                         key={item.approval_id}
                         href={`/boards/${item.board_id}/approvals`}
-                        className="flex items-center justify-between gap-3 px-3 py-2 transition hover:bg-slate-50"
+                        className="flex items-center justify-between gap-3 px-3 py-2 transition hover:bg-app-surface-muted"
                       >
-                        <span className="min-w-0 text-sm text-slate-700">
-                          <span className="block truncate font-medium text-slate-800">
+                        <span className="min-w-0 text-sm text-app-text-muted">
+                          <span className="block truncate font-medium text-app-text">
                             {item.task_title || "Pending approval"}
                           </span>
-                          <span className="block truncate text-xs text-slate-500">
+                          <span className="block truncate text-xs text-app-text-quiet">
                             {item.board_name} · {item.confidence}% score
                           </span>
                         </span>
-                        <span className="shrink-0 text-xs text-slate-500">
+                        <span className="shrink-0 text-xs text-app-text-quiet">
                           {formatRelativeTimestamp(item.created_at)}
                         </span>
                       </Link>
                     ))}
                   </div>
                   {pendingApprovalsTotal > pendingApprovalItems.length ? (
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-app-text-quiet">
                       Showing latest {formatCount(pendingApprovalItems.length)} of{" "}
                       {formatCount(pendingApprovalsTotal)} pending approvals.
                     </p>
                   ) : null}
                 </div>
               ) : (
-                <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
+                <div className="rounded-lg border border-[rgba(63,185,80,0.25)] bg-app-success-soft p-3 text-sm text-app-success">
                   No pending approvals across your boards.
                 </div>
               )}
             </section>
 
             <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-              <section className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
+              <section className="min-w-0 overflow-hidden rounded-xl border border-app-border bg-app-surface backdrop-blur-glass shadow-card p-4 md:p-6">
                 <div className="mb-3 flex items-center justify-between gap-3">
-                  <h3 className="text-lg font-semibold text-slate-900">Sessions</h3>
-                  <span className="text-xs text-slate-500">{formatCount(activeSessions)}</span>
+                  <h3 className="text-lg font-semibold text-app-text font-heading">Sessions</h3>
+                  <span className="text-xs text-app-text-quiet">{formatCount(activeSessions)}</span>
                 </div>
                 <div className="max-h-[310px] space-y-2 overflow-x-hidden overflow-y-auto pr-1">
                   {!hasConfiguredGateways ? (
-                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
+                    <div className="rounded-lg border border-app-border bg-app-surface-muted p-3 text-sm text-app-text-quiet">
                       No gateways are configured for any board yet.
                     </div>
                   ) : gatewayStatusesQuery.isLoading ? (
-                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
+                    <div className="rounded-lg border border-app-border bg-app-surface-muted p-3 text-sm text-app-text-quiet">
                       Loading sessions...
                     </div>
                   ) : sessionSummaries.length > 0 ? (
                     <>
                       {gatewayUnavailableCount > 0 ? (
-                        <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
+                        <div className="rounded-lg border border-[rgba(233,195,73,0.25)] bg-app-warning-soft p-3 text-sm text-app-warning">
                           {formatCount(gatewayUnavailableCount)} gateway
                           {gatewayUnavailableCount === 1 ? "" : "s"} unavailable; showing sessions
                           from reachable gateways.
@@ -1044,25 +1044,25 @@ export default function DashboardPage() {
                       {sessionSummaries.map((session) => (
                         <div
                           key={session.key}
-                          className="overflow-hidden rounded-lg border border-slate-200 bg-white px-3 py-2"
+                          className="overflow-hidden rounded-lg border border-app-border bg-app-surface px-3 py-2"
                         >
                           <div className="flex items-center justify-between gap-3">
                             <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-medium text-slate-900">
+                              <p className="truncate text-sm font-medium text-app-text">
                                 <span
                                   className={`mr-2 inline-block h-2 w-2 rounded-full ${
-                                    session.isMain ? "bg-emerald-500" : "bg-slate-400"
+                                    session.isMain ? "bg-app-success" : "bg-app-text-quiet"
                                   }`}
                                 />
                                 {session.title}
                               </p>
-                              <p className="mt-0.5 truncate text-xs text-slate-500">{session.subtitle}</p>
+                              <p className="mt-0.5 truncate text-xs text-app-text-quiet">{session.subtitle}</p>
                             </div>
                             <div className="min-w-0 max-w-[45%] text-right">
-                              <p className="truncate text-xs font-medium text-slate-700">
+                              <p className="truncate text-xs font-medium text-app-text-muted">
                                 {session.usage === DASH ? "Usage unavailable" : session.usage}
                               </p>
-                              <p className="text-[11px] text-slate-500">
+                              <p className="text-[11px] text-app-text-quiet">
                                 {session.lastSeenAt
                                   ? formatRelativeTimestamp(session.lastSeenAt)
                                   : "Activity unavailable"}
@@ -1073,23 +1073,23 @@ export default function DashboardPage() {
                       ))}
                     </>
                   ) : gatewayUnavailableCount === gatewayTargets.length ? (
-                    <div className="rounded-lg border border-rose-300 bg-rose-50 p-3 text-sm text-rose-700">
+                    <div className="rounded-lg border border-[rgba(255,180,171,0.25)] bg-app-danger-soft p-3 text-sm text-app-danger">
                       Session data is unavailable for all configured gateways.
                     </div>
                   ) : (
-                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
+                    <div className="rounded-lg border border-app-border bg-app-surface-muted p-3 text-sm text-app-text-quiet">
                       No active sessions detected.
                     </div>
                   )}
                 </div>
               </section>
 
-              <section className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
+              <section className="min-w-0 overflow-hidden rounded-xl border border-app-border bg-app-surface backdrop-blur-glass shadow-card p-4 md:p-6">
                 <div className="mb-3 flex items-center justify-between gap-3">
-                  <h3 className="text-lg font-semibold text-slate-900">Recent Activity</h3>
+                  <h3 className="text-lg font-semibold text-app-text font-heading">Recent Activity</h3>
                   <Link
                     href={activityFeedHref}
-                    className="inline-flex items-center gap-1 text-xs text-slate-500 transition hover:text-slate-700"
+                    className="inline-flex items-center gap-1 text-xs text-app-text-quiet transition hover:text-app-accent"
                   >
                     Open feed
                     <ArrowUpRight className="h-3.5 w-3.5" />
@@ -1111,21 +1111,21 @@ export default function DashboardPage() {
                           onKeyDown={(interactionEvent) =>
                             handleLogRowKeyDown(interactionEvent, eventHref)
                           }
-                          className="cursor-pointer overflow-hidden rounded-lg border border-slate-200 bg-white px-3 py-2 transition hover:border-slate-300 focus-visible:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
+                          className="cursor-pointer overflow-hidden rounded-lg border border-app-border bg-app-surface px-3 py-2 transition hover:border-app-border-strong focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent"
                         >
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0 flex-1 overflow-hidden">
-                              <div className="break-words text-sm font-medium text-slate-900 [&_ol]:mb-0 [&_p]:mb-0 [&_pre]:my-1 [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_ul]:mb-0">
+                              <div className="break-words text-sm font-medium text-app-text [&_ol]:mb-0 [&_p]:mb-0 [&_pre]:my-1 [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_ul]:mb-0">
                                 <Markdown
                                   content={event.message?.trim() || event.event_type}
                                   variant="comment"
                                 />
                               </div>
-                              <p className="mt-0.5 text-xs uppercase tracking-wider text-slate-500">
+                              <p className="mt-0.5 text-xs uppercase tracking-wider text-app-text-quiet">
                                 {event.event_type}
                               </p>
                             </div>
-                            <div className="shrink-0 text-right text-[11px] text-slate-500">
+                            <div className="shrink-0 text-right text-[11px] text-app-text-quiet">
                               <p>{formatRelativeTimestamp(event.created_at)}</p>
                               <p>{formatTimestamp(event.created_at)}</p>
                             </div>
@@ -1134,10 +1134,10 @@ export default function DashboardPage() {
                       );
                     })
                   ) : (
-                    <div className="flex h-[240px] flex-col items-center justify-center rounded-lg border border-slate-200 bg-white text-sm text-slate-500">
-                      <Shield className="mb-2 h-5 w-5 text-slate-400" />
+                    <div className="flex h-[240px] flex-col items-center justify-center rounded-lg border border-app-border bg-app-surface text-sm text-app-text-quiet">
+                      <Shield className="mb-2 h-5 w-5 text-app-text-quiet" />
                       No activity yet
-                      <p className="mt-1 text-xs text-slate-500">Activity appears here when events are emitted.</p>
+                      <p className="mt-1 text-xs text-app-text-quiet">Activity appears here when events are emitted.</p>
                     </div>
                   )}
                 </div>
