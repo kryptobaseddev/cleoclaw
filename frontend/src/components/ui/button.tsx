@@ -11,18 +11,23 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-[color:var(--accent)] text-white shadow-sm hover:bg-[color:var(--accent-strong)]",
+          "bg-gradient-to-r from-[#2fd9f4] to-[#06b6d4] text-white shadow-sm hover:shadow-glow",
         secondary:
           "border border-[color:var(--border)] bg-[color:var(--surface)] text-strong hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]",
         outline:
           "border border-[color:var(--border-strong)] bg-transparent text-strong hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]",
         ghost:
           "bg-transparent text-strong hover:bg-[color:var(--surface-strong)]",
+        danger:
+          "bg-app-danger-soft text-app-danger hover:bg-[rgba(255,180,171,0.2)]",
+        gold:
+          "bg-gradient-to-r from-[#e9c349] to-[#d4af37] text-[#00363e] shadow-sm",
       },
       size: {
         sm: "h-9 px-4",
         md: "h-11 px-5",
         lg: "h-12 px-6 text-base",
+        icon: "h-9 w-9 p-0",
       },
     },
     defaultVariants: {
