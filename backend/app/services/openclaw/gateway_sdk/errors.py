@@ -79,6 +79,14 @@ class GatewayHTTPError(GatewayError):
         self.response_body = response_body
 
 
+class GatewayServiceRestartError(GatewayError):
+    """Gateway is restarting after a config change (WebSocket close code 1012).
+
+    For mutating operations like agents.create, the operation likely succeeded
+    before the restart. Callers should verify the result after a brief delay.
+    """
+
+
 class GatewayEventError(GatewayError):
     """Error in the WebSocket event subscription channel."""
 

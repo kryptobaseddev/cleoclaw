@@ -51,7 +51,7 @@ class GatewayDispatchService(OpenClawDBService):
         message: str,
         deliver: bool = False,
     ) -> None:
-        await ensure_session(session_key, config=config, label=agent_name)
+        await ensure_session(session_key, config=config)
         await send_message(message, session_key=session_key, config=config, deliver=deliver)
 
     async def try_send_agent_message(

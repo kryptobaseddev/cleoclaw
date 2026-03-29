@@ -41,10 +41,10 @@ export default function EditGatewayPage() {
   const [gatewayToken, setGatewayToken] = useState<string | undefined>(
     undefined,
   );
-  const [disableDevicePairing, setDisableDevicePairing] = useState<
+  const [disableDevicePairing] = useState<
     boolean | undefined
   >(undefined);
-  const [allowInsecureTls, setAllowInsecureTls] = useState<boolean | undefined>(
+  const [allowInsecureTls] = useState<boolean | undefined>(
     undefined,
   );
 
@@ -166,8 +166,6 @@ export default function EditGatewayPage() {
         name={resolvedName}
         gatewayUrl={resolvedGatewayUrl}
         gatewayToken={resolvedGatewayToken}
-        disableDevicePairing={resolvedDisableDevicePairing}
-        allowInsecureTls={resolvedAllowInsecureTls}
         gatewayUrlError={gatewayUrlError}
         gatewayCheckStatus={gatewayCheckStatus}
         gatewayCheckMessage={gatewayCheckMessage}
@@ -188,16 +186,6 @@ export default function EditGatewayPage() {
         }}
         onGatewayTokenChange={(next) => {
           setGatewayToken(next);
-          setGatewayCheckStatus("idle");
-          setGatewayCheckMessage(null);
-        }}
-        onDisableDevicePairingChange={(next) => {
-          setDisableDevicePairing(next);
-          setGatewayCheckStatus("idle");
-          setGatewayCheckMessage(null);
-        }}
-        onAllowInsecureTlsChange={(next) => {
-          setAllowInsecureTls(next);
           setGatewayCheckStatus("idle");
           setGatewayCheckMessage(null);
         }}

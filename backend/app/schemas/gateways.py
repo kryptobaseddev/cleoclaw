@@ -70,6 +70,38 @@ class GatewayRead(GatewayBase):
     updated_at: datetime
 
 
+class GatewayCreateResponse(SQLModel):
+    """Response from gateway creation with onboarding result."""
+    gateway_id: UUID
+    board_id: UUID | None = None
+    agent_id: UUID | None = None
+    pairing_required: bool = False
+
+
+class ConfigureTrustedProxyRequest(SQLModel):
+    """Payload for auto-configuring trusted-proxy auth on a gateway."""
+    gateway_url: str
+    gateway_token: str
+    npm_ip: str
+    gateway_fqdn: str | None = None
+
+
+class ConfigureTrustedProxyResponse(SQLModel):
+    """Result from auto-configuring trusted-proxy auth."""
+    ok: bool
+    message: str
+    config_applied: dict[str, object] | None = None
+
+
+class WorkspaceHealthCheckResult(SQLModel):
+    """Result from a workspace file integrity check."""
+    gateway_id: UUID
+    agent_id: str
+    files: dict[str, object]
+    healthy: bool
+    repaired: int = 0
+
+
 class GatewayTemplatesSyncError(SQLModel):
     """Per-agent error entry from a gateway template sync operation."""
 

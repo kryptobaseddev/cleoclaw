@@ -95,9 +95,6 @@ class AgentFileGetResponse(BaseModel):
 
 
 class AgentFileSetResponse(BaseModel):
-    ok: bool
-    agent_id: str = Field(alias="agentId")
-    name: str
-    workspace: str
+    ok: bool = True
 
-    model_config = {"populate_by_name": True}
+    model_config = {"extra": "allow"}

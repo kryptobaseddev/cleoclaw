@@ -46,7 +46,7 @@ const renderMentionsInText = (text: string, keyPrefix: string): ReactNode => {
     nodes.push(
       <span
         key={`${keyPrefix}-${mentionCount}`}
-        className="font-semibold text-cyan-700"
+        className="font-semibold text-app-accent"
       >
         {mention}
       </span>,
@@ -108,7 +108,7 @@ const MARKDOWN_CODE_COMPONENTS: Components = {
   pre: ({ node: _node, className, ...props }) => (
     <pre
       className={cn(
-        "my-3 overflow-x-auto rounded-lg bg-slate-950 p-3 text-xs leading-relaxed text-slate-100",
+        "my-3 overflow-x-auto rounded-lg bg-app-bg p-3 text-xs leading-relaxed text-app-text",
         className,
       )}
       {...props}
@@ -134,7 +134,7 @@ const MARKDOWN_CODE_COMPONENTS: Components = {
       return (
         <code
           className={cn(
-            "rounded bg-slate-100 px-1 py-0.5 font-mono text-[0.85em] text-slate-900",
+            "rounded bg-app-surface-muted px-1 py-0.5 font-mono text-[0.85em] text-app-text",
             className,
           )}
           {...props}
@@ -160,10 +160,10 @@ const MARKDOWN_TABLE_COMPONENTS: Components = {
     </div>
   ),
   thead: ({ node: _node, className, ...props }) => (
-    <thead className={cn("bg-slate-50", className)} {...props} />
+    <thead className={cn("bg-app-surface-muted", className)} {...props} />
   ),
   tbody: ({ node: _node, className, ...props }) => (
-    <tbody className={cn("divide-y divide-slate-100", className)} {...props} />
+    <tbody className={cn("divide-y divide-app-border", className)} {...props} />
   ),
   tr: ({ node: _node, className, ...props }) => (
     <tr className={cn("align-top", className)} {...props} />
@@ -171,7 +171,7 @@ const MARKDOWN_TABLE_COMPONENTS: Components = {
   th: ({ node: _node, className, children, ...props }) => (
     <th
       className={cn(
-        "border border-slate-200 px-3 py-2 text-left text-xs font-semibold",
+        "border border-app-border px-3 py-2 text-left text-xs font-semibold",
         className,
       )}
       {...props}
@@ -181,7 +181,7 @@ const MARKDOWN_TABLE_COMPONENTS: Components = {
   ),
   td: ({ node: _node, className, children, ...props }) => (
     <td
-      className={cn("border border-slate-200 px-3 py-2 align-top", className)}
+      className={cn("border border-app-border px-3 py-2 align-top", className)}
       {...props}
     >
       {renderMentions(children)}
@@ -195,7 +195,7 @@ const MARKDOWN_COMPONENTS_BASIC: Components = {
   a: ({ node: _node, className, children, ...props }) => (
     <a
       className={cn(
-        "font-medium text-sky-700 underline decoration-sky-400 underline-offset-2 transition-colors hover:text-sky-800 hover:decoration-sky-600",
+        "font-medium text-app-accent underline decoration-app-accent/50 underline-offset-2 transition-colors hover:text-app-accent-strong hover:decoration-app-accent",
         className,
       )}
       target="_blank"

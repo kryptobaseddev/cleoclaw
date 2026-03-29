@@ -385,7 +385,14 @@ async def stream_approvals(
                 yield {"event": "approval", "data": json.dumps(payload)}
             await asyncio.sleep(STREAM_POLL_SECONDS)
 
-    return EventSourceResponse(event_generator(), ping=15)
+    return EventSourceResponse(
+        event_generator(),
+        ping=15,
+        headers={
+            "X-Accel-Buffering": "no",
+            "Cache-Control": "no-cache, no-transform",
+        },
+    )
 
 
 @router.post("", response_model=ApprovalRead)

@@ -144,14 +144,14 @@ export function OrgSwitcher() {
   return (
     <div className="relative">
       <Select value={orgValue} onValueChange={handleOrgChange}>
-        <SelectTrigger className="h-9 w-[220px] rounded-md border-slate-200 bg-white px-3 text-sm font-medium text-slate-900 shadow-none focus:ring-2 focus:ring-blue-500/30 focus:ring-offset-0">
+        <SelectTrigger className="h-9 w-[220px] rounded-md border-app-border bg-app-surface px-3 text-sm font-medium text-app-text shadow-none focus:ring-2 focus:ring-app-accent/30 focus:ring-offset-0">
           <span className="flex items-center gap-2">
-            <Building2 className="h-4 w-4 text-slate-400" />
+            <Building2 className="h-4 w-4 text-app-text-quiet" />
             <SelectValue placeholder="Select organization" />
           </span>
         </SelectTrigger>
-        <SelectContent className="min-w-[220px] rounded-md border-slate-200 p-1 shadow-xl">
-          <div className="px-3 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+        <SelectContent className="min-w-[220px] rounded-md border-app-border bg-app-surface p-1 shadow-xl">
+          <div className="px-3 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-wide text-app-text-quiet">
             Org switcher
           </div>
           {orgs.length ? (
@@ -159,7 +159,7 @@ export function OrgSwitcher() {
               <SelectItem
                 key={org.id}
                 value={org.id}
-                className="rounded-md py-2 pl-7 pr-3 text-sm text-slate-700 data-[state=checked]:bg-slate-50 data-[state=checked]:text-slate-900 focus:bg-slate-100"
+                className="rounded-md py-2 pl-7 pr-3 text-sm text-app-text-muted data-[state=checked]:bg-app-surface-muted data-[state=checked]:text-app-text focus:bg-app-surface-muted"
               >
                 {org.name}
               </SelectItem>
@@ -167,7 +167,7 @@ export function OrgSwitcher() {
           ) : (
             <SelectItem
               value={orgValue}
-              className="rounded-md py-2 pl-7 pr-3 text-sm text-slate-700"
+              className="rounded-md py-2 pl-7 pr-3 text-sm text-app-text-muted"
             >
               Organization
             </SelectItem>
@@ -175,10 +175,10 @@ export function OrgSwitcher() {
           <SelectSeparator className="my-2" />
           <SelectItem
             value="__create__"
-            className="rounded-md py-2 pl-3 pr-3 text-sm font-medium text-slate-600 hover:text-slate-900 focus:bg-slate-100 [&>span:first-child]:hidden"
+            className="rounded-md py-2 pl-3 pr-3 text-sm font-medium text-app-text-muted hover:text-app-text focus:bg-app-surface-muted [&>span:first-child]:hidden"
           >
             <span className="flex items-center gap-2">
-              <Plus className="h-4 w-4 text-slate-400" />
+              <Plus className="h-4 w-4 text-app-text-quiet" />
               Create new org
             </span>
           </SelectItem>

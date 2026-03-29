@@ -8,14 +8,14 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-[color:var(--surface-muted)] text-strong",
+        default: "bg-app-surface-muted text-strong",
         outline:
-          "border border-[color:var(--border-strong)] text-[color:var(--text-muted)]",
+          "border border-app-border-strong text-app-text-muted",
         accent:
-          "bg-[color:var(--accent-soft)] text-[color:var(--accent-strong)]",
-        success: "bg-[color:rgba(15,118,110,0.14)] text-[color:var(--success)]",
-        warning: "bg-[color:rgba(180,83,9,0.15)] text-[color:var(--warning)]",
-        danger: "bg-[color:rgba(180,35,24,0.15)] text-[color:var(--danger)]",
+          "bg-app-accent-soft text-app-accent-strong",
+        success: "bg-app-success-soft text-app-success",
+        warning: "bg-app-warning-soft text-app-warning",
+        danger: "bg-app-danger-soft text-app-danger",
       },
     },
     defaultVariants: {

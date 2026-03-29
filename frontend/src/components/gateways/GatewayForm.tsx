@@ -31,8 +31,6 @@ type GatewayFormProps = {
   name: string;
   gatewayUrl: string;
   gatewayToken: string;
-  disableDevicePairing: boolean;
-  allowInsecureTls: boolean;
   gatewayUrlError: string | null;
   gatewayCheckStatus: GatewayCheckStatus;
   gatewayCheckMessage: string | null;
@@ -47,16 +45,12 @@ type GatewayFormProps = {
   onNameChange: (next: string) => void;
   onGatewayUrlChange: (next: string) => void;
   onGatewayTokenChange: (next: string) => void;
-  onDisableDevicePairingChange: (next: boolean) => void;
-  onAllowInsecureTlsChange: (next: boolean) => void;
 };
 
 export function GatewayForm({
   name,
   gatewayUrl,
   gatewayToken,
-  disableDevicePairing,
-  allowInsecureTls,
   gatewayUrlError,
   gatewayCheckStatus,
   gatewayCheckMessage,
@@ -71,8 +65,6 @@ export function GatewayForm({
   onNameChange,
   onGatewayUrlChange,
   onGatewayTokenChange,
-  onDisableDevicePairingChange,
-  onAllowInsecureTlsChange,
 }: GatewayFormProps) {
   return (
     <form
@@ -124,64 +116,6 @@ export function GatewayForm({
             disabled={isLoading}
           />
         </div>
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-900">
-          Disable device pairing
-          <InfoHint text="When OFF (default), Mission Control authenticates via cryptographic device pairing (ECDSA signatures). The gateway must approve this device on first connection. When ON, uses control-UI mode instead, which requires HTTPS or localhost and skips device-level security. Leave OFF unless you know your gateway requires control-UI mode." />
-        </label>
-        <label className="flex h-10 items-center gap-3 px-1 text-sm text-slate-900">
-          <button
-            type="button"
-            role="switch"
-            aria-checked={disableDevicePairing}
-            aria-label="Disable device pairing"
-            onClick={() =>
-              onDisableDevicePairingChange(!disableDevicePairing)
-            }
-            disabled={isLoading}
-            className={`inline-flex h-6 w-11 shrink-0 items-center rounded-full border transition ${
-              disableDevicePairing
-                ? "border-emerald-600 bg-emerald-600"
-                : "border-slate-300 bg-slate-200"
-            } ${isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
-          >
-            <span
-              className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition ${
-                disableDevicePairing ? "translate-x-5" : "translate-x-0.5"
-              }`}
-            />
-          </button>
-        </label>
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-900">
-          Allow self-signed TLS certificates
-          <InfoHint text="Enable this only if your gateway uses wss:// (WebSocket over TLS) with a self-signed certificate. This skips certificate verification for that gateway connection. Leave OFF for plain HTTP/WS connections or gateways with valid TLS certificates." />
-        </label>
-        <label className="flex h-10 items-center gap-3 px-1 text-sm text-slate-900">
-          <button
-            type="button"
-            role="switch"
-            aria-checked={allowInsecureTls}
-            aria-label="Allow self-signed TLS certificates"
-            onClick={() => onAllowInsecureTlsChange(!allowInsecureTls)}
-            disabled={isLoading}
-            className={`inline-flex h-6 w-11 shrink-0 items-center rounded-full border transition ${
-              allowInsecureTls
-                ? "border-emerald-600 bg-emerald-600"
-                : "border-slate-300 bg-slate-200"
-            } ${isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
-          >
-            <span
-              className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition ${
-                allowInsecureTls ? "translate-x-5" : "translate-x-0.5"
-              }`}
-            />
-          </button>
-        </label>
       </div>
 
       {errorMessage ? (

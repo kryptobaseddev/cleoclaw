@@ -1413,6 +1413,10 @@ async def stream_tasks(
             since_dt=since_dt,
         ),
         ping=15,
+        headers={
+            "X-Accel-Buffering": "no",
+            "Cache-Control": "no-cache, no-transform",
+        },
     )
 
 

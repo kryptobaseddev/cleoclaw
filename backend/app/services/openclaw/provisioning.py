@@ -48,8 +48,7 @@ from app.services.openclaw.gateway_rpc import (
 from app.services.openclaw.internal.agent_key import agent_key as _agent_key
 from app.services.openclaw.internal.agent_key import slugify
 from app.services.openclaw.internal.session_keys import (
-    board_agent_session_key,
-    board_lead_session_key,
+    agent_session_key,
 )
 from app.services.openclaw.shared import GatewayAgentIdentity
 
@@ -434,9 +433,11 @@ def _session_key(agent: Agent) -> str:
     Note: Never derive session keys from a human-provided name; use stable ids instead.
     """
 
-    if agent.is_board_lead and agent.board_id is not None:
-        return board_lead_session_key(agent.board_id)
-    return board_agent_session_key(agent.id)
+    # Derive OpenClaw agent ID from agent name. Each CleoClaw agent maps 1:1
+    # to a discrete OpenClaw agent — never route through "main".
+    from app.services.openclaw.internal.agent_key import slugify
+    oc_agent_id = slugify(agent.name)
+    return agent_session_key(oc_agent_id)
 
 
 def _render_agent_files(

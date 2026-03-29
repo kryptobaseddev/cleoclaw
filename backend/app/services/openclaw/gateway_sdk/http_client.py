@@ -117,7 +117,7 @@ class GatewayHTTPClient:
         self,
         messages: list[ChatCompletionMessage],
         *,
-        model: str = "openclaw:main",
+        model: str = "openclaw/default",
         agent_id: str | None = None,
         session_key: str | None = None,
         temperature: float | None = None,
@@ -199,7 +199,7 @@ class GatewayHTTPClient:
         system_prompt: str,
         user_message: str,
         *,
-        model: str = "openclaw:main",
+        model: str = "openclaw/default",
         agent_id: str | None = None,
         timeout: float = CHAT_COMPLETION_TIMEOUT_S,
     ) -> str:

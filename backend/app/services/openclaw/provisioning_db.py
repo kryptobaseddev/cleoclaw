@@ -22,6 +22,7 @@ from sqlmodel import col, select
 from sse_starlette.sse import EventSourceResponse
 
 from app.core.agent_tokens import verify_agent_token
+from app.core.config import settings
 from app.core.logging import TRACE_LEVEL
 from app.core.time import utcnow
 from app.db import crud
@@ -69,8 +70,7 @@ from app.services.openclaw.gateway_rpc import (
 from app.services.openclaw.internal.agent_key import agent_key as _agent_key
 from app.services.openclaw.internal.retry import GatewayBackoff
 from app.services.openclaw.internal.session_keys import (
-    board_agent_session_key,
-    board_lead_session_key,
+    agent_session_key,
 )
 from app.services.openclaw.lifecycle_orchestrator import AgentLifecycleOrchestrator
 from app.services.openclaw.policies import OpenClawAuthorizationPolicy
@@ -145,7 +145,10 @@ class OpenClawProvisioningService(OpenClawDBService):
 
     @staticmethod
     def lead_session_key(board: Board) -> str:
-        return board_lead_session_key(board.id)
+        # NOTE: This is a legacy method. New code should use agent_session_key()
+        # with the real OpenClaw agent ID instead. This fallback uses the board name.
+        from app.services.openclaw.internal.agent_key import slugify
+        return agent_session_key(slugify(f"{board.name} Board Lead"))
 
     @staticmethod
     def lead_agent_name(_: Board) -> str:
@@ -791,9 +794,10 @@ class AgentLifecycleService(OpenClawDBService):
                 status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
                 detail="Gateway main agent session key is required",
             )
-        if agent.is_board_lead:
-            return board_lead_session_key(agent.board_id)
-        return board_agent_session_key(agent.id)
+        # Derive OpenClaw agent ID from agent name and use it for session key.
+        # Each CleoClaw agent is a REAL discrete OpenClaw agent.
+        oc_agent_id = cls.slugify(agent.name)
+        return agent_session_key(oc_agent_id)
 
     @classmethod
     def workspace_path(cls, agent_name: str, workspace_root: str | None) -> str:
@@ -1538,7 +1542,14 @@ class AgentLifecycleService(OpenClawDBService):
                     yield {"event": "agent", "data": json.dumps(payload)}
                 await asyncio.sleep(2)
 
-        return EventSourceResponse(event_generator(), ping=15)
+        return EventSourceResponse(
+            event_generator(),
+            ping=15,
+            headers={
+                "X-Accel-Buffering": "no",
+                "Cache-Control": "no-cache, no-transform",
+            },
+        )
 
     async def create_agent(
         self,
@@ -1569,15 +1580,51 @@ class AgentLifecycleService(OpenClawDBService):
             gateway=gateway,
             requested_name=requested_name,
         )
+        data["status"] = "active"
+
+        # Derive the OpenClaw agent ID and set a real session key.
+        import re
+
+        agent_name = (data.get("name") or "").strip()
+        oc_agent_id = re.sub(r"[^a-z0-9]+", "-", agent_name.lower()).strip("-")
+        data["openclaw_session_id"] = f"agent:{oc_agent_id}:main"
+
         agent, raw_token = await self.persist_new_agent(data=data)
-        await self.provision_new_agent(
-            agent=agent,
-            board=board,
-            gateway=gateway,
-            auth_token=raw_token,
-            user=actor.user if actor.actor_type == "user" else None,
-            force_bootstrap=False,
-        )
+
+        # Provision a REAL agent on OpenClaw (background task).
+        import asyncio
+
+        async def _provision_worker() -> None:
+            try:
+                from app.services.openclaw.agent_provisioner import provision_agent
+                from app.services.openclaw.gateway_sdk.client import GatewayClient
+                from app.services.openclaw.gateway_sdk.config import GatewayConnectionConfig
+
+                sdk_config = GatewayConnectionConfig(
+                    url=gateway.url,
+                    token=gateway.token,
+                    allow_insecure_tls=gateway.allow_insecure_tls,
+                    disable_device_pairing=gateway.disable_device_pairing,
+                )
+                client = GatewayClient(sdk_config)
+                result = await provision_agent(
+                    client=client,
+                    agent_name=agent_name,
+                    template_context={
+                        "agent_name": agent_name,
+                        "agent_role": "Worker Agent",
+                        "board_name": board.name,
+                        "gateway_name": gateway.name,
+                        "base_url": str(settings.base_url),
+                        "board_id": str(board.id),
+                    },
+                )
+                self.logger.info("agent.create.provisioned agent_id=%s result=%s", agent.id, result)
+            except Exception as exc:
+                self.logger.warning("agent.create.provision_failed agent_id=%s: %s", agent.id, exc)
+
+        asyncio.create_task(_provision_worker())
+
         self.logger.info("agent.create.success agent_id=%s board_id=%s", agent.id, board.id)
         return self.to_agent_read(self.with_computed_status(agent))
 

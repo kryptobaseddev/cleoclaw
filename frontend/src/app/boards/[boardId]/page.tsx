@@ -521,9 +521,9 @@ const statusOptions = [
 
 const SSE_RECONNECT_BACKOFF = {
   baseMs: 1_000,
-  factor: 2,
+  factor: 1.5,
   jitter: 0.2,
-  maxMs: 5 * 60_000,
+  maxMs: 5_000,
 } as const;
 
 const formatShortTimestamp = (value: string) => {
@@ -597,22 +597,22 @@ const TaskCommentCard = memo(function TaskCommentCard({
     <div
       id={commentElementId(comment.id)}
       className={cn(
-        "scroll-mt-28 rounded-xl border bg-white p-3 transition",
+        "scroll-mt-28 rounded-xl border bg-app-surface p-3 transition",
         isHighlighted
-          ? "border-blue-300 ring-2 ring-blue-200"
-          : "border-slate-200",
+          ? "border-[color:rgba(88,166,255,0.4)] ring-2 ring-[color:rgba(88,166,255,0.2)]"
+          : "border-app-border",
       )}
     >
-      <div className="flex items-center justify-between text-xs text-slate-500">
+      <div className="flex items-center justify-between text-xs text-app-text-quiet">
         <span>{authorLabel}</span>
         <span>{formatShortTimestamp(comment.created_at)}</span>
       </div>
       {message ? (
-        <div className="mt-2 select-text cursor-text text-sm leading-relaxed text-slate-900 break-words">
+        <div className="mt-2 select-text cursor-text text-sm leading-relaxed text-app-text break-words">
           <Markdown content={message} variant="comment" />
         </div>
       ) : (
-        <p className="mt-2 text-sm text-slate-900">—</p>
+        <p className="mt-2 text-sm text-app-text">—</p>
       )}
     </div>
   );
@@ -629,14 +629,14 @@ const ChatMessageCard = memo(function ChatMessageCard({
 }) {
   const sourceLabel = resolveHumanActorName(message.source, fallbackSource);
   return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
+    <div className="rounded-2xl border border-app-border bg-app-surface-muted p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm font-semibold text-slate-900">{sourceLabel}</p>
-        <span className="text-xs text-slate-400">
+        <p className="text-sm font-semibold text-app-text">{sourceLabel}</p>
+        <span className="text-xs text-app-text-quiet">
           {formatShortTimestamp(message.created_at)}
         </span>
       </div>
-      <div className="mt-2 select-text cursor-text text-sm leading-relaxed text-slate-900 break-words">
+      <div className="mt-2 select-text cursor-text text-sm leading-relaxed text-app-text break-words">
         <Markdown content={message.content} variant="basic" />
       </div>
     </div>
@@ -670,12 +670,12 @@ const LiveFeedCard = memo(function LiveFeedCard({
       className={cn(
         "rounded-xl border p-3 transition-colors duration-300",
         isNew
-          ? "border-blue-200 bg-blue-50/70 shadow-sm hover:border-blue-300 motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:slide-in-from-right-2 motion-safe:duration-300"
-          : "border-slate-200 bg-white hover:border-slate-300",
+          ? "border-[color:rgba(88,166,255,0.25)] bg-app-accent-soft shadow-sm hover:border-[color:rgba(88,166,255,0.4)] motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:slide-in-from-right-2 motion-safe:duration-300"
+          : "border-app-border bg-app-surface hover:border-app-border-strong",
       )}
     >
       <div className="flex items-start gap-3">
-        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-700">
+        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-app-surface-muted text-xs font-semibold text-app-text-muted">
           {authorAvatar}
         </div>
         <div className="min-w-0 flex-1">
@@ -685,9 +685,9 @@ const LiveFeedCard = memo(function LiveFeedCard({
               onClick={onViewTask}
               disabled={!onViewTask}
               className={cn(
-                "text-left text-sm font-semibold leading-snug text-slate-900",
+                "text-left text-sm font-semibold leading-snug text-app-text",
                 onViewTask
-                  ? "cursor-pointer transition hover:text-slate-950 hover:underline"
+                  ? "cursor-pointer transition hover:text-app-accent hover:underline"
                   : "cursor-default",
               )}
               title={taskTitle}
@@ -701,7 +701,7 @@ const LiveFeedCard = memo(function LiveFeedCard({
               {taskTitle}
             </button>
           </div>
-          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-500">
+          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-app-text-quiet">
             <span
               className={cn(
                 "rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
@@ -710,26 +710,26 @@ const LiveFeedCard = memo(function LiveFeedCard({
             >
               {eventLabel}
             </span>
-            <span className="font-medium text-slate-700">{authorName}</span>
+            <span className="font-medium text-app-text-muted">{authorName}</span>
             {authorRole ? (
               <>
-                <span className="text-slate-300">·</span>
-                <span className="text-slate-500">{authorRole}</span>
+                <span className="text-app-text-quiet">·</span>
+                <span className="text-app-text-quiet">{authorRole}</span>
               </>
             ) : null}
-            <span className="text-slate-300">·</span>
-            <span className="text-slate-400">
+            <span className="text-app-text-quiet">·</span>
+            <span className="text-app-text-quiet">
               {formatShortTimestamp(item.created_at)}
             </span>
           </div>
         </div>
       </div>
       {message ? (
-        <div className="mt-3 select-text cursor-text text-sm leading-relaxed text-slate-900 break-words">
+        <div className="mt-3 select-text cursor-text text-sm leading-relaxed text-app-text break-words">
           <Markdown content={message} variant="basic" />
         </div>
       ) : (
-        <p className="mt-3 text-sm text-slate-500">—</p>
+        <p className="mt-3 text-sm text-app-text-quiet">—</p>
       )}
     </div>
   );
@@ -1132,6 +1132,17 @@ export default function BoardDetailPage() {
     isSignedIn,
     tasks,
   ]);
+
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get("welcome") === "1") {
+      setShowWelcome(true);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("welcome");
+      window.history.replaceState({}, "", url.toString());
+    }
+  }, [searchParams]);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -3096,35 +3107,35 @@ export default function BoardDetailPage() {
         <DashboardSidebar />
         <main
           className={cn(
-            "flex-1 bg-gradient-to-br from-slate-50 to-slate-100",
+            "flex-1 bg-app-bg",
             isSidePanelOpen ? "overflow-hidden" : "overflow-y-auto",
           )}
         >
-          <div className="sticky top-0 z-30 border-b border-slate-200 bg-white shadow-sm">
+          <div className="sticky top-0 z-30 border-b border-app-border bg-app-surface shadow-sm">
             <div className="px-4 py-4 md:px-8 md:py-6">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <h1 className="mt-2 text-2xl font-semibold text-slate-900 tracking-tight">
+                  <h1 className="mt-2 text-2xl font-semibold text-app-text tracking-tight">
                     {board?.name ?? "Board"}
                   </h1>
-                  <p className="mt-1 text-sm text-slate-500">
+                  <p className="mt-1 text-sm text-app-text-quiet">
                     Keep tasks moving through your workflow.
                   </p>
                   {isBoardLeadProvisioning ? (
-                    <div className="mt-3 inline-flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-800">
+                    <div className="mt-3 inline-flex items-center gap-2 rounded-lg border border-app-border bg-app-warning-soft px-3 py-1.5 text-xs font-medium text-app-warning">
                       <RefreshCcw className="h-3.5 w-3.5 animate-spin" />
                       <span>Provisioning board lead…</span>
                     </div>
                   ) : null}
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1">
+                  <div className="flex items-center gap-1 rounded-lg bg-app-surface-muted p-1">
                     <button
                       className={cn(
                         "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
                         viewMode === "board"
-                          ? "bg-slate-900 text-white"
-                          : "text-slate-600 hover:bg-slate-200 hover:text-slate-900",
+                          ? "bg-app-accent text-white"
+                          : "text-app-text-muted hover:bg-app-surface-strong hover:text-app-text",
                       )}
                       onClick={() => setViewMode("board")}
                     >
@@ -3134,8 +3145,8 @@ export default function BoardDetailPage() {
                       className={cn(
                         "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
                         viewMode === "list"
-                          ? "bg-slate-900 text-white"
-                          : "text-slate-600 hover:bg-slate-200 hover:text-slate-900",
+                          ? "bg-app-accent text-white"
+                          : "text-app-text-muted hover:bg-app-surface-strong hover:text-app-text",
                       )}
                       onClick={() => setViewMode("list")}
                     >
@@ -3160,7 +3171,7 @@ export default function BoardDetailPage() {
                   >
                     <ShieldCheck className="h-4 w-4" />
                     {pendingApprovals.length > 0 ? (
-                      <span className="absolute -right-1 -top-1 inline-flex min-w-[18px] items-center justify-center rounded-full bg-slate-900 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                      <span className="absolute -right-1 -top-1 inline-flex min-w-[18px] items-center justify-center rounded-full bg-app-accent px-1.5 py-0.5 text-[10px] font-semibold text-white">
                         {pendingApprovals.length}
                       </span>
                     ) : null}
@@ -3182,7 +3193,7 @@ export default function BoardDetailPage() {
                       className={cn(
                         "h-9 w-9 p-0",
                         isAgentsPaused
-                          ? "border-amber-200 bg-amber-50/60 text-amber-700 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800"
+                          ? "border-[color:var(--warning)] bg-app-warning-soft text-app-warning hover:border-[color:var(--warning)] hover:text-app-warning"
                           : "",
                       )}
                       aria-label={
@@ -3225,7 +3236,7 @@ export default function BoardDetailPage() {
                     <button
                       type="button"
                       onClick={() => router.push(`/boards/${boardId}/edit`)}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-app-border text-app-text-muted transition hover:border-app-border-strong hover:bg-app-surface-muted"
                       aria-label="Board settings"
                       title="Board settings"
                     >
@@ -3239,27 +3250,27 @@ export default function BoardDetailPage() {
 
           <div className="relative flex flex-col gap-4 p-4 md:flex-row md:gap-6 md:p-6">
             {isOrgAdmin ? (
-              <aside className="flex w-full flex-col rounded-xl border border-slate-200 bg-white shadow-sm md:h-full md:w-64">
-                <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+              <aside className="flex w-full flex-col rounded-xl border border-app-border bg-app-surface shadow-sm md:h-full md:w-64">
+                <div className="flex items-center justify-between border-b border-app-border px-4 py-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                       Agents
                     </p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-app-text-quiet">
                       {sortedAgents.length} total
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => router.push("/agents/new")}
-                    className="rounded-md border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
+                    className="rounded-md border border-app-border px-2.5 py-1 text-xs font-semibold text-app-text-muted transition hover:border-app-border-strong hover:bg-app-surface-muted"
                   >
                     Add
                   </button>
                 </div>
                 <div className="flex-1 space-y-2 overflow-y-auto p-3">
                   {sortedAgents.length === 0 ? (
-                    <div className="rounded-lg border border-dashed border-slate-200 p-3 text-xs text-slate-500">
+                    <div className="rounded-lg border border-dashed border-app-border p-3 text-xs text-app-text-quiet">
                       No agents assigned yet.
                     </div>
                   ) : (
@@ -3270,26 +3281,26 @@ export default function BoardDetailPage() {
                           key={agent.id}
                           type="button"
                           className={cn(
-                            "flex w-full items-center gap-3 rounded-lg border border-transparent px-2 py-2 text-left transition hover:border-slate-200 hover:bg-slate-50",
+                            "flex w-full items-center gap-3 rounded-lg border border-transparent px-2 py-2 text-left transition hover:border-app-border hover:bg-app-surface-muted",
                           )}
                           onClick={() => router.push(`/agents/${agent.id}`)}
                         >
-                          <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-700">
+                          <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-app-surface-muted text-xs font-semibold text-app-text-muted">
                             {agentAvatarLabel(agent)}
                             <StatusDot
                               status={agent.status}
                               variant="agent"
                               className={cn(
-                                "absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-white",
+                                "absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-app-surface",
                                 isWorking && "ring-2 ring-emerald-200",
                               )}
                             />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium text-slate-900">
+                            <p className="truncate text-sm font-medium text-app-text">
                               {agent.name}
                             </p>
-                            <p className="text-[11px] text-slate-500">
+                            <p className="text-[11px] text-app-text-quiet">
                               {agentRoleLabel(agent)}
                             </p>
                           </div>
@@ -3303,7 +3314,7 @@ export default function BoardDetailPage() {
 
             <div className="min-w-0 flex-1 space-y-6">
               {error && (
-                <div className="rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-600 shadow-sm">
+                <div className="rounded-lg border border-app-border bg-app-surface p-3 text-sm text-app-text-muted shadow-sm">
                   {error}
                 </div>
               )}
@@ -3323,18 +3334,18 @@ export default function BoardDetailPage() {
                       ) : null}
 
                       {groupSnapshot?.group ? (
-                        <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
-                          <div className="border-b border-slate-200 px-5 py-4">
+                        <div className="rounded-xl border border-app-border bg-app-surface shadow-sm">
+                          <div className="border-b border-app-border px-5 py-4">
                             <div className="flex flex-wrap items-center justify-between gap-3">
                               <div className="min-w-0">
-                                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                                   Related boards
                                 </p>
-                                <p className="mt-1 truncate text-sm font-semibold text-slate-900">
+                                <p className="mt-1 truncate text-sm font-semibold text-app-text">
                                   {groupSnapshot.group.name}
                                 </p>
                                 {groupSnapshot.group.description ? (
-                                  <p className="mt-1 max-w-3xl text-xs text-slate-500 line-clamp-2">
+                                  <p className="mt-1 max-w-3xl text-xs text-app-text-quiet line-clamp-2">
                                     {groupSnapshot.group.description}
                                   </p>
                                 ) : null}
@@ -3374,7 +3385,7 @@ export default function BoardDetailPage() {
                                 {groupSnapshot.boards.map((item) => (
                                   <div
                                     key={item.board.id}
-                                    className="rounded-xl border border-slate-200 bg-slate-50/40 p-4"
+                                    className="rounded-xl border border-app-border bg-app-surface-muted p-4"
                                   >
                                     <button
                                       type="button"
@@ -3384,28 +3395,28 @@ export default function BoardDetailPage() {
                                       }
                                     >
                                       <div className="min-w-0">
-                                        <p className="truncate text-sm font-semibold text-slate-900 group-hover:text-blue-600">
+                                        <p className="truncate text-sm font-semibold text-app-text group-hover:text-app-accent">
                                           {item.board.name}
                                         </p>
-                                        <p className="mt-1 text-xs text-slate-500">
+                                        <p className="mt-1 text-xs text-app-text-quiet">
                                           Updated{" "}
                                           {formatTaskTimestamp(
                                             item.board.updated_at,
                                           )}
                                         </p>
                                       </div>
-                                      <ArrowUpRight className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400 group-hover:text-blue-600" />
+                                      <ArrowUpRight className="mt-0.5 h-4 w-4 flex-shrink-0 text-app-text-quiet group-hover:text-app-accent" />
                                     </button>
 
                                     <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                                      <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-slate-700">
+                                      <span className="rounded-full border border-app-border bg-app-surface px-2 py-0.5 text-app-text-muted">
                                         Inbox {item.task_counts?.inbox ?? 0}
                                       </span>
-                                      <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-slate-700">
+                                      <span className="rounded-full border border-app-border bg-app-surface px-2 py-0.5 text-app-text-muted">
                                         In progress{" "}
                                         {item.task_counts?.in_progress ?? 0}
                                       </span>
-                                      <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-slate-700">
+                                      <span className="rounded-full border border-app-border bg-app-surface px-2 py-0.5 text-app-text-muted">
                                         Review {item.task_counts?.review ?? 0}
                                       </span>
                                     </div>
@@ -3666,7 +3677,7 @@ export default function BoardDetailPage() {
       </SignedIn>
       {isDetailOpen || isChatOpen || isLiveFeedOpen ? (
         <div
-          className="fixed inset-0 z-40 bg-slate-900/20"
+          className="fixed inset-0 z-40 bg-black/40"
           onClick={() => {
             if (isChatOpen) {
               closeBoardChat();
@@ -3680,17 +3691,17 @@ export default function BoardDetailPage() {
       ) : null}
       <aside
         className={cn(
-          "fixed right-0 top-0 z-50 h-full w-full max-w-[99vw] transform bg-white shadow-2xl transition-transform md:w-[max(760px,45vw)]",
+          "fixed right-0 top-0 z-50 h-full w-full max-w-[99vw] transform bg-app-surface shadow-2xl transition-transform md:w-[max(760px,45vw)]",
           isDetailOpen ? "transform-none" : "translate-x-full",
         )}
       >
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 md:px-6 md:py-4">
+          <div className="flex items-center justify-between border-b border-app-border px-4 py-3 md:px-6 md:py-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                 Task detail
               </p>
-              <p className="mt-1 text-sm font-medium text-slate-900">
+              <p className="mt-1 text-sm font-medium text-app-text">
                 {selectedTask?.title ?? "Task"}
               </p>
             </div>
@@ -3698,7 +3709,7 @@ export default function BoardDetailPage() {
               <button
                 type="button"
                 onClick={() => setIsEditDialogOpen(true)}
-                className="rounded-lg border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50"
+                className="rounded-lg border border-app-border p-2 text-app-text-quiet transition hover:bg-app-surface-muted"
                 disabled={!selectedTask || !canWrite}
                 title={canWrite ? "Edit task" : "Read-only access"}
               >
@@ -3707,7 +3718,7 @@ export default function BoardDetailPage() {
               <button
                 type="button"
                 onClick={closeComments}
-                className="rounded-lg border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50"
+                className="rounded-lg border border-app-border p-2 text-app-text-quiet transition hover:bg-app-surface-muted"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -3715,11 +3726,11 @@ export default function BoardDetailPage() {
           </div>
           <div className="flex-1 space-y-6 overflow-y-auto px-6 py-5">
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                 Description
               </p>
               {selectedTask?.description ? (
-                <div className="prose prose-sm max-w-none text-slate-700">
+                <div className="prose prose-sm max-w-none text-app-text-muted">
                   <Markdown
                     content={selectedTask.description}
                     variant="description"
@@ -3867,9 +3878,9 @@ export default function BoardDetailPage() {
                   {taskApprovals.map((approval) => (
                     <div
                       key={approval.id}
-                      className="rounded-xl border border-slate-200 bg-white p-3"
+                      className="rounded-xl border border-app-border bg-app-surface p-3"
                     >
-                      <div className="flex flex-wrap items-start justify-between gap-2 text-xs text-slate-500">
+                      <div className="flex flex-wrap items-start justify-between gap-2 text-xs text-app-text-quiet">
                         <div>
                           <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                             {humanizeApprovalAction(approval.action_type)}
@@ -3938,10 +3949,10 @@ export default function BoardDetailPage() {
               )}
             </div>
             <div className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                 Comments
               </p>
-              <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
+              <div className="space-y-2 rounded-xl border border-app-border bg-app-surface-muted p-3">
                 <BoardChatComposer
                   placeholder={
                     canWrite
@@ -3993,38 +4004,38 @@ export default function BoardDetailPage() {
 
       <aside
         className={cn(
-          "fixed right-0 top-0 z-50 h-full w-full max-w-[96vw] transform border-l border-slate-200 bg-white shadow-2xl transition-transform md:w-[560px]",
+          "fixed right-0 top-0 z-50 h-full w-full max-w-[96vw] transform border-l border-app-border bg-app-surface shadow-2xl transition-transform md:w-[560px]",
           isChatOpen ? "transform-none" : "translate-x-full",
         )}
       >
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 md:px-6 md:py-4">
+          <div className="flex items-center justify-between border-b border-app-border px-4 py-3 md:px-6 md:py-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                 Board chat
               </p>
-              <p className="mt-1 text-sm font-medium text-slate-900">
+              <p className="mt-1 text-sm font-medium text-app-text">
                 Talk to the lead agent. Tag others with @name.
               </p>
             </div>
             <button
               type="button"
               onClick={closeBoardChat}
-              className="rounded-lg border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50"
+              className="rounded-lg border border-app-border p-2 text-app-text-quiet transition hover:bg-app-surface-muted"
               aria-label="Close board chat"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
           <div className="flex flex-1 flex-col overflow-hidden px-6 py-4">
-            <div className="flex-1 space-y-4 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4">
+            <div className="flex-1 space-y-4 overflow-y-auto rounded-2xl border border-app-border bg-app-bg p-4">
               {chatError ? (
-                <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                <div className="rounded-xl border border-app-border bg-app-danger-soft px-3 py-2 text-sm text-app-danger">
                   {chatError}
                 </div>
               ) : null}
               {chatMessages.length === 0 ? (
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-app-text-quiet">
                   No messages yet. Start the conversation with your lead agent.
                 </p>
               ) : (
@@ -4055,24 +4066,24 @@ export default function BoardDetailPage() {
 
       <aside
         className={cn(
-          "fixed right-0 top-0 z-50 h-full w-full max-w-[96vw] transform border-l border-slate-200 bg-white shadow-2xl transition-transform md:w-[520px]",
+          "fixed right-0 top-0 z-50 h-full w-full max-w-[96vw] transform border-l border-app-border bg-app-surface shadow-2xl transition-transform md:w-[520px]",
           isLiveFeedOpen ? "transform-none" : "translate-x-full",
         )}
       >
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 md:px-6 md:py-4">
+          <div className="flex items-center justify-between border-b border-app-border px-4 py-3 md:px-6 md:py-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                 Live feed
               </p>
-              <p className="mt-1 text-sm font-medium text-slate-900">
+              <p className="mt-1 text-sm font-medium text-app-text">
                 Realtime task, approval, agent, and board-chat activity.
               </p>
             </div>
             <button
               type="button"
               onClick={closeLiveFeed}
-              className="rounded-lg border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-50"
+              className="rounded-lg border border-app-border p-2 text-app-text-quiet transition hover:bg-app-surface-muted"
               aria-label="Close live feed"
             >
               <X className="h-4 w-4" />
@@ -4080,7 +4091,7 @@ export default function BoardDetailPage() {
           </div>
           <div className="flex-1 overflow-y-auto px-6 py-4">
             {isLiveFeedHistoryLoading && orderedLiveFeed.length === 0 ? (
-              <p className="text-sm text-slate-500">Loading feed…</p>
+              <p className="text-sm text-app-text-quiet">Loading feed…</p>
             ) : liveFeedHistoryError ? (
               <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-700 shadow-sm">
                 {liveFeedHistoryError}
@@ -4722,6 +4733,47 @@ export default function BoardDetailPage() {
       ) : null}
 
       {/* onboarding moved to board settings */}
+
+      <Dialog open={showWelcome} onOpenChange={setShowWelcome}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Your gateway is connected!</DialogTitle>
+            <DialogDescription>
+              Everything is set up and ready to go. Here are some next steps:
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <Button
+              className="w-full justify-start"
+              variant="outline"
+              onClick={() => {
+                setShowWelcome(false);
+                setIsDialogOpen(true);
+              }}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add a Task
+            </Button>
+            <Button
+              className="w-full justify-start"
+              variant="outline"
+              onClick={() => {
+                setShowWelcome(false);
+                router.push(`/agents/new?board_id=${boardId}`);
+              }}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add a Worker Agent
+            </Button>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setShowWelcome(false)}>
+              Got it
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </DashboardShell>
   );
 }

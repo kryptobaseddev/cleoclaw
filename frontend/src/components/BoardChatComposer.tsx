@@ -227,7 +227,7 @@ function BoardChatComposerImpl({
           disabled={isSending || disabled}
         />
         {mentionTarget && filteredMentionOptions.length > 0 ? (
-          <div className="absolute bottom-full left-0 z-20 mb-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
+          <div className="absolute bottom-full left-0 z-20 mb-2 w-full overflow-hidden rounded-xl border border-app-border bg-app-surface shadow-lg">
             <div className="max-h-52 overflow-y-auto py-1">
               {filteredMentionOptions.map((option, index) => (
                 <button
@@ -239,12 +239,12 @@ function BoardChatComposerImpl({
                   }}
                   className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm transition ${
                     index === activeIndex
-                      ? "bg-slate-100 text-slate-900"
-                      : "text-slate-700 hover:bg-slate-50"
+                      ? "bg-app-surface-strong text-app-text"
+                      : "text-app-text-muted hover:bg-app-surface-muted"
                   }`}
                 >
                   <span className="font-mono">@{option}</span>
-                  <span className="text-xs text-slate-400">mention</span>
+                  <span className="text-xs text-app-text-quiet">mention</span>
                 </button>
               ))}
             </div>

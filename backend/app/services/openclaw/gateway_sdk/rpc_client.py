@@ -16,7 +16,7 @@ from urllib.parse import urlencode, urlparse, urlunparse
 from uuid import uuid4
 
 import websockets
-from websockets.exceptions import WebSocketException
+from websockets.exceptions import ConnectionClosed, WebSocketException
 
 from app.core.logging import TRACE_LEVEL, get_logger
 from app.services.openclaw.device_identity import (
@@ -37,6 +37,7 @@ from app.services.openclaw.gateway_sdk.config import (
 from app.services.openclaw.gateway_sdk.errors import (
     GatewayConnectionError,
     GatewayRPCError,
+    GatewayServiceRestartError,
     GatewayTimeoutError,
 )
 from app.services.openclaw.gateway_sdk.types import (
@@ -378,6 +379,28 @@ class GatewayRPCClient:
                 f"Timed out waiting for gateway response to {method!r}",
                 method=method,
             ) from exc
+        except ConnectionClosed as exc:
+            if exc.rcvd and exc.rcvd.code == 1012:
+                logger.info(
+                    "gateway.sdk.rpc.call.service_restart method=%s duration_ms=%s",
+                    method,
+                    int((perf_counter() - started_at) * 1000),
+                )
+                raise GatewayServiceRestartError(
+                    "Gateway restarting after config change",
+                    method=method,
+                ) from exc
+            logger.error(
+                "gateway.sdk.rpc.call.transport_error method=%s duration_ms=%s error_type=%s",
+                method,
+                int((perf_counter() - started_at) * 1000),
+                exc.__class__.__name__,
+            )
+            raise GatewayConnectionError(
+                str(exc),
+                method=method,
+                transport="rpc",
+            ) from exc
         except (ConnectionError, OSError, ValueError, WebSocketException) as exc:
             logger.error(
                 "gateway.sdk.rpc.call.transport_error method=%s duration_ms=%s error_type=%s",
@@ -421,8 +444,20 @@ class GatewayRPCClient:
             params["emoji"] = emoji
         if avatar is not None:
             params["avatar"] = avatar
-        raw = await self._call("agents.create", params)
-        return AgentCreateResponse.model_validate(raw)
+        try:
+            raw = await self._call("agents.create", params)
+            return AgentCreateResponse.model_validate(raw)
+        except GatewayServiceRestartError:
+            # Agent was likely created before the restart. Wait and verify.
+            logger.info("gateway.sdk.rpc.agents_create.restart_recovery name=%s", name)
+            await asyncio.sleep(5)
+            agents = await self.agents_list()
+            for agent in agents.agents:
+                if agent.name == name:
+                    return AgentCreateResponse(
+                        ok=True, agentId=agent.id, name=agent.name or name, workspace=workspace,
+                    )
+            raise  # Agent not found after restart — re-raise
 
     async def agents_update(self, agent_id: str, config: dict[str, Any]) -> AgentUpdateResponse:
         """Update an existing agent's configuration."""
@@ -431,8 +466,17 @@ class GatewayRPCClient:
 
     async def agents_delete(self, agent_id: str) -> AgentDeleteResponse:
         """Delete an agent by ID."""
-        raw = await self._call("agents.delete", {"agentId": agent_id})
-        return AgentDeleteResponse.model_validate(raw)
+        try:
+            raw = await self._call("agents.delete", {"agentId": agent_id})
+            return AgentDeleteResponse.model_validate(raw)
+        except GatewayServiceRestartError:
+            logger.info("gateway.sdk.rpc.agents_delete.restart_recovery agent_id=%s", agent_id)
+            await asyncio.sleep(5)
+            agents = await self.agents_list()
+            for agent in agents.agents:
+                if agent.id == agent_id:
+                    raise  # Agent still exists — deletion failed
+            return AgentDeleteResponse(ok=True, agentId=agent_id, removedBindings=0)
 
     async def agents_files_list(self, agent_id: str) -> AgentFilesListResponse:
         """List files for an agent workspace."""
@@ -468,9 +512,31 @@ class GatewayRPCClient:
         return ConfigSetResponse.model_validate(raw)
 
     async def config_patch(self, patch: dict[str, Any]) -> ConfigPatchResponse:
-        """Apply a partial patch to the gateway configuration."""
-        raw = await self._call("config.patch", {"patch": patch})
-        return ConfigPatchResponse.model_validate(raw)
+        """Apply a partial patch to the gateway configuration.
+
+        Performs a read-modify-write: fetches the current config hash via
+        ``config.get``, then sends ``config.patch`` with ``baseHash`` and
+        the patch as a JSON string in ``raw``.  Config changes that affect
+        the gateway (auth, bind, port) trigger an automatic restart, so a
+        1012 close or timeout is treated as success.
+        """
+        import json as _json
+
+        # Get current config hash for optimistic concurrency.
+        current = await self._call("config.get")
+        base_hash = current.get("hash") if isinstance(current, dict) else None
+
+        params: dict[str, Any] = {"raw": _json.dumps(patch)}
+        if base_hash:
+            params["baseHash"] = base_hash
+
+        try:
+            raw = await self._call("config.patch", params)
+            return ConfigPatchResponse.model_validate(raw)
+        except (GatewayServiceRestartError, GatewayTimeoutError):
+            # Config was applied — gateway restarted before responding.
+            logger.info("gateway.sdk.rpc.config_patch.restart_after_apply")
+            return ConfigPatchResponse.model_validate({"applied": True})
 
     # ------------------------------------------------------------------
     # Cron
