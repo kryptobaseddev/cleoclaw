@@ -8,7 +8,7 @@ const Card = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("rounded-2xl surface-card", className)}
+    className={cn("rounded-2xl border border-app-border bg-app-surface backdrop-blur-glass shadow-card", className)}
     {...props}
   />
 ));
@@ -30,4 +30,28 @@ const CardContent = React.forwardRef<
 ));
 CardContent.displayName = "CardContent";
 
-export { Card, CardHeader, CardContent };
+const CardTitle = React.forwardRef<
+  HTMLHeadingElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h3
+    ref={ref}
+    className={cn("text-lg font-semibold font-heading text-app-text", className)}
+    {...props}
+  />
+));
+CardTitle.displayName = "CardTitle";
+
+const CardDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn("text-sm text-app-text-muted", className)}
+    {...props}
+  />
+));
+CardDescription.displayName = "CardDescription";
+
+export { Card, CardHeader, CardContent, CardTitle, CardDescription };
