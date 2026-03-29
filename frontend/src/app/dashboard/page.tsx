@@ -10,17 +10,13 @@ import { useQuery } from "@tanstack/react-query";
 import { SignedIn, SignedOut, useAuth } from "@/auth/session";
 import {
   Activity,
-  ArrowUpRight,
   Bot,
-  Info,
-  LayoutGrid,
   Shield,
-  Timer,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 import { DashboardSidebar } from "@/components/organisms/DashboardSidebar";
 import { DashboardShell } from "@/components/templates/DashboardShell";
-import { Markdown } from "@/components/atoms/Markdown";
 import { SignedOutPanel } from "@/components/auth/SignedOutPanel";
 import { ApiError } from "@/api/mutator";
 import {
@@ -46,7 +42,6 @@ import {
 import type { ActivityEventRead } from "@/api/generated/model";
 import {
   formatRelativeTimestamp,
-  formatTimestamp,
   parseTimestamp,
 } from "@/lib/formatters";
 
@@ -353,127 +348,6 @@ const toSessionSummaries = (
     };
   });
 };
-
-function TopMetricCard({
-  title,
-  value,
-  secondary,
-  infoText,
-  icon,
-  accent,
-}: {
-  title: string;
-  value: string;
-  secondary?: string;
-  infoText?: string;
-  icon: React.ReactNode;
-  accent: "blue" | "green" | "violet" | "emerald";
-}) {
-  const iconTone =
-    accent === "blue"
-      ? "bg-app-accent/10 text-app-accent"
-      : accent === "green"
-        ? "bg-app-success-soft text-app-success"
-        : accent === "violet"
-          ? "bg-app-accent/10 text-app-accent"
-          : "bg-app-success-soft text-app-success";
-
-  return (
-    <section className="rounded-xl border border-app-border bg-app-surface backdrop-blur-glass shadow-card p-4 md:p-6 transition hover:-translate-y-0.5 hover:shadow-md">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-1.5">
-            <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
-              {title}
-            </p>
-            {infoText ? (
-              <span
-                className="inline-flex text-app-text-quiet"
-                title={infoText}
-                aria-label={infoText}
-              >
-                <Info className="h-3.5 w-3.5" />
-              </span>
-            ) : null}
-          </div>
-          <div className="mt-2 flex items-end gap-2">
-            <p className="font-heading text-4xl font-bold text-app-text">{value}</p>
-            {secondary ? (
-              <p className="pb-1 text-xs text-app-text-quiet">{secondary}</p>
-            ) : null}
-          </div>
-        </div>
-        <div className={`rounded-lg p-2 ${iconTone}`}>
-          {icon}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function InfoBlock({
-  title,
-  badge,
-  infoText,
-  rows,
-}: {
-  title: string;
-  badge?: { text: string; tone: "online" | "offline" | "neutral" };
-  infoText?: string;
-  rows: SummaryRow[];
-}) {
-  return (
-    <section className="rounded-xl border border-app-border bg-app-surface backdrop-blur-glass shadow-card p-4 md:p-6">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-1.5">
-          <h3 className="text-lg font-semibold text-app-text font-heading">{title}</h3>
-          {infoText ? (
-            <span
-              className="inline-flex text-app-text-quiet"
-              title={infoText}
-              aria-label={infoText}
-            >
-              <Info className="h-3.5 w-3.5" />
-            </span>
-          ) : null}
-        </div>
-        {badge ? (
-          <span
-            className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
-              badge.tone === "online"
-                ? "bg-app-success-soft text-app-success"
-                : badge.tone === "offline"
-                  ? "bg-app-danger-soft text-app-danger"
-                  : "bg-app-surface-strong text-app-text-muted"
-            }`}
-          >
-            {badge.text}
-          </span>
-        ) : null}
-      </div>
-      <div className="divide-y divide-app-border rounded-lg border border-app-border bg-app-surface">
-        {rows.map((row) => (
-          <div key={`${row.label}-${row.value}`} className="flex items-start justify-between gap-3 px-3 py-2">
-            <span className="min-w-0 text-sm text-app-text-quiet">{row.label}</span>
-            <span
-              className={`max-w-[65%] break-words text-right text-sm font-medium leading-5 ${
-                row.tone === "success"
-                  ? "text-app-success"
-                  : row.tone === "warning"
-                    ? "text-app-warning"
-                    : row.tone === "danger"
-                      ? "text-app-danger"
-                      : "text-app-text"
-              }`}
-            >
-              {row.value}
-            </span>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -908,240 +782,125 @@ export default function DashboardPage() {
               </div>
             ) : null}
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <TopMetricCard
-                title="Online Agents"
-                value={formatCount(activeAgentsMetric)}
-                secondary={`${formatCount(agents.length)} total`}
-                icon={<Bot className="h-4 w-4" />}
-                accent="blue"
-              />
-              <TopMetricCard
-                title="Tasks In Progress"
-                value={formatCount(tasksInProgressMetric)}
-                secondary={`${formatCount(tasksTotal)} total`}
-                icon={<LayoutGrid className="h-4 w-4" />}
-                accent="green"
-              />
-              <TopMetricCard
-                title="Error Rate"
-                value={formatPercent(errorRateMetric)}
-                secondary={`${formatCount(Number(latestThroughputPoint?.value ?? 0))} completed (latest)`}
-                icon={<Activity className="h-4 w-4" />}
-                accent="violet"
-              />
-              <TopMetricCard
-                title="Completion Speed"
-                value={formatPerDay(throughputTotal, DASHBOARD_RANGE_DAYS)}
-                secondary={`${formatCount(throughputTotal)} completed`}
-                infoText={`Based on ${DASHBOARD_RANGE_LABEL}`}
-                icon={<Timer className="h-4 w-4" />}
-                accent="emerald"
-              />
-            </div>
-
-            <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
-              <InfoBlock
-                title="Workload"
-                rows={workloadRows}
-              />
-              <InfoBlock
-                title="Throughput"
-                infoText={`All throughput values are calculated for ${DASHBOARD_RANGE_LABEL}`}
-                rows={throughputRows}
-              />
-              <InfoBlock
-                title="Gateway Health"
-                badge={{
-                  text: gatewayStatusLabel,
-                  tone: gatewayBadgeTone,
-                }}
-                rows={gatewayRows}
-              />
-            </div>
-
-            <section className="mt-4 rounded-xl border border-app-border bg-app-surface backdrop-blur-glass shadow-card p-4 md:p-6">
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <h3 className="text-lg font-semibold text-app-text font-heading">Pending Approvals</h3>
-                <Link
-                  href="/approvals"
-                  className="inline-flex items-center gap-1 text-xs text-app-text-quiet transition hover:text-app-accent"
-                >
-                  Open global approvals
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
-
-              {!metrics && metricsQuery.isLoading ? (
-                <div className="rounded-lg border border-app-border bg-app-surface-muted p-3 text-sm text-app-text-quiet">
-                  Loading pending approvals...
-                </div>
-              ) : !metrics && metricsQuery.error ? (
-                <div className="rounded-lg border border-[rgba(233,195,73,0.25)] bg-app-warning-soft p-3 text-sm text-app-warning">
-                  Pending approvals are temporarily unavailable.
-                </div>
-              ) : hasPendingApprovals ? (
-                <div className="space-y-2">
-                  <div className="divide-y divide-app-border rounded-lg border border-app-border bg-app-surface">
-                    {pendingApprovalItems.map((item) => (
-                      <Link
-                        key={item.approval_id}
-                        href={`/boards/${item.board_id}/approvals`}
-                        className="flex items-center justify-between gap-3 px-3 py-2 transition hover:bg-app-surface-muted"
-                      >
-                        <span className="min-w-0 text-sm text-app-text-muted">
-                          <span className="block truncate font-medium text-app-text">
-                            {item.task_title || "Pending approval"}
-                          </span>
-                          <span className="block truncate text-xs text-app-text-quiet">
-                            {item.board_name} · {item.confidence}% score
-                          </span>
-                        </span>
-                        <span className="shrink-0 text-xs text-app-text-quiet">
-                          {formatRelativeTimestamp(item.created_at)}
-                        </span>
-                      </Link>
-                    ))}
+            {/* Section 1: Gateway Health Strip */}
+            <section className="flex gap-4 mb-8 overflow-x-auto pb-4">
+              {gatewaySnapshots.map((gw) => (
+                <div key={gw.gatewayId} className="flex-shrink-0 w-64 p-4 rounded-xl bg-app-surface backdrop-blur-glass border border-app-border">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-label text-[10px] tracking-widest text-app-text-quiet uppercase">Gateway</span>
+                    <div className={cn("w-2 h-2 rounded-full", gw.connected ? "bg-app-success shadow-[0_0_8px_rgba(63,185,80,0.5)]" : "bg-app-danger shadow-[0_0_8px_rgba(255,180,171,0.5)]")} />
                   </div>
-                  {pendingApprovalsTotal > pendingApprovalItems.length ? (
-                    <p className="text-xs text-app-text-quiet">
-                      Showing latest {formatCount(pendingApprovalItems.length)} of{" "}
-                      {formatCount(pendingApprovalsTotal)} pending approvals.
-                    </p>
-                  ) : null}
+                  <div className="font-display text-lg italic text-app-text mb-1">{gw.gatewayUrl || gw.boardName}</div>
+                  <div className="grid grid-cols-2 gap-2 mt-4">
+                    <div>
+                      <div className="font-label text-[8px] uppercase text-app-text-quiet">Sessions</div>
+                      <div className="font-label text-xs text-app-accent">{gw.sessionsCount}</div>
+                    </div>
+                    <div>
+                      <div className="font-label text-[8px] uppercase text-app-text-quiet">Status</div>
+                      <div className={cn("font-label text-xs", gw.connected ? "text-app-success" : "text-app-danger")}>{gw.connected ? "Online" : "Offline"}</div>
+                    </div>
+                  </div>
                 </div>
-              ) : (
-                <div className="rounded-lg border border-[rgba(63,185,80,0.25)] bg-app-success-soft p-3 text-sm text-app-success">
-                  No pending approvals across your boards.
+              ))}
+              {gatewaySnapshots.length === 0 && (
+                <div className="w-full p-6 rounded-xl bg-app-surface border border-app-border text-center">
+                  <p className="text-app-text-quiet text-sm">No gateways configured. <Link href="/gateways/new" className="text-app-accent hover:underline">Connect your first gateway</Link></p>
                 </div>
               )}
             </section>
 
-            <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-              <section className="min-w-0 overflow-hidden rounded-xl border border-app-border bg-app-surface backdrop-blur-glass shadow-card p-4 md:p-6">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <h3 className="text-lg font-semibold text-app-text font-heading">Sessions</h3>
-                  <span className="text-xs text-app-text-quiet">{formatCount(activeSessions)}</span>
-                </div>
-                <div className="max-h-[310px] space-y-2 overflow-x-hidden overflow-y-auto pr-1">
-                  {!hasConfiguredGateways ? (
-                    <div className="rounded-lg border border-app-border bg-app-surface-muted p-3 text-sm text-app-text-quiet">
-                      No gateways are configured for any board yet.
+            {/* Section 2: Agent Grid */}
+            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {agents.map((agent) => {
+                const isOnline = (agent.status ?? "").toLowerCase() === "online";
+                const board = boards.find(b => b.id === agent.board_id);
+                return (
+                  <Link key={agent.id} href={`/agents/${agent.id}`} className="p-6 rounded-xl bg-app-surface-strong backdrop-blur-glass border border-app-border group hover:border-app-accent/20 transition-all">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className={cn("w-12 h-12 rounded-full bg-app-surface-muted border flex items-center justify-center",
+                        isOnline ? "border-app-accent/30 shadow-[0_0_15px_rgba(47,217,244,0.4)]" : "border-app-border"
+                      )}>
+                        <Bot className={cn("h-5 w-5", isOnline ? "text-app-accent" : "text-app-text-quiet")} />
+                      </div>
+                      <div>
+                        <h3 className="font-display text-xl text-app-text">{agent.name}</h3>
+                        <p className="font-label text-[10px] text-app-text-quiet tracking-wider uppercase">{board?.name || "Unassigned"}</p>
+                      </div>
                     </div>
-                  ) : gatewayStatusesQuery.isLoading ? (
-                    <div className="rounded-lg border border-app-border bg-app-surface-muted p-3 text-sm text-app-text-quiet">
-                      Loading sessions...
-                    </div>
-                  ) : sessionSummaries.length > 0 ? (
-                    <>
-                      {gatewayUnavailableCount > 0 ? (
-                        <div className="rounded-lg border border-[rgba(233,195,73,0.25)] bg-app-warning-soft p-3 text-sm text-app-warning">
-                          {formatCount(gatewayUnavailableCount)} gateway
-                          {gatewayUnavailableCount === 1 ? "" : "s"} unavailable; showing sessions
-                          from reachable gateways.
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-end">
+                        <div>
+                          <div className="font-label text-[9px] uppercase text-app-text-quiet mb-1">Status</div>
+                          <div className={cn("text-sm font-medium", isOnline ? "text-app-accent" : "text-app-text-quiet")}>{agent.status || "Unknown"}</div>
                         </div>
-                      ) : null}
-                      {sessionSummaries.map((session) => (
-                        <div
-                          key={session.key}
-                          className="overflow-hidden rounded-lg border border-app-border bg-app-surface px-3 py-2"
-                        >
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-medium text-app-text">
-                                <span
-                                  className={`mr-2 inline-block h-2 w-2 rounded-full ${
-                                    session.isMain ? "bg-app-success" : "bg-app-text-quiet"
-                                  }`}
-                                />
-                                {session.title}
-                              </p>
-                              <p className="mt-0.5 truncate text-xs text-app-text-quiet">{session.subtitle}</p>
-                            </div>
-                            <div className="min-w-0 max-w-[45%] text-right">
-                              <p className="truncate text-xs font-medium text-app-text-muted">
-                                {session.usage === DASH ? "Usage unavailable" : session.usage}
-                              </p>
-                              <p className="text-[11px] text-app-text-quiet">
-                                {session.lastSeenAt
-                                  ? formatRelativeTimestamp(session.lastSeenAt)
-                                  : "Activity unavailable"}
-                              </p>
-                            </div>
-                          </div>
+                        <div className="text-right">
+                          <div className="font-label text-[9px] uppercase text-app-text-quiet mb-1">Last Seen</div>
+                          <div className="text-xs text-app-text-quiet">{agent.last_seen_at ? formatRelativeTimestamp(agent.last_seen_at) : "Never"}</div>
                         </div>
-                      ))}
-                    </>
-                  ) : gatewayUnavailableCount === gatewayTargets.length ? (
-                    <div className="rounded-lg border border-[rgba(255,180,171,0.25)] bg-app-danger-soft p-3 text-sm text-app-danger">
-                      Session data is unavailable for all configured gateways.
+                      </div>
                     </div>
-                  ) : (
-                    <div className="rounded-lg border border-app-border bg-app-surface-muted p-3 text-sm text-app-text-quiet">
-                      No active sessions detected.
-                    </div>
-                  )}
-                </div>
-              </section>
-
-              <section className="min-w-0 overflow-hidden rounded-xl border border-app-border bg-app-surface backdrop-blur-glass shadow-card p-4 md:p-6">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <h3 className="text-lg font-semibold text-app-text font-heading">Recent Activity</h3>
-                  <Link
-                    href={activityFeedHref}
-                    className="inline-flex items-center gap-1 text-xs text-app-text-quiet transition hover:text-app-accent"
-                  >
-                    Open feed
-                    <ArrowUpRight className="h-3.5 w-3.5" />
                   </Link>
+                );
+              })}
+              {agents.length === 0 && (
+                <div className="col-span-full p-8 rounded-xl bg-app-surface border border-app-border text-center">
+                  <Bot className="h-8 w-8 text-app-text-quiet mx-auto mb-3" />
+                  <p className="text-app-text-quiet">No agents provisioned yet.</p>
                 </div>
-                <div className="max-h-[310px] space-y-2 overflow-x-hidden overflow-y-auto pr-1">
-                  {recentLogs.length > 0 ? (
-                    recentLogs.map((event) => {
-                      const eventHref = buildActivityEventHref(event);
-                      return (
-                        <div
-                          key={event.id}
-                          role="link"
-                          tabIndex={0}
-                        aria-label={`Open related context for ${event.event_type} activity`}
-                          onClick={(interactionEvent) =>
-                            handleLogRowClick(interactionEvent, eventHref)
-                          }
-                          onKeyDown={(interactionEvent) =>
-                            handleLogRowKeyDown(interactionEvent, eventHref)
-                          }
-                          className="cursor-pointer overflow-hidden rounded-lg border border-app-border bg-app-surface px-3 py-2 transition hover:border-app-border-strong focus-visible:border-app-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-accent"
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0 flex-1 overflow-hidden">
-                              <div className="break-words text-sm font-medium text-app-text [&_ol]:mb-0 [&_p]:mb-0 [&_pre]:my-1 [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_ul]:mb-0">
-                                <Markdown
-                                  content={event.message?.trim() || event.event_type}
-                                  variant="comment"
-                                />
-                              </div>
-                              <p className="mt-0.5 text-xs uppercase tracking-wider text-app-text-quiet">
-                                {event.event_type}
-                              </p>
-                            </div>
-                            <div className="shrink-0 text-right text-[11px] text-app-text-quiet">
-                              <p>{formatRelativeTimestamp(event.created_at)}</p>
-                              <p>{formatTimestamp(event.created_at)}</p>
-                            </div>
-                          </div>
+              )}
+            </section>
+
+            {/* Section 3: Recent Activity + Pending Actions */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Recent Activity */}
+              <div className="space-y-4">
+                <h2 className="font-display text-2xl text-app-text italic mb-4">Recent Activity</h2>
+                <div className="space-y-0.5 rounded-xl overflow-hidden border border-app-border">
+                  {recentLogs.length > 0 ? recentLogs.map((event) => (
+                    <Link key={event.id} href={buildActivityEventHref(event)} className="bg-app-surface-muted p-4 hover:bg-app-surface-strong transition-colors flex gap-4 block">
+                      <div className="w-10 h-10 rounded-lg bg-app-surface flex items-center justify-center border border-app-accent/20">
+                        <Activity className="h-5 w-5 text-app-accent" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between mb-1">
+                          <span className="font-label text-[10px] text-app-gold tracking-widest uppercase truncate">{event.event_type}</span>
+                          <span className="font-label text-[9px] text-app-text-quiet">{formatRelativeTimestamp(event.created_at)}</span>
                         </div>
-                      );
-                    })
-                  ) : (
-                    <div className="flex h-[240px] flex-col items-center justify-center rounded-lg border border-app-border bg-app-surface text-sm text-app-text-quiet">
-                      <Shield className="mb-2 h-5 w-5 text-app-text-quiet" />
-                      No activity yet
-                      <p className="mt-1 text-xs text-app-text-quiet">Activity appears here when events are emitted.</p>
+                        <p className="text-sm text-app-text-muted line-clamp-1">{event.message || event.event_type}</p>
+                      </div>
+                    </Link>
+                  )) : (
+                    <div className="p-8 text-center bg-app-surface-muted">
+                      <Shield className="h-5 w-5 text-app-text-quiet mx-auto mb-2" />
+                      <p className="text-sm text-app-text-quiet">No activity yet</p>
                     </div>
                   )}
                 </div>
-              </section>
+              </div>
+
+              {/* Pending Actions */}
+              <div className="space-y-4">
+                <h2 className="font-display text-2xl text-app-text italic mb-4">Pending Actions</h2>
+                <div className="space-y-3">
+                  {hasPendingApprovals ? pendingApprovalItems.map((item) => (
+                    <Link key={item.approval_id} href={`/boards/${item.board_id}/approvals`} className="bg-app-surface-strong p-4 rounded-xl border-l-4 border-app-warning flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <Shield className="h-5 w-5 text-app-warning" />
+                        <div>
+                          <h4 className="text-sm font-medium text-app-text">{item.task_title || "Pending approval"}</h4>
+                          <p className="font-label text-[10px] text-app-text-quiet uppercase">{item.board_name} · {item.confidence}%</p>
+                        </div>
+                      </div>
+                      <span className="font-label text-[10px] text-app-text-quiet">{formatRelativeTimestamp(item.created_at)}</span>
+                    </Link>
+                  )) : (
+                    <div className="bg-app-surface-strong p-4 rounded-xl border-l-4 border-app-success">
+                      <p className="text-sm text-app-success">No pending approvals</p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </main>
