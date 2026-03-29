@@ -360,27 +360,27 @@ body {
   font-family: var(--font-body), sans-serif;
 }
 
-/* Landing (Enterprise) */
+/* Landing (Enterprise) — Glass Cockpit palette */
 .landing-enterprise {
-  --primary-navy: #0d1117;
-  --secondary-navy: #161b22;
-  --accent-gold: #d4af37;
-  --accent-teal: #58a6ff;
-  --neutral-100: #0d1117;
-  --neutral-200: #30363d;
-  --neutral-300: #3b434c;
-  --neutral-700: #8b949e;
-  --neutral-800: #c9d1d9;
-  --success: #10b981;
-  --warning: #f59e0b;
+  --primary-navy: var(--bg);
+  --secondary-navy: var(--surface);
+  --accent-gold: var(--gold);
+  --accent-teal: var(--accent);
+  --neutral-100: var(--bg);
+  --neutral-200: var(--border-strong);
+  --neutral-300: var(--surface-highest);
+  --neutral-700: var(--text-quiet);
+  --neutral-800: var(--text);
+  --success: var(--success);
+  --warning: var(--warning);
 
   min-height: 100vh;
   font-family:
     var(--font-body),
     -apple-system,
     sans-serif;
-  background: radial-gradient(circle at top right, #10151d 0%, var(--neutral-100) 55%);
-  color: var(--neutral-800);
+  background: radial-gradient(circle at top right, var(--surface) 0%, var(--bg) 55%);
+  color: var(--text);
   line-height: 1.6;
   overflow-x: hidden;
 }
@@ -423,11 +423,13 @@ body {
   position: fixed;
   top: 0;
   width: 100%;
-  background: rgba(13, 17, 23, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--neutral-200);
+  background: rgba(16, 20, 26, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(47, 217, 244, 0.1);
   z-index: 40;
   animation: landing-slide-down 0.6s ease-out;
+  box-shadow: 0 0 40px rgba(6, 182, 212, 0.06);
 }
 
 .landing-enterprise .nav-container {
@@ -450,19 +452,15 @@ body {
 .landing-enterprise .logo-icon {
   width: 36px;
   height: 36px;
-  background: linear-gradient(
-    135deg,
-    var(--primary-navy),
-    var(--secondary-navy)
-  );
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--bg);
   font-weight: 600;
   font-size: 18px;
-  box-shadow: 0 2px 8px rgba(10, 22, 40, 0.15);
+  box-shadow: 0 0 12px rgba(47, 217, 244, 0.2);
 }
 
 .landing-enterprise .logo-text {
@@ -472,17 +470,19 @@ body {
 }
 
 .landing-enterprise .logo-name {
-  font-weight: 600;
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-weight: 700;
   font-size: 20px;
   letter-spacing: -0.02em;
-  color: var(--neutral-800);
+  color: var(--accent);
 }
 
 .landing-enterprise .logo-tagline {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--neutral-700);
+  color: var(--text-quiet);
   font-weight: 500;
 }
 
@@ -493,7 +493,7 @@ body {
 }
 
 .landing-enterprise .nav-links a {
-  color: var(--neutral-700);
+  color: var(--text-quiet);
   text-decoration: none;
   font-weight: 500;
   font-size: 15px;
@@ -502,7 +502,7 @@ body {
 }
 
 .landing-enterprise .nav-links a:hover {
-  color: var(--neutral-800);
+  color: var(--text-muted);
 }
 
 .landing-enterprise .nav-cta {
@@ -513,9 +513,9 @@ body {
 
 .landing-enterprise .btn-secondary {
   padding: 0.625rem 1.25rem;
-  border: 1.5px solid var(--neutral-300);
-  background: var(--surface);
-  color: var(--neutral-800);
+  border: 1.5px solid rgba(47, 217, 244, 0.2);
+  background: transparent;
+  color: var(--text-quiet);
   border-radius: 8px;
   font-weight: 500;
   font-size: 14px;
@@ -525,26 +525,27 @@ body {
 
 .landing-enterprise .btn-secondary:hover {
   border-color: var(--accent);
-  background: var(--neutral-100);
+  color: var(--accent);
+  background: rgba(47, 217, 244, 0.05);
 }
 
 .landing-enterprise .btn-primary {
   padding: 0.625rem 1.5rem;
-  background: var(--primary-navy);
-  color: white;
+  background: linear-gradient(135deg, var(--accent), #06b6d4);
+  color: var(--bg);
   border: none;
   border-radius: 8px;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(10, 22, 40, 0.15);
+  box-shadow: 0 0 12px rgba(47, 217, 244, 0.15);
 }
 
 .landing-enterprise .btn-primary:hover {
-  background: var(--secondary-navy);
+  filter: brightness(1.1);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(10, 22, 40, 0.2);
+  box-shadow: 0 0 20px rgba(47, 217, 244, 0.25);
 }
 
 .landing-enterprise .hero {
@@ -568,16 +569,16 @@ body {
   padding: 0.5rem 1rem;
   background: linear-gradient(
     135deg,
-    rgba(10, 22, 40, 0.05),
-    rgba(45, 212, 191, 0.08)
+    rgba(47, 217, 244, 0.05),
+    rgba(47, 217, 244, 0.1)
   );
-  border: 1px solid rgba(45, 212, 191, 0.2);
+  border: 1px solid rgba(47, 217, 244, 0.2);
   border-radius: 50px;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--accent-teal);
+  color: var(--accent);
   margin-bottom: 1.5rem;
 }
 
@@ -585,14 +586,15 @@ body {
   font-family: var(--font-display), serif;
   font-size: 56px;
   line-height: 1.15;
-  color: var(--neutral-800);
+  color: var(--text);
   margin-bottom: 1.5rem;
   font-weight: 400;
+  font-style: italic;
   letter-spacing: -0.02em;
 }
 
 .landing-enterprise .hero-highlight {
-  background: linear-gradient(135deg, var(--accent-teal), var(--accent-gold));
+  background: linear-gradient(135deg, var(--accent), var(--gold));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -602,7 +604,7 @@ body {
 .landing-enterprise .hero p {
   font-size: 19px;
   line-height: 1.7;
-  color: var(--neutral-700);
+  color: var(--text-muted);
   margin-bottom: 2.5rem;
   font-weight: 400;
 }
@@ -627,34 +629,34 @@ body {
 }
 
 .landing-enterprise .btn-large.primary {
-  background: var(--primary-navy);
-  color: white;
+  background: linear-gradient(135deg, var(--accent), #06b6d4);
+  color: var(--bg);
   border: none;
-  box-shadow: 0 4px 12px rgba(10, 22, 40, 0.2);
+  box-shadow: 0 0 20px rgba(47, 217, 244, 0.2);
 }
 
 .landing-enterprise .btn-large.primary:hover {
-  background: var(--secondary-navy);
+  filter: brightness(1.1);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(10, 22, 40, 0.25);
+  box-shadow: 0 0 30px rgba(47, 217, 244, 0.3);
 }
 
 .landing-enterprise .btn-large.secondary {
-  background: var(--surface);
-  color: var(--neutral-800);
-  border: 1.5px solid var(--neutral-300);
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid rgba(47, 217, 244, 0.3);
 }
 
 .landing-enterprise .btn-large.secondary:hover {
   border-color: var(--accent);
-  background: var(--neutral-100);
+  background: rgba(47, 217, 244, 0.05);
 }
 
 .landing-enterprise .hero-features {
   display: flex;
   gap: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid var(--neutral-200);
+  border-top: 1px solid var(--border-strong);
 }
 
 .landing-enterprise .hero-feature {
@@ -666,12 +668,12 @@ body {
 .landing-enterprise .feature-icon {
   width: 20px;
   height: 20px;
-  background: var(--accent-teal);
+  background: var(--accent);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--bg);
   font-size: 12px;
   flex-shrink: 0;
 }
@@ -679,26 +681,25 @@ body {
 .landing-enterprise .hero-feature span {
   font-size: 14px;
   font-weight: 500;
-  color: var(--neutral-700);
+  color: var(--text-quiet);
 }
 
 .landing-enterprise .command-surface {
-  background: var(--surface);
+  background: linear-gradient(135deg, rgba(38, 42, 49, 0.7), rgba(24, 28, 34, 0.7));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(10, 22, 40, 0.08);
+  box-shadow: 0 8px 32px rgba(16, 20, 26, 0.4), var(--shadow-glow);
   overflow: hidden;
   animation: landing-fade-in-up 0.8s ease-out 0.4s both;
-  border: 1px solid var(--neutral-200);
+  border: 1px solid rgba(61, 73, 76, 0.15);
 }
 
 .landing-enterprise .surface-header {
   padding: 1.5rem 2rem;
-  background: linear-gradient(
-    135deg,
-    var(--primary-navy),
-    var(--secondary-navy)
-  );
-  color: white;
+  background: linear-gradient(135deg, var(--surface-strong), var(--surface));
+  border-bottom: 1px solid rgba(61, 73, 76, 0.15);
+  color: var(--text);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -723,40 +724,41 @@ body {
 .landing-enterprise .live-dot {
   width: 8px;
   height: 8px;
-  background: var(--accent-teal);
+  background: var(--accent);
   border-radius: 50%;
   animation: landing-pulse 2s infinite;
+  box-shadow: 0 0 8px rgba(47, 217, 244, 0.5);
 }
 
 .landing-enterprise .surface-subtitle {
   padding: 1.25rem 2rem;
-  background: var(--neutral-100);
-  border-bottom: 1px solid var(--neutral-200);
+  background: var(--bg);
+  border-bottom: 1px solid rgba(61, 73, 76, 0.15);
 }
 
 .landing-enterprise .surface-subtitle h3 {
   font-size: 16px;
   font-weight: 600;
-  color: var(--neutral-800);
+  color: var(--text);
   margin-bottom: 0.25rem;
 }
 
 .landing-enterprise .surface-subtitle p {
   font-size: 13px;
-  color: var(--neutral-700);
+  color: var(--text-quiet);
 }
 
 .landing-enterprise .metrics-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0;
-  border-bottom: 1px solid var(--neutral-200);
+  border-bottom: 1px solid rgba(61, 73, 76, 0.15);
 }
 
 .landing-enterprise .metric {
   padding: 1.75rem 2rem;
   text-align: center;
-  border-right: 1px solid var(--neutral-200);
+  border-right: 1px solid rgba(61, 73, 76, 0.15);
 }
 
 .landing-enterprise .metric:last-child {
@@ -766,7 +768,7 @@ body {
 .landing-enterprise .metric-value {
   font-size: 36px;
   font-weight: 300;
-  color: var(--neutral-800);
+  color: var(--accent);
   letter-spacing: -0.02em;
   margin-bottom: 0.25rem;
 }
@@ -775,7 +777,7 @@ body {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--neutral-700);
+  color: var(--text-quiet);
   font-weight: 600;
 }
 
@@ -790,7 +792,7 @@ body {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--neutral-700);
+  color: var(--text-quiet);
   font-weight: 600;
   margin-bottom: 1rem;
 }
@@ -800,7 +802,7 @@ body {
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 0;
-  border-bottom: 1px solid var(--neutral-200);
+  border-bottom: 1px solid rgba(61, 73, 76, 0.15);
 }
 
 .landing-enterprise .status-item:last-child {
@@ -819,14 +821,14 @@ body {
 }
 
 .landing-enterprise .status-icon.progress {
-  background: rgba(45, 212, 191, 0.1);
-  color: var(--accent-teal);
+  background: rgba(47, 217, 244, 0.1);
+  color: var(--accent);
 }
 
 .landing-enterprise .status-item-title {
   font-size: 14px;
   font-weight: 500;
-  color: var(--neutral-800);
+  color: var(--text);
 }
 
 .landing-enterprise .approval-item {
@@ -834,7 +836,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0.875rem 0;
-  border-bottom: 1px solid var(--neutral-200);
+  border-bottom: 1px solid rgba(61, 73, 76, 0.15);
   gap: 0.75rem;
 }
 
@@ -844,7 +846,7 @@ body {
 
 .landing-enterprise .approval-title {
   font-size: 14px;
-  color: var(--neutral-800);
+  color: var(--text);
   font-weight: 500;
 }
 
@@ -859,12 +861,12 @@ body {
 }
 
 .landing-enterprise .approval-badge.ready {
-  background: rgba(16, 185, 129, 0.1);
+  background: var(--success-soft);
   color: var(--success);
 }
 
 .landing-enterprise .approval-badge.waiting {
-  background: rgba(245, 158, 11, 0.1);
+  background: var(--warning-soft);
   color: var(--warning);
 }
 
@@ -873,7 +875,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 0;
-  border-bottom: 1px solid var(--neutral-200);
+  border-bottom: 1px solid rgba(61, 73, 76, 0.15);
   gap: 0.75rem;
 }
 
@@ -883,12 +885,12 @@ body {
 
 .landing-enterprise .signal-text {
   font-size: 13px;
-  color: var(--neutral-700);
+  color: var(--text-muted);
 }
 
 .landing-enterprise .signal-time {
   font-size: 12px;
-  color: var(--neutral-700);
+  color: var(--text-quiet);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -911,10 +913,12 @@ body {
 }
 
 .landing-enterprise .feature-card {
-  background: var(--surface);
+  background: linear-gradient(135deg, rgba(38, 42, 49, 0.5), rgba(24, 28, 34, 0.5));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   padding: 2rem;
   border-radius: 12px;
-  border: 1px solid var(--neutral-200);
+  border: 1px solid rgba(61, 73, 76, 0.15);
   transition: all 0.3s ease;
   animation: landing-fade-in-up 0.6s ease-out both;
 }
@@ -937,33 +941,29 @@ body {
 
 .landing-enterprise .feature-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(10, 22, 40, 0.12);
-  border-color: var(--accent-teal);
+  box-shadow: 0 12px 32px rgba(16, 20, 26, 0.4), 0 0 20px rgba(47, 217, 244, 0.08);
+  border-color: rgba(47, 217, 244, 0.2);
 }
 
 .landing-enterprise .feature-number {
   width: 48px;
   height: 48px;
-  background: linear-gradient(
-    135deg,
-    rgba(10, 22, 40, 0.05),
-    rgba(45, 212, 191, 0.08)
-  );
-  border: 1px solid var(--neutral-200);
+  background: rgba(47, 217, 244, 0.1);
+  border: 1px solid rgba(47, 217, 244, 0.15);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
   margin-bottom: 1.5rem;
-  color: var(--neutral-800);
+  color: var(--accent);
   font-weight: 300;
 }
 
 .landing-enterprise .feature-card h3 {
   font-size: 18px;
   font-weight: 600;
-  color: var(--neutral-800);
+  color: var(--text);
   margin-bottom: 0.75rem;
   letter-spacing: -0.01em;
 }
@@ -971,17 +971,14 @@ body {
 .landing-enterprise .feature-card p {
   font-size: 14px;
   line-height: 1.6;
-  color: var(--neutral-700);
+  color: var(--text-muted);
 }
 
 .landing-enterprise .cta-section {
   padding: 5rem 2.5rem;
-  background: linear-gradient(
-    135deg,
-    var(--primary-navy),
-    var(--secondary-navy)
-  );
+  background: linear-gradient(135deg, rgba(47, 217, 244, 0.08), var(--bg));
   text-align: center;
+  position: relative;
 }
 
 .landing-enterprise .cta-content {
@@ -992,15 +989,16 @@ body {
 .landing-enterprise .cta-section h2 {
   font-family: var(--font-display), serif;
   font-size: 42px;
-  color: white;
+  color: var(--text);
   margin-bottom: 1rem;
   font-weight: 400;
+  font-style: italic;
   letter-spacing: -0.01em;
 }
 
 .landing-enterprise .cta-section p {
   font-size: 18px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-muted);
   margin-bottom: 2.5rem;
 }
 
@@ -1012,30 +1010,32 @@ body {
 }
 
 .landing-enterprise .btn-large.white {
-  background: var(--surface);
-  color: var(--neutral-800);
+  background: linear-gradient(135deg, var(--accent), #06b6d4);
+  color: var(--bg);
   border: none;
+  box-shadow: 0 0 20px rgba(47, 217, 244, 0.15);
 }
 
 .landing-enterprise .btn-large.white:hover {
-  background: var(--neutral-100);
+  filter: brightness(1.1);
   transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(47, 217, 244, 0.3);
 }
 
 .landing-enterprise .btn-large.outline {
-  background: transparent;
-  color: white;
-  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  background: var(--surface-highest);
+  color: var(--text);
+  border: 1.5px solid rgba(61, 73, 76, 0.3);
 }
 
 .landing-enterprise .btn-large.outline:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: white;
+  background: var(--surface-strong);
+  border-color: rgba(61, 73, 76, 0.5);
 }
 
 .landing-enterprise .landing-footer {
-  background: var(--neutral-100);
-  border-top: 1px solid var(--neutral-200);
+  background: var(--bg);
+  border-top: 1px solid rgba(6, 182, 212, 0.1);
   padding: 3rem 2.5rem 2rem;
 }
 
@@ -1049,15 +1049,17 @@ body {
 }
 
 .landing-enterprise .footer-brand h3 {
+  font-family: var(--font-display), serif;
+  font-style: italic;
   font-size: 18px;
   font-weight: 600;
-  color: var(--neutral-800);
+  color: var(--accent);
   margin-bottom: 0.75rem;
 }
 
 .landing-enterprise .footer-brand p {
   font-size: 14px;
-  color: var(--neutral-700);
+  color: var(--text-quiet);
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
@@ -1066,7 +1068,7 @@ body {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--neutral-700);
+  color: var(--text-quiet);
   font-weight: 600;
 }
 
@@ -1074,7 +1076,7 @@ body {
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--neutral-700);
+  color: var(--text-muted);
   font-weight: 600;
   margin-bottom: 1rem;
 }
@@ -1087,7 +1089,7 @@ body {
 
 .landing-enterprise .footer-links a,
 .landing-enterprise .footer-links button {
-  color: var(--neutral-700);
+  color: var(--text-quiet);
   text-decoration: none;
   font-size: 14px;
   transition: color 0.3s ease;
@@ -1101,14 +1103,14 @@ body {
 
 .landing-enterprise .footer-links a:hover,
 .landing-enterprise .footer-links button:hover {
-  color: var(--neutral-800);
+  color: var(--accent);
 }
 
 .landing-enterprise .footer-bottom {
   max-width: 1400px;
   margin: 0 auto;
   padding-top: 2rem;
-  border-top: 1px solid var(--neutral-200);
+  border-top: 1px solid rgba(6, 182, 212, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1118,7 +1120,7 @@ body {
 
 .landing-enterprise .footer-copyright {
   font-size: 13px;
-  color: var(--neutral-700);
+  color: var(--text-quiet);
 }
 
 .landing-enterprise .footer-bottom-links {
@@ -1129,13 +1131,13 @@ body {
 
 .landing-enterprise .footer-bottom-links a {
   font-size: 13px;
-  color: var(--neutral-700);
+  color: var(--text-quiet);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .landing-enterprise .footer-bottom-links a:hover {
-  color: var(--neutral-800);
+  color: var(--accent);
 }
 
 @media (max-width: 1024px) {
@@ -1198,7 +1200,7 @@ body {
 
   .landing-enterprise .metric {
     border-right: none;
-    border-bottom: 1px solid var(--neutral-200);
+    border-bottom: 1px solid rgba(61, 73, 76, 0.15);
   }
 
   .landing-enterprise .metric:last-child {

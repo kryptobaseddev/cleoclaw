@@ -152,7 +152,7 @@ export function LandingHero() {
           <div
             style={{
               padding: "2rem",
-              borderTop: "1px solid var(--neutral-200)",
+              borderTop: "1px solid rgba(61, 73, 76, 0.15)",
             }}
           >
             <div className="content-section">
