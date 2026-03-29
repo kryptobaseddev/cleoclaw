@@ -1170,7 +1170,9 @@ export default function BoardDetailPage() {
   const [isSavingTask, setIsSavingTask] = useState(false);
   const [saveTaskError, setSaveTaskError] = useState<string | null>(null);
 
-  const isSidePanelOpen = isDetailOpen || isChatOpen || isLiveFeedOpen;
+  // Chat is now inline in the triptych center panel, so it no longer counts
+  // as a side panel overlay. Only task detail and live feed slide out.
+  const isSidePanelOpen = isDetailOpen || isLiveFeedOpen;
   const defaultCreateCustomFieldValues = useMemo(
     () => boardCustomFieldValues(boardCustomFieldDefinitions, {}),
     [boardCustomFieldDefinitions],
@@ -1349,13 +1351,13 @@ export default function BoardDetailPage() {
     isLiveFeedOpenRef.current = isLiveFeedOpen;
   }, [isLiveFeedOpen]);
 
+  // Chat is always visible in triptych layout — auto-scroll on new messages
   useEffect(() => {
-    if (!isChatOpen) return;
     const timeout = window.setTimeout(() => {
       chatEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     }, 50);
     return () => window.clearTimeout(timeout);
-  }, [chatMessages, isChatOpen]);
+  }, [chatMessages]);
 
   /**
    * Returns an ISO timestamp for the newest board chat message.
@@ -1385,10 +1387,11 @@ export default function BoardDetailPage() {
 
   const isAgentsPaused = lastAgentControlCommand === "/pause";
 
+  // Chat is now always visible in the triptych center panel,
+  // so the SSE connection should always be active when the board is loaded.
   useEffect(() => {
     if (!isPageActive) return;
     if (!isSignedIn || !boardId || !board) return;
-    if (!isChatOpen && !isLiveFeedOpen) return;
     let isCancelled = false;
     const abortController = new AbortController();
     const backoff = createExponentialBackoff(SSE_RECONNECT_BACKOFF);
@@ -1497,8 +1500,6 @@ export default function BoardDetailPage() {
   }, [
     board,
     boardId,
-    isChatOpen,
-    isLiveFeedOpen,
     isPageActive,
     isSignedIn,
     pushLiveFeed,
@@ -3107,8 +3108,7 @@ export default function BoardDetailPage() {
         <DashboardSidebar />
         <main
           className={cn(
-            "flex-1 bg-app-bg",
-            isSidePanelOpen ? "overflow-hidden" : "overflow-y-auto",
+            "flex-1 flex flex-col bg-app-bg overflow-hidden",
           )}
         >
           <div className="sticky top-0 z-30 border-b border-app-border bg-app-surface/80 backdrop-blur-glass shadow-card">
@@ -3129,30 +3129,7 @@ export default function BoardDetailPage() {
                   ) : null}
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <div className="flex items-center gap-1 rounded-lg bg-app-surface-muted p-1">
-                    <button
-                      className={cn(
-                        "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
-                        viewMode === "board"
-                          ? "bg-app-accent text-white"
-                          : "text-app-text-muted hover:bg-app-surface-strong hover:text-app-text",
-                      )}
-                      onClick={() => setViewMode("board")}
-                    >
-                      Board
-                    </button>
-                    <button
-                      className={cn(
-                        "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
-                        viewMode === "list"
-                          ? "bg-app-accent text-white"
-                          : "text-app-text-muted hover:bg-app-surface-strong hover:text-app-text",
-                      )}
-                      onClick={() => setViewMode("list")}
-                    >
-                      List
-                    </button>
-                  </div>
+                  {/* Board/List toggle moved to right panel header */}
                   <Button
                     onClick={() => setIsDialogOpen(true)}
                     className="h-9 w-9 p-0"
@@ -3214,15 +3191,7 @@ export default function BoardDetailPage() {
                       )}
                     </Button>
                   ) : null}
-                  <Button
-                    variant="outline"
-                    onClick={openBoardChat}
-                    className="h-9 w-9 p-0"
-                    aria-label="Board chat"
-                    title="Board chat"
-                  >
-                    <MessageSquare className="h-4 w-4" />
-                  </Button>
+                  {/* Chat button removed — chat is always visible in center panel */}
                   <Button
                     variant="outline"
                     onClick={openLiveFeed}
@@ -3248,18 +3217,18 @@ export default function BoardDetailPage() {
             </div>
           </div>
 
-          <div className="relative flex flex-col gap-4 p-4 md:flex-row md:gap-6 md:p-6">
-            {isOrgAdmin ? (
-              <aside className="flex w-full flex-col rounded-xl border border-app-border bg-app-surface shadow-card md:h-full md:w-64">
-                <div className="flex items-center justify-between border-b border-app-border px-4 py-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
-                      Agents
-                    </p>
-                    <p className="text-xs text-app-text-quiet">
-                      {sortedAgents.length} total
-                    </p>
-                  </div>
+          {/* === TRIPTYCH LAYOUT === */}
+          <div className="flex flex-1 overflow-hidden">
+            {/* LEFT PANEL: Agent Status & Controls */}
+            <section className="hidden md:flex w-1/4 min-w-[240px] max-w-[320px] border-r border-app-border flex-col bg-app-surface/30 backdrop-blur-sm overflow-y-auto">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-app-border">
+                <div>
+                  <h3 className="text-sm font-bold text-app-text">Active Assets</h3>
+                  <span className="text-[10px] text-app-accent tracking-widest uppercase">
+                    {agents.filter((a) => normalizeAgentStatus(a.status) === "online").length} online
+                  </span>
+                </div>
+                {isOrgAdmin ? (
                   <button
                     type="button"
                     onClick={() => router.push("/agents/new")}
@@ -3267,93 +3236,212 @@ export default function BoardDetailPage() {
                   >
                     Add
                   </button>
-                </div>
-                <div className="flex-1 space-y-2 overflow-y-auto p-3">
-                  {sortedAgents.length === 0 ? (
-                    <div className="rounded-lg border border-dashed border-app-border p-3 text-xs text-app-text-quiet">
-                      No agents assigned yet.
-                    </div>
-                  ) : (
-                    sortedAgents.map((agent) => {
-                      const isWorking = workingAgentIds.has(agent.id);
-                      return (
-                        <button
-                          key={agent.id}
-                          type="button"
-                          className={cn(
-                            "flex w-full items-center gap-3 rounded-lg border border-transparent px-2 py-2 text-left transition hover:border-app-border hover:bg-app-surface-muted",
-                          )}
-                          onClick={() => router.push(`/agents/${agent.id}`)}
-                        >
-                          <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-app-surface-muted text-xs font-semibold text-app-text-muted">
+                ) : null}
+              </div>
+              <div className="flex-1 space-y-3 overflow-y-auto p-3">
+                {sortedAgents.length === 0 ? (
+                  <div className="rounded-lg border border-dashed border-app-border p-3 text-xs text-app-text-quiet">
+                    No agents assigned yet.
+                  </div>
+                ) : (
+                  sortedAgents.map((agent) => {
+                    const isWorking = workingAgentIds.has(agent.id);
+                    const isOnline = normalizeAgentStatus(agent.status) === "online";
+                    return (
+                      <button
+                        key={agent.id}
+                        type="button"
+                        className="w-full rounded-xl border border-app-border bg-app-surface-strong p-3 text-left transition hover:border-app-border-strong hover:bg-app-surface-muted"
+                        onClick={() => router.push(`/agents/${agent.id}`)}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={cn(
+                              "flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border text-sm font-semibold",
+                              isOnline
+                                ? "border-app-accent/30 bg-app-surface-muted text-app-accent shadow-[0_0_15px_rgba(47,217,244,0.3)]"
+                                : "border-app-border bg-app-surface-muted text-app-text-quiet",
+                            )}
+                          >
                             {agentAvatarLabel(agent)}
-                            <StatusDot
-                              status={agent.status}
-                              variant="agent"
-                              className={cn(
-                                "absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-app-surface",
-                                isWorking && "ring-2 ring-app-success/30",
-                              )}
-                            />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium text-app-text">
+                            <h4 className="truncate text-sm font-bold text-app-text">
                               {agent.name}
-                            </p>
-                            <p className="text-[11px] text-app-text-quiet">
+                            </h4>
+                            <p className="text-[10px] uppercase tracking-widest text-app-text-quiet">
                               {agentRoleLabel(agent)}
                             </p>
                           </div>
-                        </button>
-                      );
-                    })
-                  )}
-                </div>
-              </aside>
-            ) : null}
-
-            <div className="min-w-0 flex-1 space-y-6">
-              {error && (
-                <div className="rounded-lg border border-app-border bg-app-surface p-3 text-sm text-app-text-muted shadow-card">
-                  {error}
-                </div>
-              )}
-
-              {isLoading ? (
-                <div className="flex min-h-[50vh] items-center justify-center text-sm text-app-text-quiet">
-                  Loading {titleLabel}…
-                </div>
-              ) : (
-                <>
-                  {viewMode === "list" ? (
-                    <>
-                      {groupSnapshotError ? (
-                        <div className="rounded-lg border border-app-warning/30 bg-app-warning-soft p-3 text-sm text-app-warning shadow-card">
-                          {groupSnapshotError}
+                          <StatusDot
+                            status={agent.status}
+                            variant="agent"
+                            className={cn(
+                              "h-2.5 w-2.5 flex-shrink-0",
+                              isWorking && "ring-2 ring-app-success/30",
+                            )}
+                          />
                         </div>
-                      ) : null}
+                        {isWorking ? (
+                          <p className="mt-2 text-[10px] font-semibold uppercase tracking-wide text-app-success">
+                            Working on task
+                          </p>
+                        ) : null}
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </section>
 
-                      {groupSnapshot?.group ? (
-                        <div className="rounded-xl border border-app-border bg-app-surface shadow-card">
-                          <div className="border-b border-app-border px-5 py-4">
-                            <div className="flex flex-wrap items-center justify-between gap-3">
-                              <div className="min-w-0">
-                                <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
-                                  Related boards
-                                </p>
-                                <p className="mt-1 truncate text-sm font-semibold text-app-text">
-                                  {groupSnapshot.group.name}
-                                </p>
-                                {groupSnapshot.group.description ? (
-                                  <p className="mt-1 max-w-3xl text-xs text-app-text-quiet line-clamp-2">
-                                    {groupSnapshot.group.description}
+            {/* CENTER PANEL: Conversation (PRIMARY) */}
+            <section className="flex-1 flex flex-col bg-app-bg/40 min-w-0">
+              {/* Board info bar */}
+              <div className="h-14 px-6 flex items-center justify-between border-b border-app-border backdrop-blur-glass flex-shrink-0">
+                <div className="min-w-0">
+                  <h2 className="text-base font-bold text-app-text truncate">
+                    {board?.name ?? "Board"} &mdash; War Room
+                  </h2>
+                  <span className="text-[9px] text-app-text-quiet uppercase tracking-widest">
+                    Live conversation
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <Button
+                    variant="outline"
+                    onClick={openLiveFeed}
+                    className="h-8 w-8 p-0"
+                    aria-label="Live feed"
+                    title="Live feed"
+                  >
+                    <Activity className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </div>
+              {/* Chat messages area */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                {chatError ? (
+                  <div className="rounded-xl border border-app-border bg-app-danger-soft px-3 py-2 text-sm text-app-danger">
+                    {chatError}
+                  </div>
+                ) : null}
+                {error ? (
+                  <div className="rounded-lg border border-app-border bg-app-surface p-3 text-sm text-app-text-muted shadow-card">
+                    {error}
+                  </div>
+                ) : null}
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-20 text-sm text-app-text-quiet">
+                    Loading {titleLabel}…
+                  </div>
+                ) : chatMessages.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-20 text-center">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-app-surface-muted border border-app-border mb-4">
+                      <MessageSquare className="h-7 w-7 text-app-text-quiet" />
+                    </div>
+                    <p className="text-sm text-app-text-quiet">
+                      No messages yet. Start the conversation with your lead agent.
+                    </p>
+                  </div>
+                ) : (
+                  chatMessages.map((message) => (
+                    <ChatMessageCard
+                      key={message.id}
+                      message={message}
+                      fallbackSource={currentUserDisplayName}
+                    />
+                  ))
+                )}
+                <div ref={chatEndRef} />
+              </div>
+              {/* Chat composer at bottom */}
+              <div className="border-t border-app-border p-4 flex-shrink-0">
+                <BoardChatComposer
+                  isSending={isChatSending}
+                  onSend={handleSendChat}
+                  disabled={!canWrite}
+                  mentionSuggestions={boardChatMentionSuggestions}
+                  placeholder={
+                    canWrite
+                      ? "Message the board lead. Tag agents with @name."
+                      : "Read-only access. Chat is disabled."
+                  }
+                />
+                {!canWrite ? (
+                  <p className="mt-1 text-xs text-app-text-quiet">
+                    Read-only access. Chat is disabled.
+                  </p>
+                ) : null}
+              </div>
+            </section>
+
+            {/* RIGHT PANEL: Execution Pipeline (Kanban) */}
+            <section className="hidden md:flex w-1/4 min-w-[240px] max-w-[380px] border-l border-app-border flex-col bg-app-surface/30 backdrop-blur-sm overflow-hidden">
+              <div className="px-4 py-3 border-b border-app-border flex items-center justify-between flex-shrink-0">
+                <div>
+                  <h3 className="text-sm font-bold text-app-text">Execution Pipeline</h3>
+                  <span className="text-[10px] text-app-text-quiet tracking-widest uppercase">
+                    {tasks.filter((t) => t.status === "in_progress").length} active
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-0.5 rounded-lg bg-app-surface-muted p-0.5">
+                    <button
+                      className={cn(
+                        "rounded-md px-2 py-1 text-[10px] font-medium transition-colors",
+                        viewMode === "board"
+                          ? "bg-app-accent text-white"
+                          : "text-app-text-muted hover:bg-app-surface-strong hover:text-app-text",
+                      )}
+                      onClick={() => setViewMode("board")}
+                    >
+                      Board
+                    </button>
+                    <button
+                      className={cn(
+                        "rounded-md px-2 py-1 text-[10px] font-medium transition-colors",
+                        viewMode === "list"
+                          ? "bg-app-accent text-white"
+                          : "text-app-text-muted hover:bg-app-surface-strong hover:text-app-text",
+                      )}
+                      onClick={() => setViewMode("list")}
+                    >
+                      List
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1 overflow-y-auto p-3">
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-10 text-sm text-app-text-quiet">
+                    Loading tasks…
+                  </div>
+                ) : (
+                  <>
+                    {viewMode === "list" ? (
+                      <>
+                        {groupSnapshotError ? (
+                          <div className="rounded-lg border border-app-warning/30 bg-app-warning-soft p-3 text-sm text-app-warning shadow-card mb-3">
+                            {groupSnapshotError}
+                          </div>
+                        ) : null}
+
+                        {groupSnapshot?.group ? (
+                          <div className="rounded-xl border border-app-border bg-app-surface shadow-card mb-3">
+                            <div className="border-b border-app-border px-4 py-3">
+                              <div className="flex flex-wrap items-center justify-between gap-2">
+                                <div className="min-w-0">
+                                  <p className="text-[10px] font-semibold uppercase tracking-wider text-app-text-quiet">
+                                    Related boards
                                   </p>
-                                ) : null}
-                              </div>
-                              <div className="flex flex-wrap items-center gap-2">
+                                  <p className="mt-0.5 truncate text-xs font-semibold text-app-text">
+                                    {groupSnapshot.group.name}
+                                  </p>
+                                </div>
                                 <Button
                                   variant="outline"
                                   size="sm"
+                                  className="h-7 text-[10px]"
                                   onClick={() =>
                                     router.push(
                                       `/board-groups/${groupSnapshot.group?.id}`,
@@ -3361,327 +3449,147 @@ export default function BoardDetailPage() {
                                   }
                                   disabled={!groupSnapshot.group?.id}
                                 >
-                                  View group
+                                  View
                                 </Button>
-                                {isOrgAdmin ? (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() =>
-                                      router.push(`/boards/${boardId}/edit`)
-                                    }
-                                    disabled={!boardId}
-                                  >
-                                    Settings
-                                  </Button>
-                                ) : null}
                               </div>
                             </div>
-                          </div>
-                          <div className="px-5 py-4">
-                            {groupSnapshot.boards &&
-                            groupSnapshot.boards.length ? (
-                              <div className="grid gap-4 md:grid-cols-2">
-                                {groupSnapshot.boards.map((item) => (
-                                  <div
-                                    key={item.board.id}
-                                    className="rounded-xl border border-app-border bg-app-surface-muted p-4"
-                                  >
+                            <div className="px-4 py-3">
+                              {groupSnapshot.boards &&
+                              groupSnapshot.boards.length ? (
+                                <div className="space-y-2">
+                                  {groupSnapshot.boards.map((item) => (
                                     <button
+                                      key={item.board.id}
                                       type="button"
-                                      className="group flex w-full items-start justify-between gap-3 text-left"
+                                      className="w-full rounded-lg border border-app-border bg-app-surface-muted p-3 text-left transition hover:border-app-border-strong"
                                       onClick={() =>
                                         router.push(`/boards/${item.board.id}`)
                                       }
                                     >
-                                      <div className="min-w-0">
-                                        <p className="truncate text-sm font-semibold text-app-text group-hover:text-app-accent">
-                                          {item.board.name}
-                                        </p>
-                                        <p className="mt-1 text-xs text-app-text-quiet">
-                                          Updated{" "}
-                                          {formatTaskTimestamp(
-                                            item.board.updated_at,
-                                          )}
-                                        </p>
-                                      </div>
-                                      <ArrowUpRight className="mt-0.5 h-4 w-4 flex-shrink-0 text-app-text-quiet group-hover:text-app-accent" />
-                                    </button>
-
-                                    <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                                      <span className="rounded-full border border-app-border bg-app-surface px-2 py-0.5 text-app-text-muted">
-                                        Inbox {item.task_counts?.inbox ?? 0}
-                                      </span>
-                                      <span className="rounded-full border border-app-border bg-app-surface px-2 py-0.5 text-app-text-muted">
-                                        In progress{" "}
-                                        {item.task_counts?.in_progress ?? 0}
-                                      </span>
-                                      <span className="rounded-full border border-app-border bg-app-surface px-2 py-0.5 text-app-text-muted">
-                                        Review {item.task_counts?.review ?? 0}
-                                      </span>
-                                    </div>
-
-                                    {item.tasks && item.tasks.length ? (
-                                      <ul className="mt-3 space-y-2">
-                                        {item.tasks.slice(0, 3).map((task) => (
-                                          <li
-                                            key={task.id}
-                                            className="rounded-lg border border-app-border bg-app-surface p-3"
-                                          >
-                                            <div className="flex flex-wrap items-center justify-between gap-2">
-                                              <div className="flex min-w-0 items-center gap-2">
-                                                <span
-                                                  className={cn(
-                                                    "rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-wide",
-                                                    statusBadgeClass(
-                                                      task.status,
-                                                    ),
-                                                  )}
-                                                >
-                                                  {task.status.replace(
-                                                    /_/g,
-                                                    " ",
-                                                  )}
-                                                </span>
-                                                <span
-                                                  className={cn(
-                                                    "rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-wide",
-                                                    priorityBadgeClass(
-                                                      task.priority,
-                                                    ),
-                                                  )}
-                                                >
-                                                  {task.priority}
-                                                </span>
-                                                <p className="truncate text-sm font-medium text-app-text">
-                                                  {task.title}
-                                                </p>
-                                              </div>
-                                              <p className="text-xs text-app-text-quiet">
-                                                {formatTaskTimestamp(
-                                                  task.updated_at,
-                                                )}
-                                              </p>
-                                            </div>
-                                            <p className="mt-2 truncate text-xs text-app-text-muted">
-                                              Assignee:{" "}
-                                              <span className="font-medium text-app-text">
-                                                {task.assignee ?? "Unassigned"}
-                                              </span>
-                                            </p>
-                                            {task.tags?.length ? (
-                                              <div className="mt-2 flex flex-wrap gap-1.5">
-                                                {task.tags
-                                                  .slice(0, 3)
-                                                  .map((tag) => (
-                                                    <span
-                                                      key={tag.id}
-                                                      className="inline-flex items-center gap-1 rounded-full border border-app-border bg-app-surface px-2 py-0.5 text-[10px] font-semibold text-app-text-muted"
-                                                    >
-                                                      <span
-                                                        className="h-1.5 w-1.5 rounded-full"
-                                                        style={{
-                                                          backgroundColor: `#${normalizeTagColor(
-                                                            tag.color,
-                                                          )}`,
-                                                        }}
-                                                      />
-                                                      {tag.name}
-                                                    </span>
-                                                  ))}
-                                              </div>
-                                            ) : null}
-                                          </li>
-                                        ))}
-                                        {item.tasks.length > 3 ? (
-                                          <li className="text-xs text-app-text-quiet">
-                                            +{item.tasks.length - 3} more…
-                                          </li>
-                                        ) : null}
-                                      </ul>
-                                    ) : (
-                                      <p className="mt-3 text-sm text-app-text-quiet">
-                                        No tasks in this snapshot.
+                                      <p className="truncate text-xs font-semibold text-app-text">
+                                        {item.board.name}
                                       </p>
-                                    )}
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="text-sm text-app-text-quiet">
-                                No other boards in this group yet.
-                              </p>
-                            )}
+                                      <div className="mt-1 flex flex-wrap gap-1 text-[10px]">
+                                        <span className="rounded-full border border-app-border bg-app-surface px-1.5 py-0.5 text-app-text-muted">
+                                          {item.task_counts?.inbox ?? 0} inbox
+                                        </span>
+                                        <span className="rounded-full border border-app-border bg-app-surface px-1.5 py-0.5 text-app-text-muted">
+                                          {item.task_counts?.in_progress ?? 0} active
+                                        </span>
+                                      </div>
+                                    </button>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-xs text-app-text-quiet">
+                                  No other boards in this group.
+                                </p>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ) : groupSnapshot ? (
-                        <div className="rounded-xl border border-app-border bg-app-surface p-4 text-sm text-app-text-muted shadow-card">
-                          <p className="font-semibold text-app-text">
-                            No board group configured
-                          </p>
-                          <p className="mt-1 text-sm text-app-text-muted">
-                            Assign this board to a group to give agents
-                            visibility into related work.
-                          </p>
-                          <div className="mt-3 flex flex-wrap gap-2">
+                        ) : null}
+                      </>
+                    ) : null}
+
+                    {viewMode === "board" ? (
+                      <div className="space-y-3">
+                        <TaskBoard
+                          tasks={tasks}
+                          onTaskSelect={openComments}
+                          onTaskMove={canWrite ? handleTaskMove : undefined}
+                          readOnly={!canWrite}
+                        />
+                      </div>
+                    ) : (
+                      <div className="rounded-xl border border-app-border bg-app-surface shadow-card">
+                        <div className="border-b border-app-border px-4 py-3">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-xs font-semibold text-app-text">
+                                All tasks
+                              </p>
+                              <p className="text-[10px] text-app-text-quiet">
+                                {tasks.length} tasks
+                              </p>
+                            </div>
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() =>
-                                router.push(`/boards/${boardId}/edit`)
-                              }
-                              disabled={!boardId}
+                              className="h-7 text-[10px]"
+                              onClick={() => setIsDialogOpen(true)}
+                              disabled={isCreating || !canWrite}
+                              title={canWrite ? "New task" : "Read-only access"}
                             >
-                              Open settings
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => router.push("/board-groups")}
-                            >
-                              View groups
+                              New
                             </Button>
                           </div>
                         </div>
-                      ) : null}
-                    </>
-                  ) : null}
-
-                  {viewMode === "board" ? (
-                    <TaskBoard
-                      tasks={tasks}
-                      onTaskSelect={openComments}
-                      onTaskMove={canWrite ? handleTaskMove : undefined}
-                      readOnly={!canWrite}
-                    />
-                  ) : (
-                    <div className="rounded-xl border border-app-border bg-app-surface shadow-card">
-                      <div className="border-b border-app-border px-5 py-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-semibold text-app-text">
-                              All tasks
-                            </p>
-                            <p className="text-xs text-app-text-quiet">
-                              {tasks.length} tasks in this board
-                            </p>
-                          </div>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setIsDialogOpen(true)}
-                            disabled={isCreating || !canWrite}
-                            title={canWrite ? "New task" : "Read-only access"}
-                          >
-                            New task
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="divide-y divide-app-border">
-                        {tasks.length === 0 ? (
-                          <div className="px-5 py-8 text-sm text-app-text-quiet">
-                            No tasks yet. Create your first task to get started.
-                          </div>
-                        ) : (
-                          tasks.map((task) => (
-                            <button
-                              key={task.id}
-                              type="button"
-                              className="w-full px-5 py-4 text-left transition hover:bg-app-surface-muted"
-                              onClick={() => openComments(task)}
-                            >
-                              <div className="flex flex-wrap items-center justify-between gap-3">
-                                <div className="min-w-0">
-                                  <p className="truncate text-sm font-semibold text-app-text">
-                                    {task.title}
-                                  </p>
-                                  <p className="mt-1 text-xs text-app-text-quiet">
-                                    {task.description
-                                      ? task.description
-                                          .toString()
-                                          .trim()
-                                          .slice(0, 120)
-                                      : "No description"}
-                                  </p>
-                                </div>
-                                <div className="flex flex-wrap items-center gap-3 text-xs text-app-text-quiet">
-                                  {task.approvals_pending_count ? (
-                                    <span className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-app-warning">
-                                      <span className="h-1.5 w-1.5 rounded-full bg-app-warning-soft0" />
-                                      Approval needed ·{" "}
-                                      {task.approvals_pending_count}
-                                    </span>
-                                  ) : null}
-                                  <span
-                                    className={cn(
-                                      "rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-wide",
-                                      statusBadgeClass(task.status),
-                                    )}
-                                  >
-                                    {task.status.replace(/_/g, " ")}
-                                  </span>
-                                  <span
-                                    className={cn(
-                                      "rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-wide",
-                                      priorityBadgeClass(task.priority),
-                                    )}
-                                  >
-                                    {task.priority}
-                                  </span>
-                                  {task.tags?.length ? (
-                                    <div className="flex flex-wrap items-center gap-1">
-                                      {task.tags.slice(0, 2).map((tag) => (
-                                        <span
-                                          key={tag.id}
-                                          className="inline-flex items-center gap-1 rounded-full border border-app-border bg-app-surface px-2 py-0.5 text-[10px] font-semibold text-app-text-muted"
-                                        >
-                                          <span
-                                            className="h-1.5 w-1.5 rounded-full"
-                                            style={{
-                                              backgroundColor: `#${normalizeTagColor(
-                                                tag.color,
-                                              )}`,
-                                            }}
-                                          />
-                                          {tag.name}
-                                        </span>
-                                      ))}
-                                      {task.tags.length > 2 ? (
-                                        <span className="text-[10px] font-semibold text-app-text-quiet">
-                                          +{task.tags.length - 2}
+                        <div className="divide-y divide-app-border">
+                          {tasks.length === 0 ? (
+                            <div className="px-4 py-6 text-xs text-app-text-quiet">
+                              No tasks yet. Create your first task.
+                            </div>
+                          ) : (
+                            tasks.map((task) => (
+                              <button
+                                key={task.id}
+                                type="button"
+                                className="w-full px-4 py-3 text-left transition hover:bg-app-surface-muted"
+                                onClick={() => openComments(task)}
+                              >
+                                <div className="flex items-start justify-between gap-2">
+                                  <div className="min-w-0 flex-1">
+                                    <p className="truncate text-xs font-semibold text-app-text">
+                                      {task.title}
+                                    </p>
+                                    <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                                      {task.approvals_pending_count ? (
+                                        <span className="inline-flex items-center gap-1 text-[9px] font-semibold uppercase tracking-wide text-app-warning">
+                                          <span className="h-1 w-1 rounded-full bg-app-warning-soft0" />
+                                          Approval
                                         </span>
                                       ) : null}
+                                      <span
+                                        className={cn(
+                                          "rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide",
+                                          statusBadgeClass(task.status),
+                                        )}
+                                      >
+                                        {task.status.replace(/_/g, " ")}
+                                      </span>
+                                      <span
+                                        className={cn(
+                                          "rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide",
+                                          priorityBadgeClass(task.priority),
+                                        )}
+                                      >
+                                        {task.priority}
+                                      </span>
                                     </div>
-                                  ) : null}
-                                  <span className="text-xs text-app-text-quiet">
-                                    {task.assignee ?? "Unassigned"}
-                                  </span>
-                                  <span className="text-xs text-app-text-quiet">
-                                    {formatTaskTimestamp(
-                                      task.updated_at ?? task.created_at,
-                                    )}
+                                  </div>
+                                  <span className="text-[10px] text-app-text-quiet flex-shrink-0">
+                                    {task.assignee ?? "—"}
                                   </span>
                                 </div>
-                              </div>
-                            </button>
-                          ))
-                        )}
+                              </button>
+                            ))
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </section>
           </div>
         </main>
       </SignedIn>
-      {isDetailOpen || isChatOpen || isLiveFeedOpen ? (
+      {/* Backdrop overlay for slide-out panels (chat is now inline) */}
+      {isDetailOpen || isLiveFeedOpen ? (
         <div
           className="fixed inset-0 z-40 bg-black/40"
           onClick={() => {
-            if (isChatOpen) {
-              closeBoardChat();
-            } else if (isLiveFeedOpen) {
+            if (isLiveFeedOpen) {
               closeLiveFeed();
             } else {
               closeComments();
@@ -4002,67 +3910,7 @@ export default function BoardDetailPage() {
         </div>
       </aside>
 
-      <aside
-        className={cn(
-          "fixed right-0 top-0 z-50 h-full w-full max-w-[96vw] transform border-l border-app-border bg-app-surface shadow-panel transition-transform md:w-[560px]",
-          isChatOpen ? "transform-none" : "translate-x-full",
-        )}
-      >
-        <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between border-b border-app-border px-4 py-3 md:px-6 md:py-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
-                Board chat
-              </p>
-              <p className="mt-1 text-sm font-medium text-app-text">
-                Talk to the lead agent. Tag others with @name.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={closeBoardChat}
-              className="rounded-lg border border-app-border p-2 text-app-text-quiet transition hover:bg-app-surface-muted"
-              aria-label="Close board chat"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-          <div className="flex flex-1 flex-col overflow-hidden px-6 py-4">
-            <div className="flex-1 space-y-4 overflow-y-auto rounded-2xl border border-app-border bg-app-bg p-4">
-              {chatError ? (
-                <div className="rounded-xl border border-app-border bg-app-danger-soft px-3 py-2 text-sm text-app-danger">
-                  {chatError}
-                </div>
-              ) : null}
-              {chatMessages.length === 0 ? (
-                <p className="text-sm text-app-text-quiet">
-                  No messages yet. Start the conversation with your lead agent.
-                </p>
-              ) : (
-                chatMessages.map((message) => (
-                  <ChatMessageCard
-                    key={message.id}
-                    message={message}
-                    fallbackSource={currentUserDisplayName}
-                  />
-                ))
-              )}
-              <div ref={chatEndRef} />
-            </div>
-            <BoardChatComposer
-              isSending={isChatSending}
-              onSend={handleSendChat}
-              disabled={!canWrite}
-              mentionSuggestions={boardChatMentionSuggestions}
-              placeholder={
-                canWrite
-                  ? "Message the board lead. Tag agents with @name."
-                  : "Read-only access. Chat is disabled."
-              }
-            />
-          </div>
-        </div>
-      </aside>
+      {/* Chat slide-out panel removed — chat is now inline in center panel */}
 
       <aside
         className={cn(
