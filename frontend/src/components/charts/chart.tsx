@@ -314,7 +314,7 @@ function ChartTooltipCard({
     <ChartTooltipContent
       {...props}
       className={cn(
-        "border border-gray-200 bg-white px-3 py-2 text-sm shadow-lg",
+        "border border-gray-200 bg-app-surface px-3 py-2 text-sm shadow-lg",
         className,
       )}
       labelClassName={cn("text-sm font-semibold text-gray-900", labelClassName)}

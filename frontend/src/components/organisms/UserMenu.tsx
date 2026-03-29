@@ -69,7 +69,7 @@ export function UserMenu({
         >
           <span
             className={cn(
-              "relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-[10px] text-xs font-semibold text-white shadow-sm",
+              "relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-[10px] text-xs font-semibold text-white shadow-card",
               avatarUrl
                 ? "bg-[color:var(--neutral-200,var(--surface-muted))]"
                 : "bg-gradient-to-br from-[color:var(--primary-navy,var(--accent))] to-[color:var(--secondary-navy,var(--accent-strong))]",

@@ -134,7 +134,7 @@ export default function BoardsPage() {
         }
         stickyHeader
       >
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-xl border border-app-border bg-app-surface shadow-card">
           <BoardsTable
             boards={boards}
             boardGroups={groups}
@@ -155,7 +155,7 @@ export default function BoardsPage() {
         </div>
 
         {boardsQuery.error ? (
-          <p className="mt-4 text-sm text-red-500">
+          <p className="mt-4 text-sm text-app-danger">
             {boardsQuery.error.message}
           </p>
         ) : null}

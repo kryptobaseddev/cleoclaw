@@ -245,10 +245,10 @@ const eventPillClass = (eventType: FeedEventType): string => {
     return "border-blue-200 bg-blue-50 text-blue-700";
   }
   if (eventType === "task.created") {
-    return "border-emerald-200 bg-emerald-50 text-emerald-700";
+    return "border-emerald-200 bg-app-success-soft text-app-success";
   }
   if (eventType === "task.status_changed") {
-    return "border-amber-200 bg-amber-50 text-amber-700";
+    return "border-amber-200 bg-app-warning-soft text-app-warning";
   }
   if (eventType === "board.chat") {
     return "border-teal-200 bg-teal-50 text-teal-700";
@@ -263,7 +263,7 @@ const eventPillClass = (eventType: FeedEventType): string => {
     return "border-lime-200 bg-lime-50 text-lime-700";
   }
   if (eventType === "agent.offline") {
-    return "border-slate-300 bg-slate-100 text-slate-700";
+    return "border-app-border bg-app-surface-muted text-app-text-muted";
   }
   if (eventType === "agent.updated") {
     return "border-indigo-200 bg-indigo-50 text-indigo-700";
@@ -272,15 +272,15 @@ const eventPillClass = (eventType: FeedEventType): string => {
     return "border-cyan-200 bg-cyan-50 text-cyan-700";
   }
   if (eventType === "approval.updated") {
-    return "border-sky-200 bg-sky-50 text-sky-700";
+    return "border-app-border bg-app-surface-muted text-app-accent";
   }
   if (eventType === "approval.approved") {
-    return "border-emerald-200 bg-emerald-50 text-emerald-700";
+    return "border-emerald-200 bg-app-success-soft text-app-success";
   }
   if (eventType === "approval.rejected") {
-    return "border-rose-200 bg-rose-50 text-rose-700";
+    return "border-rose-200 bg-app-danger-soft text-app-danger";
   }
-  return "border-slate-200 bg-slate-100 text-slate-700";
+  return "border-app-border bg-app-surface-muted text-app-text-muted";
 };
 
 const FeedCard = memo(function FeedCard({
@@ -297,14 +297,14 @@ const FeedCard = memo(function FeedCard({
     <div
       id={feedItemElementId(item.id)}
       className={cn(
-        "scroll-mt-28 rounded-xl border bg-white p-4 transition",
+        "scroll-mt-28 rounded-xl border bg-app-surface p-4 transition",
         isHighlighted
-          ? "border-blue-300 ring-2 ring-blue-200"
-          : "border-slate-200 hover:border-slate-300",
+          ? "border-blue-300 ring-2 ring-app-accent"
+          : "border-app-border hover:border-app-border",
       )}
     >
       <div className="flex items-start gap-3">
-        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-700">
+        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-app-surface-muted text-xs font-semibold text-app-text-muted">
           {authorAvatar}
         </div>
         <div className="min-w-0 flex-1">
@@ -312,7 +312,7 @@ const FeedCard = memo(function FeedCard({
             {item.context_href ? (
               <Link
                 href={item.context_href}
-                className="block text-sm font-semibold leading-snug text-slate-900 transition hover:text-slate-950 hover:underline"
+                className="block text-sm font-semibold leading-snug text-app-text transition hover:text-app-text hover:underline"
                 title={item.title}
                 style={{
                   display: "-webkit-box",
@@ -324,11 +324,11 @@ const FeedCard = memo(function FeedCard({
                 {item.title}
               </Link>
             ) : (
-              <p className="text-sm font-semibold leading-snug text-slate-900">
+              <p className="text-sm font-semibold leading-snug text-app-text">
                 {item.title}
               </p>
             )}
-            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-500">
+            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-app-text-quiet">
               <span
                 className={cn(
                   "rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
@@ -340,29 +340,29 @@ const FeedCard = memo(function FeedCard({
               {item.board_href && item.board_name ? (
                 <Link
                   href={item.board_href}
-                  className="font-semibold text-slate-700 hover:text-slate-900 hover:underline"
+                  className="font-semibold text-app-text-muted hover:text-app-text hover:underline"
                 >
                   {item.board_name}
                 </Link>
               ) : item.board_name ? (
-                <span className="font-semibold text-slate-700">
+                <span className="font-semibold text-app-text-muted">
                   {item.board_name}
                 </span>
               ) : null}
               {item.board_name ? (
-                <span className="text-slate-300">·</span>
+                <span className="text-app-text-quiet">·</span>
               ) : null}
-              <span className="font-medium text-slate-700">
+              <span className="font-medium text-app-text-muted">
                 {item.actor_name}
               </span>
               {item.actor_role ? (
                 <>
-                  <span className="text-slate-300">·</span>
-                  <span className="text-slate-500">{item.actor_role}</span>
+                  <span className="text-app-text-quiet">·</span>
+                  <span className="text-app-text-quiet">{item.actor_role}</span>
                 </>
               ) : null}
-              <span className="text-slate-300">·</span>
-              <span className="text-slate-400">
+              <span className="text-app-text-quiet">·</span>
+              <span className="text-app-text-quiet">
                 {formatShortTimestamp(item.created_at)}
               </span>
             </div>
@@ -370,11 +370,11 @@ const FeedCard = memo(function FeedCard({
         </div>
       </div>
       {message ? (
-        <div className="mt-3 select-text cursor-text text-sm leading-relaxed text-slate-900 break-words">
+        <div className="mt-3 select-text cursor-text text-sm leading-relaxed text-app-text break-words">
           <Markdown content={message} variant="basic" />
         </div>
       ) : (
-        <p className="mt-3 text-sm text-slate-500">—</p>
+        <p className="mt-3 text-sm text-app-text-quiet">—</p>
       )}
     </div>
   );
@@ -1506,18 +1506,18 @@ export default function ActivityPage() {
           </SignedOut>
           <SignedIn>
             <DashboardSidebar />
-            <main className="flex-1 overflow-y-auto bg-slate-50">
-              <div className="sticky top-0 z-30 border-b border-slate-200 bg-white">
+            <main className="flex-1 overflow-y-auto bg-app-surface-muted">
+              <div className="sticky top-0 z-30 border-b border-app-border bg-app-surface">
                 <div className="px-4 py-4 md:px-8 md:py-6">
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2">
-                        <ActivityIcon className="h-5 w-5 text-slate-600" />
-                        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+                        <ActivityIcon className="h-5 w-5 text-app-text-muted" />
+                        <h1 className="text-2xl font-semibold tracking-tight text-app-text">
                           Live feed
                         </h1>
                       </div>
-                      <p className="mt-1 text-sm text-slate-500">
+                      <p className="mt-1 text-sm text-app-text-quiet">
                         Realtime task, approval, agent, and board-chat activity
                         across all boards.
                       </p>
@@ -1528,7 +1528,7 @@ export default function ActivityPage() {
 
               <div className="p-4 md:p-8">
                 {hasUnresolvedDeepLink ? (
-                  <div className="mb-4 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
+                  <div className="mb-4 rounded-lg border border-amber-300 bg-app-warning-soft p-3 text-sm text-app-warning">
                     Requested activity item is not in the current feed window yet.
                   </div>
                 ) : null}

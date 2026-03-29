@@ -185,7 +185,7 @@ export function OrgSwitcher() {
         </SelectContent>
       </Select>
       {orgError && !createOpen ? (
-        <p className="absolute left-0 top-full mt-1 text-xs text-rose-500">
+        <p className="absolute left-0 top-full mt-1 text-xs text-app-danger">
           {orgError}
         </p>
       ) : null}
@@ -213,7 +213,7 @@ export function OrgSwitcher() {
               onChange={(event) => setOrgName(event.target.value)}
             />
             {orgError ? (
-              <p className="text-sm text-rose-500">{orgError}</p>
+              <p className="text-sm text-app-danger">{orgError}</p>
             ) : null}
           </div>
           <DialogFooter className="mt-6">

@@ -70,7 +70,7 @@ export function TaskCard({
   return (
     <div
       className={cn(
-        "group relative cursor-pointer rounded-lg border border-app-border bg-app-surface p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-app-border-strong hover:shadow-md",
+        "group relative cursor-pointer rounded-lg border border-app-border bg-app-surface p-4 shadow-card transition-all hover:-translate-y-0.5 hover:border-app-border-strong hover:shadow-md",
         isDragging && "opacity-60 shadow-none",
         hasPendingApproval && "border-[color:rgba(210,153,34,0.3)] bg-app-warning-soft",
         isBlocked && "border-[color:rgba(248,81,73,0.3)] bg-app-danger-soft",

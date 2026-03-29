@@ -60,15 +60,15 @@ export default function EditTagPage() {
       adminOnlyMessage="Only organization owners and admins can manage tags."
     >
       {tagQuery.isLoading ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
+        <div className="rounded-xl border border-app-border bg-app-surface p-6 text-sm text-app-text-quiet shadow-card">
           Loading tag…
         </div>
       ) : tagQuery.error ? (
-        <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700 shadow-sm">
+        <div className="rounded-xl border border-rose-200 bg-app-danger-soft p-6 text-sm text-app-danger shadow-card">
           {tagQuery.error.message}
         </div>
       ) : !tag ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
+        <div className="rounded-xl border border-app-border bg-app-surface p-6 text-sm text-app-text-quiet shadow-card">
           Tag not found.
         </div>
       ) : (

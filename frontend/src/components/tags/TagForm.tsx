@@ -101,13 +101,13 @@ export function TagForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+      className="space-y-6 rounded-xl border border-app-border bg-app-surface p-6 shadow-card"
     >
       <div className="space-y-5">
-        <div className="rounded-xl border border-slate-200 bg-slate-50/40 p-4">
+        <div className="rounded-xl border border-app-border bg-app-surface-muted/40 p-4">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                 Name
               </label>
               <Input
@@ -119,13 +119,13 @@ export function TagForm({
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between gap-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
                   Slug
                 </label>
                 <button
                   type="button"
                   onClick={() => setSlug(suggestedSlug)}
-                  className="text-xs font-medium text-slate-500 underline underline-offset-2 transition hover:text-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="text-xs font-medium text-app-text-quiet underline underline-offset-2 transition hover:text-app-text-muted disabled:cursor-not-allowed disabled:opacity-50"
                   disabled={!suggestedSlug || isSubmitting}
                 >
                   Use from name
@@ -139,18 +139,18 @@ export function TagForm({
               />
             </div>
           </div>
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-2 text-xs text-app-text-quiet">
             Leave slug blank to auto-generate from the tag name.
           </p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-[1fr_auto]">
           <div className="space-y-2">
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
               Color
             </label>
-            <div className="flex items-center rounded-lg border border-slate-200 bg-white px-3">
-              <span className="text-sm font-medium text-slate-400">#</span>
+            <div className="flex items-center rounded-lg border border-app-border bg-app-surface px-3">
+              <span className="text-sm font-medium text-app-text-quiet">#</span>
               <Input
                 value={color}
                 onChange={(event) => setColor(event.target.value)}
@@ -161,15 +161,15 @@ export function TagForm({
             </div>
           </div>
           <div className="space-y-2">
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
               Preview
             </label>
-            <div className="inline-flex h-[42px] items-center gap-2 rounded-lg border border-slate-200 bg-white px-3">
+            <div className="inline-flex h-[42px] items-center gap-2 rounded-lg border border-app-border bg-app-surface px-3">
               <span
-                className="h-4 w-4 rounded border border-slate-300"
+                className="h-4 w-4 rounded border border-app-border"
                 style={{ backgroundColor: `#${previewColor}` }}
               />
-              <span className="text-xs font-semibold text-slate-700">
+              <span className="text-xs font-semibold text-app-text-muted">
                 #{previewColor.toUpperCase()}
               </span>
             </div>
@@ -177,7 +177,7 @@ export function TagForm({
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
             Description
           </label>
           <Textarea
@@ -190,7 +190,7 @@ export function TagForm({
         </div>
 
         {errorMessage ? (
-          <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+          <div className="rounded-lg border border-rose-200 bg-app-danger-soft p-3 text-sm text-app-danger">
             {errorMessage}
           </div>
         ) : null}

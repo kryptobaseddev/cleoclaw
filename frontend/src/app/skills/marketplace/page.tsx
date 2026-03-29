@@ -788,8 +788,8 @@ export default function SkillsMarketplacePage() {
       >
         <div className="space-y-6">
           {gateways.length === 0 ? (
-            <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm">
-              <p className="font-medium text-slate-900">
+            <div className="rounded-xl border border-app-border bg-app-surface p-6 text-sm text-app-text-muted shadow-card">
+              <p className="font-medium text-app-text">
                 No gateways available yet.
               </p>
               <p className="mt-2">
@@ -804,12 +804,12 @@ export default function SkillsMarketplacePage() {
             </div>
           ) : (
             <>
-              <div className="mb-5 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="mb-5 rounded-xl border border-app-border bg-app-surface p-4 shadow-card">
                 <div className="grid gap-4 md:grid-cols-[1fr_240px_240px]">
                   <div>
                     <label
                       htmlFor="marketplace-search"
-                      className="mb-1 block text-sm font-medium text-slate-700"
+                      className="mb-1 block text-sm font-medium text-app-text-muted"
                     >
                       Search
                     </label>
@@ -824,7 +824,7 @@ export default function SkillsMarketplacePage() {
                   <div>
                     <label
                       htmlFor="marketplace-category-filter"
-                      className="mb-1 block text-sm font-medium text-slate-700"
+                      className="mb-1 block text-sm font-medium text-app-text-muted"
                     >
                       Category
                     </label>
@@ -854,7 +854,7 @@ export default function SkillsMarketplacePage() {
                   <div>
                     <label
                       htmlFor="marketplace-risk-filter"
-                      className="mb-1 block text-sm font-medium text-slate-700"
+                      className="mb-1 block text-sm font-medium text-app-text-muted"
                     >
                       Risk
                     </label>
@@ -880,7 +880,7 @@ export default function SkillsMarketplacePage() {
                   </div>
                 </div>
               </div>
-              <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+              <div className="overflow-hidden rounded-xl border border-app-border bg-app-surface shadow-card">
                 <MarketplaceSkillsTable
                   skills={filteredSkills}
                   installedGatewayNamesBySkillId={
@@ -901,13 +901,13 @@ export default function SkillsMarketplacePage() {
                   }}
                 />
               </div>
-              <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 shadow-sm">
+              <div className="flex items-center justify-between rounded-xl border border-app-border bg-app-surface px-4 py-3 text-sm text-app-text-muted shadow-card">
                 <div className="flex items-center gap-3">
                   <p>
                     Showing {rangeStart}-{rangeEnd} of {totalSkills}
                   </p>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    <span className="text-xs font-medium uppercase tracking-wide text-app-text-quiet">
                       Rows
                     </span>
                     <Select
@@ -951,7 +951,7 @@ export default function SkillsMarketplacePage() {
                   >
                     Previous
                   </Button>
-                  <span className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  <span className="text-xs font-medium uppercase tracking-wide text-app-text-quiet">
                     {totalCountInfo.hasKnownTotal
                       ? `Page ${currentPage} of ${totalPages}`
                       : `Page ${currentPage}`}
@@ -977,13 +977,13 @@ export default function SkillsMarketplacePage() {
           )}
 
           {skillsQuery.error ? (
-            <p className="text-sm text-rose-600">{skillsQuery.error.message}</p>
+            <p className="text-sm text-app-danger">{skillsQuery.error.message}</p>
           ) : null}
           {packsQuery.error ? (
-            <p className="text-sm text-rose-600">{packsQuery.error.message}</p>
+            <p className="text-sm text-app-danger">{packsQuery.error.message}</p>
           ) : null}
           {mutationError ? (
-            <p className="text-sm text-rose-600">{mutationError}</p>
+            <p className="text-sm text-app-danger">{mutationError}</p>
           ) : null}
         </div>
       </DashboardPageLayout>

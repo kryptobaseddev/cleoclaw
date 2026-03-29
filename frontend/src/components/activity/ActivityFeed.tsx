@@ -18,13 +18,13 @@ export function ActivityFeed<TItem extends FeedItem>({
   renderItem,
 }: ActivityFeedProps<TItem>) {
   if (isLoading && items.length === 0) {
-    return <p className="text-sm text-slate-500">Loading feed…</p>;
+    return <p className="text-sm text-app-text-quiet">Loading feed…</p>;
   }
 
   const hasError = errorMessage !== null && errorMessage !== undefined;
   if (hasError) {
     return (
-      <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-700 shadow-sm">
+      <div className="rounded-lg border border-app-border bg-app-surface p-4 text-sm text-app-text-muted shadow-card">
         {errorMessage || "Unable to load feed."}
       </div>
     );
@@ -32,11 +32,11 @@ export function ActivityFeed<TItem extends FeedItem>({
 
   if (items.length === 0) {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-        <p className="text-sm font-medium text-slate-900">
+      <div className="rounded-xl border border-app-border bg-app-surface p-10 text-center shadow-card">
+        <p className="text-sm font-medium text-app-text">
           Waiting for new activity…
         </p>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-app-text-quiet">
           When updates happen, they will show up here.
         </p>
       </div>

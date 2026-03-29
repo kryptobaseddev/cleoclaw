@@ -142,17 +142,17 @@ export default function SettingsPage() {
         description="Update your profile and account preferences."
       >
         <div className="space-y-6">
-          <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-base font-semibold text-slate-900">Profile</h2>
-            <p className="mt-1 text-sm text-slate-500">
+          <section className="rounded-xl border border-app-border bg-app-surface p-6 shadow-card">
+            <h2 className="text-base font-semibold text-app-text">Profile</h2>
+            <p className="mt-1 text-sm text-app-text-quiet">
               Keep your identity and timezone up to date.
             </p>
 
             <form onSubmit={handleSave} className="mt-6 space-y-5">
               <div className="grid gap-5 md:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                    <User className="h-4 w-4 text-slate-500" />
+                  <label className="flex items-center gap-2 text-sm font-medium text-app-text-muted">
+                    <User className="h-4 w-4 text-app-text-quiet" />
                     Name
                   </label>
                   <Input
@@ -163,12 +163,12 @@ export default function SettingsPage() {
                     }}
                     placeholder="Your name"
                     disabled={isSaving}
-                    className="border-slate-300 text-slate-900 focus-visible:ring-blue-500"
+                    className="border-app-border text-app-text focus-visible:ring-app-accent"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                    <Globe className="h-4 w-4 text-slate-500" />
+                  <label className="flex items-center gap-2 text-sm font-medium text-app-text-muted">
+                    <Globe className="h-4 w-4 text-app-text-quiet" />
                     Timezone
                   </label>
                   <SearchableSelect
@@ -183,33 +183,33 @@ export default function SettingsPage() {
                     searchPlaceholder="Search timezones..."
                     emptyMessage="No matching timezones."
                     disabled={isSaving}
-                    triggerClassName="w-full h-11 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                    contentClassName="rounded-xl border border-slate-200 shadow-lg"
-                    itemClassName="px-4 py-3 text-sm text-slate-700 data-[selected=true]:bg-slate-50 data-[selected=true]:text-slate-900"
+                    triggerClassName="w-full h-11 rounded-xl border border-app-border bg-app-surface px-3 py-2 text-sm font-medium text-app-text shadow-card focus:border-blue-500 focus:ring-2 focus:ring-app-accent"
+                    contentClassName="rounded-xl border border-app-border shadow-lg"
+                    itemClassName="px-4 py-3 text-sm text-app-text-muted data-[selected=true]:bg-app-surface-muted data-[selected=true]:text-app-text"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                  <Mail className="h-4 w-4 text-slate-500" />
+                <label className="flex items-center gap-2 text-sm font-medium text-app-text-muted">
+                  <Mail className="h-4 w-4 text-app-text-quiet" />
                   Email
                 </label>
                 <Input
                   value={displayEmail}
                   readOnly
                   disabled
-                  className="border-slate-200 bg-slate-50 text-slate-600"
+                  className="border-app-border bg-app-surface-muted text-app-text-muted"
                 />
               </div>
 
               {saveError ? (
-                <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+                <div className="rounded-lg border border-rose-200 bg-app-danger-soft p-3 text-sm text-app-danger">
                   {saveError}
                 </div>
               ) : null}
               {saveSuccess ? (
-                <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
+                <div className="rounded-lg border border-emerald-200 bg-app-success-soft p-3 text-sm text-app-success">
                   {saveSuccess}
                 </div>
               ) : null}
@@ -232,11 +232,11 @@ export default function SettingsPage() {
             </form>
           </section>
 
-          <section className="rounded-xl border border-rose-200 bg-rose-50/70 p-6 shadow-sm">
-            <h2 className="text-base font-semibold text-rose-900">
+          <section className="rounded-xl border border-rose-200 bg-app-danger-soft/70 p-6 shadow-card">
+            <h2 className="text-base font-semibold text-app-danger">
               Delete account
             </h2>
-            <p className="mt-1 text-sm text-rose-800">
+            <p className="mt-1 text-sm text-app-danger">
               This permanently removes your Mission Control account and related
               personal data. This action cannot be undone.
             </p>
