@@ -142,16 +142,16 @@ export default function NewAgentPage() {
     >
       <form
         onSubmit={handleSubmit}
-        className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-6"
+        className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm space-y-6"
       >
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
             Basic configuration
           </p>
           <div className="mt-4 space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-900">
+                <label className="text-sm font-medium text-app-text">
                   Agent name <span className="text-red-500">*</span>
                 </label>
                 <Input
@@ -162,7 +162,7 @@ export default function NewAgentPage() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-900">
+                <label className="text-sm font-medium text-app-text">
                   Role
                 </label>
                 <Input
@@ -180,7 +180,7 @@ export default function NewAgentPage() {
             </div>
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-900">
+                <label className="text-sm font-medium text-app-text">
                   Board <span className="text-red-500">*</span>
                 </label>
                 <SearchableSelect
@@ -191,19 +191,19 @@ export default function NewAgentPage() {
                   placeholder="Select board"
                   searchPlaceholder="Search boards..."
                   emptyMessage="No matching boards."
-                  triggerClassName="w-full h-11 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                  contentClassName="rounded-xl border border-slate-200 shadow-lg"
-                  itemClassName="px-4 py-3 text-sm text-slate-700 data-[selected=true]:bg-slate-50 data-[selected=true]:text-slate-900"
+                  triggerClassName="w-full h-11 rounded-xl border border-app-border bg-app-surface px-3 py-2 text-sm font-medium text-app-text shadow-sm focus:border-app-accent focus:ring-2 focus:ring-app-accent/20"
+                  contentClassName="rounded-xl border border-app-border bg-app-surface shadow-lg"
+                  itemClassName="px-4 py-3 text-sm text-app-text-muted data-[selected=true]:bg-app-surface-muted data-[selected=true]:text-app-text"
                   disabled={boards.length === 0}
                 />
                 {boards.length === 0 ? (
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-app-text-quiet">
                     Create a board before adding agents.
                   </p>
                 ) : null}
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-900">
+                <label className="text-sm font-medium text-app-text">
                   Emoji
                 </label>
                 <Select
@@ -233,12 +233,12 @@ export default function NewAgentPage() {
         </div>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
             Personality & behavior
           </p>
           <div className="mt-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-900">
+              <label className="text-sm font-medium text-app-text">
                 Communication style
               </label>
               <Input
@@ -256,12 +256,12 @@ export default function NewAgentPage() {
         </div>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <p className="text-xs font-semibold uppercase tracking-wider text-app-text-quiet">
             Schedule & notifications
           </p>
           <div className="mt-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-900">
+              <label className="text-sm font-medium text-app-text">
                 Interval
               </label>
               <Input
@@ -270,7 +270,7 @@ export default function NewAgentPage() {
                 placeholder="e.g. 10m"
                 disabled={isLoading}
               />
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-app-text-quiet">
                 How often this agent runs HEARTBEAT.md (10m, 30m, 2h).
               </p>
             </div>
@@ -278,7 +278,7 @@ export default function NewAgentPage() {
         </div>
 
         {errorMessage ? (
-          <div className="rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-600 shadow-sm">
+          <div className="rounded-lg border border-app-border bg-app-surface p-3 text-sm text-app-text-muted shadow-sm">
             {errorMessage}
           </div>
         ) : null}
