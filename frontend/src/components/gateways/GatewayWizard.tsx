@@ -86,28 +86,36 @@ function StepIndicator({
 }) {
   const currentIndex = steps.findIndex((s) => s.key === current);
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center justify-center gap-0">
       {steps.map((step, i) => (
-        <div key={step.key} className="flex items-center gap-2">
+        <div key={step.key} className="flex items-center gap-0">
           {i > 0 ? (
             <div
-              className={`h-px w-6 ${i <= currentIndex ? "bg-app-accent" : "bg-app-border"}`}
+              className={`h-0.5 w-16 transition-colors duration-300 ${
+                i <= currentIndex ? "bg-app-accent" : "bg-app-border"
+              }`}
             />
           ) : null}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col items-center gap-1.5">
             <span
-              className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${
+              className={`flex h-10 w-10 items-center justify-center rounded-full font-label text-sm font-bold transition-all duration-300 ${
                 i < currentIndex
-                  ? "bg-app-success text-white"
+                  ? "bg-gradient-to-r from-[#2fd9f4] to-[#06b6d4] text-white shadow-[0_0_12px_rgba(47,217,244,0.3)]"
                   : i === currentIndex
-                    ? "bg-gradient-to-r from-[#2fd9f4] to-[#06b6d4] text-white"
-                    : "bg-app-surface-muted text-app-text-quiet"
+                    ? "bg-gradient-to-r from-[#2fd9f4] to-[#06b6d4] text-white shadow-[0_0_12px_rgba(47,217,244,0.3)]"
+                    : "border border-app-border bg-app-surface-muted text-app-text-quiet"
               }`}
             >
-              {i < currentIndex ? <Check className="h-3.5 w-3.5" /> : i + 1}
+              {i < currentIndex ? <Check className="h-4 w-4" /> : i + 1}
             </span>
             <span
-              className={`text-sm font-medium ${i === currentIndex ? "text-app-text" : "text-app-text-quiet"}`}
+              className={`font-label text-xs uppercase tracking-[0.1em] transition-colors duration-300 ${
+                i === currentIndex
+                  ? "text-app-accent"
+                  : i < currentIndex
+                    ? "text-app-text-muted"
+                    : "text-app-text-quiet"
+              }`}
             >
               {step.label}
             </span>
@@ -136,6 +144,30 @@ function CodeBlock({ code, label }: { code: string; label?: string }) {
   );
 }
 
+/** Pulsing dot indicator for connection status feedback */
+function StatusDot({
+  status,
+}: {
+  status: "testing" | "success" | "error";
+}) {
+  if (status === "testing") {
+    return (
+      <span className="relative flex h-3 w-3">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-app-accent opacity-75" />
+        <span className="relative inline-flex h-3 w-3 rounded-full bg-app-accent shadow-[0_0_8px_rgba(47,217,244,0.5)]" />
+      </span>
+    );
+  }
+  if (status === "success") {
+    return (
+      <span className="relative inline-flex h-3 w-3 rounded-full bg-app-success shadow-[0_0_8px_rgba(63,185,80,0.5)]" />
+    );
+  }
+  return (
+    <span className="relative inline-flex h-3 w-3 rounded-full bg-app-danger shadow-[0_0_8px_rgba(255,180,171,0.5)]" />
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Step 1: Connect
 // ---------------------------------------------------------------------------
@@ -158,17 +190,17 @@ function StepConnect({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-app-text">
+        <h2 className="font-heading text-xl text-app-text mb-2">
           Connect to your OpenClaw gateway
         </h2>
-        <p className="mt-1 text-sm text-app-text-quiet">
+        <p className="text-sm text-app-text-quiet">
           Enter the address and auth token of your running OpenClaw gateway.
         </p>
       </div>
 
       <div className="space-y-4">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-app-text">
+          <label className="font-label text-xs uppercase tracking-[0.1em] text-app-text-muted">
             Gateway address <span className="text-app-danger">*</span>
           </label>
           <Input
@@ -205,7 +237,7 @@ function StepConnect({
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-app-text">
+          <label className="font-label text-xs uppercase tracking-[0.1em] text-app-text-muted">
             Gateway token <span className="text-app-danger">*</span>
           </label>
           <Input
@@ -241,14 +273,25 @@ function StepConnect({
         </div>
       </div>
 
+      {/* Connection test feedback with pulsing indicators */}
+      {verifying ? (
+        <div className="flex items-center gap-3 rounded-lg border border-app-border bg-app-accent-soft px-4 py-3 text-sm text-app-accent">
+          <StatusDot status="testing" />
+          <span className="font-label text-xs uppercase tracking-wider">Testing connection...</span>
+        </div>
+      ) : null}
+
       {state.connectionError ? (
-        <p className="text-sm text-app-danger">{state.connectionError}</p>
+        <div className="flex items-center gap-3 rounded-lg border border-app-border bg-app-danger-soft px-4 py-3 text-sm">
+          <StatusDot status="error" />
+          <span className="text-app-danger">{state.connectionError}</span>
+        </div>
       ) : null}
 
       {state.connectionVerified ? (
-        <div className="flex items-center gap-2 rounded-lg border border-app-border bg-app-success-soft px-4 py-3 text-sm text-app-success">
-          <Check className="h-4 w-4" />
-          Gateway is reachable and responding.
+        <div className="flex items-center gap-3 rounded-lg border border-app-border bg-app-success-soft px-4 py-3 text-sm">
+          <StatusDot status="success" />
+          <span className="text-app-success">Connection Established</span>
         </div>
       ) : null}
 
@@ -332,10 +375,10 @@ proxy_buffering off;`;
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-app-text">
+        <h2 className="font-heading text-xl text-app-text mb-2">
           Reverse proxy configuration
         </h2>
-        <p className="mt-1 text-sm text-app-text-quiet">
+        <p className="text-sm text-app-text-quiet">
           Both your CCMC app and OpenClaw gateway need proxy hosts in Nginx Proxy Manager.
           The Advanced tab config below is <strong>required</strong> for real-time streaming.
         </p>
@@ -343,7 +386,7 @@ proxy_buffering off;`;
 
       {/* NPM IP input */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-app-text">
+        <label className="font-label text-xs uppercase tracking-[0.1em] text-app-text-muted">
           Nginx Proxy Manager IP address
         </label>
         <Input
@@ -358,22 +401,22 @@ proxy_buffering off;`;
 
       {/* CCMC Proxy Host */}
       <div className="space-y-3">
-        <h3 className="text-sm font-semibold text-app-text">
+        <h3 className="font-heading text-sm font-semibold text-app-text">
           1. CCMC Proxy Host (your Mission Control domain)
         </h3>
         <p className="text-xs text-app-text-quiet">
           This proxy host serves the CCMC webapp (e.g., <code className="font-mono">cleoclaw.yourdomain.com</code>).
         </p>
 
-        <div className="rounded-lg border border-app-border bg-app-surface p-4 backdrop-blur-glass shadow-card">
+        <div className="rounded-xl border border-app-border bg-app-surface p-4 backdrop-blur-glass shadow-card">
           <table className="w-full text-sm">
             <tbody className="divide-y divide-app-border">
               <tr>
-                <td className="py-2 pr-4 font-medium text-app-text-muted">Forward Port</td>
-                <td className="py-2 font-mono">3011 <span className="text-app-text-quiet">(CCMC frontend)</span></td>
+                <td className="py-2 pr-4 font-label text-xs uppercase tracking-wider text-app-text-quiet">Forward Port</td>
+                <td className="py-2 font-mono text-app-text">3011 <span className="text-app-text-quiet">(CCMC frontend)</span></td>
               </tr>
               <tr>
-                <td className="py-2 pr-4 font-medium text-app-text-muted">Websockets Support</td>
+                <td className="py-2 pr-4 font-label text-xs uppercase tracking-wider text-app-text-quiet">Websockets Support</td>
                 <td className="py-2 font-semibold text-app-success">ON</td>
               </tr>
             </tbody>
@@ -395,26 +438,26 @@ proxy_buffering off;`;
       {/* Gateway Proxy Host — only shown when using a domain */}
       {isDomain ? (
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-app-text">
+          <h3 className="font-heading text-sm font-semibold text-app-text">
             2. Gateway Proxy Host — <code className="font-mono text-sm">{domain}</code>
           </h3>
           <p className="text-xs text-app-text-quiet">
             Since you{"'"}re connecting to the gateway via a domain name, it also needs a proxy host in NPM.
           </p>
 
-          <div className="rounded-lg border border-app-border bg-app-surface p-4 backdrop-blur-glass shadow-card">
+          <div className="rounded-xl border border-app-border bg-app-surface p-4 backdrop-blur-glass shadow-card">
             <table className="w-full text-sm">
               <tbody className="divide-y divide-app-border">
                 <tr>
-                  <td className="py-2 pr-4 font-medium text-app-text-muted">Domain Names</td>
+                  <td className="py-2 pr-4 font-label text-xs uppercase tracking-wider text-app-text-quiet">Domain Names</td>
                   <td className="py-2 font-mono text-app-text">{domain}</td>
                 </tr>
                 <tr>
-                  <td className="py-2 pr-4 font-medium text-app-text-muted">Forward Port</td>
-                  <td className="py-2 font-mono">18789</td>
+                  <td className="py-2 pr-4 font-label text-xs uppercase tracking-wider text-app-text-quiet">Forward Port</td>
+                  <td className="py-2 font-mono text-app-text">18789</td>
                 </tr>
                 <tr>
-                  <td className="py-2 pr-4 font-medium text-app-text-muted">Websockets Support</td>
+                  <td className="py-2 pr-4 font-label text-xs uppercase tracking-wider text-app-text-quiet">Websockets Support</td>
                   <td className="py-2 font-semibold text-app-success">ON</td>
                 </tr>
               </tbody>
@@ -433,7 +476,7 @@ proxy_buffering off;`;
           </div>
         </div>
       ) : (
-        <div className="rounded-lg border border-app-border bg-app-success-soft p-3 text-sm text-app-success">
+        <div className="flex items-center gap-2 rounded-lg border border-app-border bg-app-success-soft p-3 text-sm text-app-success">
           <Check className="mr-2 inline h-4 w-4" />
           Direct IP connection — no gateway proxy host needed. CCMC connects to{" "}
           <code className="font-mono">{state.gatewayAddress}</code> directly.
@@ -441,8 +484,8 @@ proxy_buffering off;`;
       )}
 
       {/* SSL for both */}
-      <div className="rounded-lg border border-app-border bg-app-surface p-4 backdrop-blur-glass shadow-card">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-app-text-quiet">
+      <div className="rounded-xl border border-app-border bg-app-surface p-4 backdrop-blur-glass shadow-card">
+        <p className="mb-2 font-label text-xs font-semibold uppercase tracking-[0.15em] text-app-text-quiet">
           SSL Tab (both proxy hosts)
         </p>
         <div className="flex flex-wrap gap-2 text-xs">
@@ -464,7 +507,7 @@ proxy_buffering off;`;
 
       {/* OpenClaw Config */}
       <div className="space-y-3">
-        <h3 className="text-sm font-semibold text-app-text">
+        <h3 className="font-heading text-sm font-semibold text-app-text">
           2. Configure trusted-proxy auth on OpenClaw
         </h3>
 
@@ -541,26 +584,67 @@ proxy_buffering off;`;
 // Step 3: Create
 // ---------------------------------------------------------------------------
 
+/** Provisioning checklist item with semantic status */
+function ProvisioningStep({
+  label,
+  status,
+}: {
+  label: string;
+  status: "pending" | "active" | "complete";
+}) {
+  return (
+    <li className="flex items-center gap-3">
+      {status === "complete" ? (
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-app-success-soft">
+          <Check className="h-3 w-3 text-app-success" />
+        </span>
+      ) : status === "active" ? (
+        <span className="relative flex h-5 w-5 items-center justify-center">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-app-accent opacity-40" />
+          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-app-accent shadow-[0_0_6px_rgba(47,217,244,0.4)]" />
+        </span>
+      ) : (
+        <span className="flex h-5 w-5 items-center justify-center">
+          <span className="inline-flex h-2 w-2 rounded-full bg-app-surface-strong" />
+        </span>
+      )}
+      <span
+        className={`font-label text-xs uppercase tracking-wider ${
+          status === "complete"
+            ? "text-app-success"
+            : status === "active"
+              ? "text-app-accent"
+              : "text-app-text-quiet"
+        }`}
+      >
+        {label}
+      </span>
+    </li>
+  );
+}
+
 function StepCreate({
   state,
   onChange,
+  creating,
 }: {
   state: WizardState;
   onChange: (updates: Partial<WizardState>) => void;
+  creating: boolean;
 }) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-app-text">
+        <h2 className="font-heading text-xl text-app-text mb-2">
           Name your gateway
         </h2>
-        <p className="mt-1 text-sm text-app-text-quiet">
+        <p className="text-sm text-app-text-quiet">
           Give your gateway a friendly name. CCMC will create a default board and agent automatically.
         </p>
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-app-text">
+        <label className="font-label text-xs uppercase tracking-[0.1em] text-app-text-muted">
           Gateway name <span className="text-app-danger">*</span>
         </label>
         <Input
@@ -571,30 +655,39 @@ function StepCreate({
         />
       </div>
 
-      <div className="rounded-lg border border-app-border bg-app-surface-muted p-4 backdrop-blur-glass shadow-card">
-        <p className="text-sm font-medium text-app-text">What happens next:</p>
-        <ul className="mt-2 space-y-1.5 text-sm text-app-text-muted">
-          <li className="flex items-start gap-2">
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-app-success" />
-            Gateway registered in Mission Control
-          </li>
-          <li className="flex items-start gap-2">
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-app-success" />
-            MC Gateway Agent created on OpenClaw
-          </li>
-          <li className="flex items-start gap-2">
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-app-success" />
-            Default {'"'}General{'"'} board created with lead agent
-          </li>
-          <li className="flex items-start gap-2">
-            <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-app-text-quiet" />
-            You{"'"}ll be taken to your new board
+      <div className="rounded-xl border border-app-border bg-app-surface-muted p-5 backdrop-blur-glass shadow-card">
+        <p className="font-label text-xs uppercase tracking-[0.15em] text-app-text-quiet mb-4">
+          {creating ? "Provisioning..." : "What happens next"}
+        </p>
+        <ul className="space-y-3">
+          <ProvisioningStep
+            label="Register gateway in Mission Control"
+            status={creating ? "active" : "pending"}
+          />
+          <ProvisioningStep
+            label="Create MC Gateway Agent on OpenClaw"
+            status="pending"
+          />
+          <ProvisioningStep
+            label={'Create default "General" board with lead agent'}
+            status="pending"
+          />
+          <li className="flex items-center gap-3 pt-1">
+            <span className="flex h-5 w-5 items-center justify-center">
+              <ArrowRight className="h-3.5 w-3.5 text-app-text-quiet" />
+            </span>
+            <span className="font-label text-xs uppercase tracking-wider text-app-text-quiet">
+              Navigate to your new board
+            </span>
           </li>
         </ul>
       </div>
 
       {state.createError ? (
-        <p className="text-sm text-app-danger">{state.createError}</p>
+        <div className="flex items-center gap-3 rounded-lg border border-app-border bg-app-danger-soft px-4 py-3 text-sm">
+          <StatusDot status="error" />
+          <span className="text-app-danger">{state.createError}</span>
+        </div>
       ) : null}
     </div>
   );
@@ -763,10 +856,21 @@ export function GatewayWizard({ onComplete, onCancel }: GatewayWizardProps) {
   };
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="mx-auto max-w-2xl space-y-8">
+      {/* Page heading — Newsreader italic display font */}
+      <div className="text-center">
+        <h1 className="font-display italic text-3xl text-app-accent">
+          Gateway Connection
+        </h1>
+        <p className="mt-1 font-label uppercase tracking-[0.15em] text-xs text-app-text-quiet">
+          Link your OpenClaw instance to Mission Control
+        </p>
+      </div>
+
       <StepIndicator steps={STEPS} current={step} />
 
-      <div className="rounded-xl border border-app-border bg-app-surface p-6 backdrop-blur-glass shadow-card">
+      {/* Glass panel step card */}
+      <div className="rounded-2xl border border-app-border bg-app-surface p-8 backdrop-blur-glass shadow-panel">
         {step === "connect" ? (
           <StepConnect
             state={state}
@@ -782,7 +886,7 @@ export function GatewayWizard({ onComplete, onCancel }: GatewayWizardProps) {
             onAutoConfig={handleAutoConfig}
           />
         ) : (
-          <StepCreate state={state} onChange={update} />
+          <StepCreate state={state} onChange={update} creating={creating} />
         )}
       </div>
 
