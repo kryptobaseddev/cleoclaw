@@ -3,25 +3,25 @@ import { cn } from "@/lib/utils";
 type StatusDotVariant = "agent" | "approval" | "task";
 
 const AGENT_STATUS_DOT_CLASS_BY_STATUS: Record<string, string> = {
-  online: "bg-emerald-500",
-  busy: "bg-amber-500",
-  provisioning: "bg-amber-500",
-  updating: "bg-sky-500",
-  deleting: "bg-rose-500",
-  offline: "bg-slate-400",
+  online: "bg-app-success shadow-[0_0_8px_rgba(63,185,80,0.5)] animate-pulse",
+  busy: "bg-app-warning shadow-[0_0_8px_rgba(233,195,73,0.5)]",
+  provisioning: "bg-app-warning shadow-[0_0_8px_rgba(233,195,73,0.5)]",
+  updating: "bg-app-accent shadow-[0_0_8px_rgba(47,217,244,0.5)]",
+  deleting: "bg-app-danger",
+  offline: "bg-app-text-quiet",
 };
 
 const APPROVAL_STATUS_DOT_CLASS_BY_STATUS: Record<string, string> = {
-  approved: "bg-emerald-500",
-  rejected: "bg-rose-500",
-  pending: "bg-amber-500",
+  approved: "bg-app-success",
+  rejected: "bg-app-danger",
+  pending: "bg-app-warning",
 };
 
 const TASK_STATUS_DOT_CLASS_BY_STATUS: Record<string, string> = {
-  inbox: "bg-slate-400",
-  in_progress: "bg-purple-500",
-  review: "bg-indigo-500",
-  done: "bg-emerald-500",
+  inbox: "bg-app-text-quiet",
+  in_progress: "bg-app-warning",
+  review: "bg-app-accent",
+  done: "bg-app-success",
 };
 
 const STATUS_DOT_CLASS_BY_VARIANT: Record<
@@ -34,9 +34,9 @@ const STATUS_DOT_CLASS_BY_VARIANT: Record<
 };
 
 const DEFAULT_STATUS_DOT_CLASS: Record<StatusDotVariant, string> = {
-  agent: "bg-slate-300",
-  approval: "bg-amber-500",
-  task: "bg-slate-300",
+  agent: "bg-app-text-quiet",
+  approval: "bg-app-warning",
+  task: "bg-app-text-quiet",
 };
 
 export const statusDotClass = (
